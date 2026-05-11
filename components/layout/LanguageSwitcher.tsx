@@ -1,4 +1,4 @@
-"use client"; // This tells Next.js this component runs in the browser
+"use client"; 
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,7 +8,7 @@ export default function LanguageSwitcher({ currentLocale }: { currentLocale: str
   const targetLocale = currentLocale === "en" ? "vi" : "en";
   const targetLabel = currentLocale === "en" ? "VI" : "EN";
 
-  // This safely replaces the first part of the URL (/en/... to /vi/...)
+ 
   const redirectedPathname = (locale: string) => {
     if (!pathname) return "/";
     const segments = pathname.split("/");

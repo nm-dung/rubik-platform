@@ -1,4 +1,4 @@
-import { getDictionary } from "../../../lib/dictionary";
+import { getDictionary } from "@/lib/dictionary";
 
 export default async function LearnPage({ params }: { params: { locale: 'en' | 'vi' } }) {
   const resolvedParams = await params;

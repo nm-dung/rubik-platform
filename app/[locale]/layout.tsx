@@ -33,15 +33,15 @@ export default async function RootLayout({
   return (
     <html lang={resolvedParams.locale}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
-        {/* We pass the specific dictionary section and locale to the Navbar */}
+        
         <Navbar dict={dict.nav} locale={resolvedParams.locale} />
         
-        {/* The 'children' is whatever page the user is currently looking at */}
+        
         <div className="flex-grow flex flex-col">
           {children}
         </div>
 
-        {/* We pass the specific dictionary section to the Footer */}
+       
         <Footer dict={dict.footer} />
       </body>
     </html>

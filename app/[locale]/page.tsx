@@ -1,22 +1,30 @@
-import { getDictionary } from '../../lib/dictionary';
+import { getDictionary } from "@/lib/dictionary";
+import CubeScene from "@/components/cube/CubeScene";
 
-// Next.js automatically passes the URL parameters (like 'en' or 'vi') into this component
 export default async function Home({ params }: { params: { locale: 'en' | 'vi' } }) {
-  // 1. We wait for the URL parameters to be ready (a requirement in the newest Next.js versions)
   const resolvedParams = await params;
-  
-  // 2. We fetch the correct JSON dictionary based on the URL
   const dict = await getDictionary(resolvedParams.locale);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-50 text-gray-900">
-      {/* 3. We inject the text dynamically instead of hardcoding it */}
-      <h1 className="text-4xl font-bold">
-        {dict.home.title}
-      </h1>
-      <p className="mt-4 text-lg text-gray-600">
-        {dict.home.subtitle}
-      </p>
+    <main className="max-w-6xl mx-auto p-8 grid lg:grid-cols-2 gap-12 items-center flex-grow">
+      <div>
+        <h1 className="text-5xl font-extrabold text-gray-900 leading-tight">
+          {dict.home.title}
+        </h1>
+        <p className="mt-6 text-xl text-gray-600">
+          {dict.home.subtitle}
+        </p>
+        <div className="mt-10 flex gap-4">
+          <button className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all">
+            Get Started
+          </button>
+        </div>
+      </div>
+
+      <div className="relative">
+        <div className="absolute -inset-4 bg-indigo-500/10 rounded-full blur-3xl" />
+        <CubeScene />
+      </div>
     </main>
   );
 }

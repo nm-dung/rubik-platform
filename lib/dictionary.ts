@@ -1,4 +1,4 @@
-// We define a strict type so TypeScript helps us catch errors later
+// Define a strict type so TypeScript helps us catch errors later
 type Locale = 'en' | 'vi';
 
 // This dynamically imports the JSON file only when needed (great for performance)
