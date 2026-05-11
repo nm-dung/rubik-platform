@@ -1,0 +1,23 @@
+{
+  "home": {
+    "title": "Rubik's Learning Platform",
+    "subtitle": "Architecture foundation initialized successfully."
+  },
+  "nav": {
+    "logo": "RubikPlatform",
+    "learn": "Learn",
+    "algorithms": "Algorithms"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "learn": {
+    "title": "Learning Path",
+    "description": "Step-by-step interactive lessons will go here."
+  },
+  "algorithms": {
+    "title": "Algorithm Library",
+    "description": "The database of OLL, PLL, and F2L algorithms will go here."
+  }
+  
+}

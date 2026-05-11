@@ -1,0 +1,22 @@
+{
+  "home": {
+    "title": "Nền tảng Học Rubik",
+    "subtitle": "Kiến trúc cơ sở đã được khởi tạo thành công."
+  },
+  "nav": {
+    "logo": "RubikPlatform",
+    "learn": "Học tập",
+    "algorithms": "Công thức"
+  },
+  "footer": {
+    "rights": "Đã đăng ký bản quyền."
+  },
+  "learn": {
+    "title": "Lộ trình Học",
+    "description": "Các bài học tương tác từng bước sẽ được đặt ở đây."
+  },
+  "algorithms": {
+    "title": "Thư viện Thuật toán",
+    "description": "Cơ sở dữ liệu các thuật toán OLL, PLL, và F2L sẽ được đặt ở đây."
+  }
+}
