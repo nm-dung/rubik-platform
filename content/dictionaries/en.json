@@ -6,7 +6,8 @@
   "nav": {
     "logo": "RubikPlatform",
     "learn": "Learn",
-    "algorithms": "Algorithms"
+    "algorithms": "Algorithms",
+    "timer": "Timer"
   },
   "footer": {
     "rights": "All rights reserved."
