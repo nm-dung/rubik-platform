@@ -1,15 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { algorithmsData, Category } from "@/data/algorithms";
+import { useState, useEffect } from "react";
+import { Category, Algorithm } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
 import AlgorithmCard from "./AlgorithmCard";
 
 const CATEGORIES: Category[] = ['F2L', 'OLL', 'PLL'];
 
 export default function AlgorithmLibrary() {
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
+  const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  const filteredAlgs = algorithmsData.filter(alg => alg.category === activeCategory);
+  useEffect(() => {
+    setMounted(true);
+    async function fetchAlgorithms() {
+      try {
+        const { data, error: supabaseError } = await supabase
+          .from('algorithms')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (supabaseError) {
+          setError(`Failed to load algorithms: ${supabaseError.message}`);
+          console.error('Supabase error:', supabaseError);
+        } else {
+          setAlgorithms(data || []);
+        }
+      } catch (err) {
+        setError('Failed to load algorithms');
+        console.error('Error fetching algorithms:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAlgorithms();
+  }, []);
+
+  const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
 
   return (
     <div className="w-full max-w-3xl mx-auto bg-slate-50 rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col h-[600px]">
@@ -34,15 +65,25 @@ export default function AlgorithmLibrary() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
-        {filteredAlgs.length > 0 ? (
+        {loading && (
+          <div className="text-center text-slate-400 py-10 font-medium">
+            Loading algorithms...
+          </div>
+        )}
+        {error && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+        {!loading && !error && filteredAlgs.length > 0 ? (
           filteredAlgs.map((alg) => (
             <AlgorithmCard key={alg.id} alg={alg} />
           ))
-        ) : (
+        ) : !loading && !error ? (
           <div className="text-center text-slate-400 py-10 font-medium">
             No algorithms added for {activeCategory} yet.
           </div>
-        )}
+        ) : null}
       </div>
 
     </div>

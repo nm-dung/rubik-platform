@@ -14,7 +14,13 @@
   },
   "learn": {
     "title": "Lộ trình Học",
-    "description": "Các bài học tương tác từng bước sẽ được đặt ở đây."
+    "description": "Các bài học tương tác từng bước sẽ được đặt ở đây.",
+    "beginner_path": "Lộ trình Cơ bản",
+    "beginner_description": "Bắt đầu từ đầu với phương pháp Giải tầng theo tầng",
+    "intermediate_path": "Lộ trình Trung cấp",
+    "intermediate_description": "Thành thạo phương pháp CFOP được sử dụng bởi hầu hết những người giải tốc độ",
+    "advanced_path": "Lộ trình Nâng cao",
+    "advanced_description": "Tối ưu hóa kỹ thuật của bạn và khám phá các phương pháp thay thế"
   },
   "algorithms": {
     "title": "Thư viện Thuật toán",

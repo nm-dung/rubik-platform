@@ -14,7 +14,13 @@
   },
   "learn": {
     "title": "Learning Path",
-    "description": "Step-by-step interactive lessons will go here."
+    "description": "Step-by-step interactive lessons will go here.",
+    "beginner_path": "Beginner Path",
+    "beginner_description": "Start from scratch with the Layer-by-Layer method",
+    "intermediate_path": "Intermediate Path",
+    "intermediate_description": "Master the CFOP method used by most speed cubers",
+    "advanced_path": "Advanced Path",
+    "advanced_description": "Optimize your technique and explore alternative methods"
   },
   "algorithms": {
     "title": "Algorithm Library",

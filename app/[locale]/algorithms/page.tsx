@@ -3,40 +3,55 @@
 import { useState, useEffect, use } from "react"; 
 import { getDictionary } from "@/lib/dictionary";
 import { supabase } from "@/lib/supabase";
+import { Algorithm, Category } from "@/lib/types";
 import CubeScene from "@/components/cube/CubeScene";
 import AlgorithmCard from "@/components/algorithms/AlgorithmCard"; 
-import { useCubeStore } from "@/hooks/useCubeStore"; // 1. Added store import
+import { useCubeStore } from "@/hooks/useCubeStore";
 
 export default function AlgorithmsPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
   const resolvedParams = use(params);
   const locale = resolvedParams.locale;
 
-  const [activeTab, setActiveTab] = useState('PLL');
-  const [algorithms, setAlgorithms] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<Category>('PLL');
+  const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
   const [dict, setDict] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false); // Hydration safety
+  const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
 
   useEffect(() => {
     setMounted(true); 
     async function loadData() {
-      const d = await getDictionary(locale);
-      setDict(d);
+      try {
+        const d = await getDictionary(locale);
+        setDict(d);
 
-      const { data, error } = await supabase.from('algorithms').select('*');
-      if (error) console.error("Supabase error:", error);
-      else setAlgorithms(data || []);
-      
-      setLoading(false);
+        const { data, error: supabaseError } = await supabase
+          .from('algorithms')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (supabaseError) {
+          setError(`Failed to load algorithms: ${supabaseError.message}`);
+          console.error("Supabase error:", supabaseError);
+        } else {
+          setAlgorithms(data || []);
+        }
+      } catch (err) {
+        setError('Failed to load algorithms');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, [locale]); 
 
   if (loading || !dict) return <div className="p-20 text-center font-bold text-slate-400">Loading Dictionary...</div>;
 
-  const categories = ['F2L', 'OLL', 'PLL'];
+  const categories: Category[] = ['F2L', 'OLL', 'PLL'];
   const filteredAlgs = algorithms.filter(alg => alg.category === activeTab);
 
   const totalInTab = filteredAlgs.length;
@@ -47,6 +62,11 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
 
   return (
     <main className="max-w-5xl mx-auto p-8">
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          {error}
+        </div>
+      )}
       <section className="mb-16 grid lg:grid-cols-2 gap-12 items-center bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
         <CubeScene />
         <div>
