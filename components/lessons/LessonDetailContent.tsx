@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { BookOpen, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, Sparkles, RotateCcw } from "lucide-react";
 import { useLessonProgressStore } from "@/hooks/useLessonProgressStore";
 import ContributionRequestForm from "@/components/lessons/ContributionRequestForm";
 import type { Lesson, LessonDifficulty } from "@/lib/types";
@@ -20,9 +20,12 @@ const difficultyMeta: Record<LessonDifficulty, { label: string; badgeClass: stri
 
 export default function LessonDetailContent({ lesson, locale, relatedAlgorithms }: LessonDetailContentProps) {
   const completedLessonIds = useLessonProgressStore((state) => state.completedLessonIds);
+  const lessonProgress = useLessonProgressStore((state) => state.lessonProgress);
   const toggleCompletedLesson = useLessonProgressStore((state) => state.toggleCompletedLesson);
+  const incrementReview = useLessonProgressStore((state) => state.incrementReview);
 
   const isCompleted = completedLessonIds.includes(lesson.id);
+  const progress = lessonProgress[lesson.id] || { completed: false, reviewCount: 0, lastReviewed: null };
 
   const title = locale === "vi" ? lesson.title_vi : lesson.title_en;
   const description = locale === "vi" ? lesson.description_vi : lesson.description_en;
@@ -91,20 +94,43 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
         <h1 className="text-4xl font-black text-slate-900 mb-4">{title}</h1>
         <p className="text-lg leading-relaxed text-slate-600">{description}</p>
 
-        <button
-          type="button"
-          onClick={() => toggleCompletedLesson(lesson.id)}
-          className={`mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
-            isCompleted
-              ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
-              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-          }`}
-        >
-          <CheckCircle2 className="w-4 h-4" />
-          {isCompleted
-            ? (locale === "vi" ? "Đã hoàn thành bài học" : "Completed lesson")
-            : (locale === "vi" ? "Đánh dấu đã hoàn thành" : "Mark as complete")}
-        </button>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => toggleCompletedLesson(lesson.id)}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+              isCompleted
+                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            {isCompleted
+              ? (locale === "vi" ? "Đã hoàn thành bài học" : "Completed lesson")
+              : (locale === "vi" ? "Đánh dấu đã hoàn thành" : "Mark as complete")}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => incrementReview(lesson.id)}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+          >
+            <RotateCcw className="w-4 h-4" />
+            {locale === "vi" ? "Ôn tập lại" : "Review"}
+            {progress.reviewCount > 0 && <span className="bg-slate-200 text-slate-600 rounded-full px-2 py-0.5 text-xs">{progress.reviewCount}</span>}
+          </button>
+
+          {progress.lastReviewed && (
+            <span className="text-xs text-slate-500">
+              {locale === "vi" ? "Ôn tập lần cuối: " : "Last reviewed: "}
+              {new Date(progress.lastReviewed).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </span>
+          )}
+        </div>
       </section>
 
       <section className="mt-8 grid gap-8 lg:grid-cols-[1.6fr_0.8fr]">

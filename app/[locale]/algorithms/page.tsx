@@ -7,6 +7,9 @@ import { Algorithm, Category } from "@/lib/types";
 import CubeScene from "@/components/cube/CubeScene";
 import AlgorithmCard from "@/components/algorithms/AlgorithmCard"; 
 import { useCubeStore } from "@/hooks/useCubeStore";
+import { AlgorithmPracticeStats } from "@/lib/types";
+
+const PRACTICE_USER_ID = '00000000-0000-0000-0000-000000000001';
 
 export default function AlgorithmsPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
   const resolvedParams = use(params);
@@ -18,6 +21,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
 
@@ -27,6 +31,11 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
       try {
         const d = await getDictionary(locale);
         setDict(d);
+
+        if (!supabase) {
+          setError('Supabase is not configured');
+          return;
+        }
 
         const { data, error: supabaseError } = await supabase
           .from('algorithms')
@@ -38,6 +47,16 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
           console.error("Supabase error:", supabaseError);
         } else {
           setAlgorithms(data || []);
+        }
+
+        const statsResponse = await fetch(`/api/algorithm-stats?userId=${PRACTICE_USER_ID}`);
+        if (statsResponse.ok) {
+          const statsData: AlgorithmPracticeStats[] = await statsResponse.json();
+          const statsMap: Record<string, AlgorithmPracticeStats> = {};
+          statsData.forEach(stat => {
+            statsMap[stat.algorithm_id] = stat;
+          });
+          setStats(statsMap);
         }
       } catch (err) {
         setError('Failed to load algorithms');
@@ -109,7 +128,23 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
 
       <div className="grid gap-6">
         {filteredAlgs.map((alg) => (
-          <AlgorithmCard key={alg.id} alg={alg} locale={locale} />
+          <AlgorithmCard
+            key={alg.id}
+            alg={alg}
+            locale={locale}
+            stats={stats[alg.id]}
+            onStatsChange={(algorithmId, updatedStats) => {
+              setStats((currentStats) => {
+                const nextStats = { ...currentStats };
+                if (updatedStats) {
+                  nextStats[algorithmId] = updatedStats;
+                } else {
+                  delete nextStats[algorithmId];
+                }
+                return nextStats;
+              });
+            }}
+          />
         ))}
         {filteredAlgs.length === 0 && (
           <div className="p-12 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">

@@ -11,12 +11,15 @@ export interface Algorithm {
   name_vi: string;
   category: Category;
   notation: string;
+  alternate_notations?: string;
   difficulty: number;
   image_url?: string;
+  status?: 'draft' | 'published';
   created_at?: string;
 }
 
 export type LessonDifficulty = 'beginner' | 'intermediate' | 'advanced';
+export type LearningPath = 'beginner' | 'advanced' | 'both';
 
 export interface Lesson {
   id: string;
@@ -30,15 +33,42 @@ export interface Lesson {
   order: number;
   duration_minutes?: number;
   related_algorithm_ids?: string[];
+  image_url?: string;
+  learning_path?: LearningPath;
+  status?: 'draft' | 'published';
   created_at?: string;
   updated_at?: string;
 }
 
 export interface LessonProgress {
+  id: string;
   user_id: string;
   lesson_id: string;
   completed: boolean;
   completed_at?: string;
   review_count: number;
   last_reviewed?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AlgorithmPracticeStats {
+  id?: string;
+  user_id: string;
+  algorithm_id: string;
+  practice_count: number;
+  total_time_ms: number;
+  best_time_ms?: number;
+  avg_time_ms?: number;
+  last_practiced?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AlgorithmPracticeSession {
+  id?: string;
+  user_id: string;
+  algorithm_id: string;
+  time_ms: number;
+  timestamp?: string;
 }

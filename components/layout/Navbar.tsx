@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 // We define the shape of the dictionary props we expect
 type NavbarProps = {
@@ -7,7 +8,9 @@ type NavbarProps = {
     logo: string;
     learn: string;
     algorithms: string;
-    timer?: string; // 1. Added optional timer key to avoid crashes
+    timer?: string;
+    trainer?: string;
+    admin?: string;
   };
   locale: string;
 };
@@ -28,13 +31,21 @@ export default function Navbar({ dict, locale }: NavbarProps) {
           <Link href={`/${locale}/algorithms`} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
             {dict.algorithms}
           </Link>
-          
-          <Link href={`/${locale}/timer`} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-            {dict.timer || "Timer"} 
+
+          <Link href={`/${locale}/trainer`} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            {dict.trainer || "Trainer"}
           </Link>
-          
-          <div className="w-px h-6 bg-gray-300 mx-2"></div> 
-          
+
+          <Link href={`/${locale}/timer`} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            {dict.timer || "Timer"}
+          </Link>
+          <Link href={`/${locale}/admin`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+            {dict.admin || "Admin"}
+          </Link>
+
+          <div className="w-px h-6 bg-gray-300 mx-2"></div>
+
+          <ThemeToggle />
           <LanguageSwitcher currentLocale={locale} />
         </nav>
 

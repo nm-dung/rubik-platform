@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useTimerStore, Solve } from "@/hooks/useTimerStore";
-import { X } from "lucide-react";
+import { getTimerAnalytics, formatTimerDuration } from "@/lib/timerAnalytics";
+import { TimerDisplay } from "@/components/timer/TimerDisplay";
+import { TimerControls } from "@/components/timer/TimerControls";
+import { TimerSidebar } from "@/components/timer/TimerSidebar";
+import { AnalyticsDashboard } from "@/components/timer/AnalyticsDashboard";
+import { AnalyticsCards } from "@/components/timer/AnalyticsCards";
+import { StatsModal } from "@/components/timer/StatsModal";
+import { RecordBar } from "@/components/timer/RecordBar";
 
+// --- Helper Functions ---
 const formatTime = (time: number) => (time / 1000).toFixed(2);
 
 const getNumericTime = (solve: Solve) => {
@@ -90,6 +98,7 @@ const getDisplayTime = (solve: Solve) => {
   return solve.penalty === '+2' ? `${formatTime(t)}+` : formatTime(t);
 };
 
+// --- Main Component ---
 export default function TimerPage() {
   const [time, setTime] = useState(0);
   const [currentScramble, setCurrentScramble] = useState("");
@@ -100,6 +109,28 @@ export default function TimerPage() {
   const [inspectionTime, setInspectionTime] = useState(15);
   const [isHoldingForSolve, setIsHoldingForSolve] = useState(false);
   const [statsModal, setStatsModal] = useState<{ show: boolean; type: string; average: string; solves: Solve[]; } | null>(null);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  
+  // Dashboard states
+  const [isAnalyticsMinimized, setIsAnalyticsMinimized] = useState(false);
+  const [isAnalyticsFullscreen, setIsAnalyticsFullscreen] = useState(false);
+  const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
+  const [isDraggingAnalytics, setIsDraggingAnalytics] = useState(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  // Analytics Graph States
+  const [analyticsRange, setAnalyticsRange] = useState<number | 'all'>(50);
+  const [showTimeLine, setShowTimeLine] = useState(true);
+  const [showAo5Line, setShowAo5Line] = useState(true);
+  const [showAo12Line, setShowAo12Line] = useState(true);
+  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+  
+  // Graph Resize State
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const [chartSize, setChartSize] = useState({ w: 400, h: 200 });
+  
+  // Drag and Drop
+  const [cardOrder, setCardOrder] = useState(['summary', 'controls', 'chart']);
 
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -113,11 +144,60 @@ export default function TimerPage() {
   const setActiveSession = useTimerStore((state) => state.setActiveSession);
   const addSession = useTimerStore((state) => state.addSession);
 
-  const displaySolves = mounted ? allSolves.filter(s => s.sessionId === activeSessionId) : [];
+  const displaySolves = useMemo(() => {
+    return mounted ? allSolves.filter(s => s.sessionId === activeSessionId) : [];
+  }, [mounted, allSolves, activeSessionId]);
 
-  const startTimeRef = useRef<number>(0);
-  const animationFrameRef = useRef<number>(0);
-  const inspectionIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const bestSingle = useMemo(() => getBestSingle(displaySolves), [displaySolves]);
+  const bestAo5 = useMemo(() => getBestAverage(displaySolves, 5), [displaySolves]);
+  const bestAo12 = useMemo(() => getBestAverage(displaySolves, 12), [displaySolves]);
+  const sessionMean = useMemo(() => calculateMean(displaySolves), [displaySolves]);
+  const currentAo5 = useMemo(() => calculateAverageFromSlice(displaySolves, 5), [displaySolves]);
+  const currentAo12 = useMemo(() => calculateAverageFromSlice(displaySolves, 12), [displaySolves]);
+
+  const analytics = useMemo(() => getTimerAnalytics(displaySolves), [displaySolves]);
+
+  const visibleTrendPoints = useMemo(() => {
+    if (analyticsRange === 'all') return analytics.trendPoints;
+    return analytics.trendPoints.slice(-Math.max(analyticsRange, 1));
+  }, [analytics.trendPoints, analyticsRange]);
+
+  const graphData = useMemo(() => {
+    if (visibleTrendPoints.length === 0) return null;
+    
+    let minVal = Infinity;
+    let maxVal = -Infinity;
+    
+    visibleTrendPoints.forEach(p => {
+      if (showTimeLine && p.timeSeconds !== null) {
+        minVal = Math.min(minVal, p.timeSeconds);
+        maxVal = Math.max(maxVal, p.timeSeconds);
+      }
+      if (showAo5Line && p.ao5Seconds !== null) {
+        minVal = Math.min(minVal, p.ao5Seconds);
+        maxVal = Math.max(maxVal, p.ao5Seconds);
+      }
+      if (showAo12Line && p.ao12Seconds !== null) {
+        minVal = Math.min(minVal, p.ao12Seconds);
+        maxVal = Math.max(maxVal, p.ao12Seconds);
+      }
+    });
+
+    if (minVal === Infinity || maxVal === -Infinity) {
+      minVal = 0; maxVal = 10;
+    }
+
+    const padding = (maxVal - minVal) * 0.1;
+    minVal = Math.max(0, minVal - padding);
+    maxVal = maxVal + padding;
+
+    return { minVal, maxVal, range: maxVal - minVal || 1 };
+  }, [visibleTrendPoints, showTimeLine, showAo5Line, showAo12Line]);
+
+  useEffect(() => {
+    const savedOrder = localStorage.getItem('analyticsCardOrder');
+    if (savedOrder) setCardOrder(JSON.parse(savedOrder));
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -125,15 +205,14 @@ export default function TimerPage() {
         setExpandedId(null);
       }
     };
-    if (expandedId) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+    if (expandedId) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [expandedId]);
 
   useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => { document.body.style.overflow = originalOverflow; };
   }, []);
 
   useEffect(() => {
@@ -142,10 +221,32 @@ export default function TimerPage() {
   }, []);
 
   useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDraggingAnalytics || isAnalyticsFullscreen) return;
+      setCardPosition({
+        x: e.clientX - dragOffset.current.x,
+        y: e.clientY - dragOffset.current.y
+      });
+    };
+    const onMouseUp = () => setIsDraggingAnalytics(false);
+
+    if (isDraggingAnalytics) {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [isDraggingAnalytics, isAnalyticsFullscreen]);
+
+  const startTimeRef = useRef<number>(0);
+  const animationFrameRef = useRef<number>(0);
+  const inspectionIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
     if (timerState === 'inspecting') {
-      inspectionIntervalRef.current = setInterval(() => {
-        setInspectionTime((prev) => prev - 1);
-      }, 1000);
+      inspectionIntervalRef.current = setInterval(() => setInspectionTime((prev) => prev - 1), 1000);
     } else {
       if (inspectionIntervalRef.current) clearInterval(inspectionIntervalRef.current);
     }
@@ -212,7 +313,7 @@ export default function TimerPage() {
     };
   }, [timerState, currentScramble, addSolve, useInspection, inspectionTime, isHoldingForSolve, statsModal]);
 
-  const openAverageDetails = (endIndex: number, count: number) => {
+  const openAverageDetails = useCallback((endIndex: number, count: number) => {
     if (endIndex + 1 < count) return;
     const slice = displaySolves.slice(endIndex + 1 - count, endIndex + 1);
     setStatsModal({
@@ -221,211 +322,152 @@ export default function TimerPage() {
       average: calculateAverageFromSlice(slice, count),
       solves: slice
     });
-  };
+  }, [displaySolves]);
 
-  const openPBModal = (type: string, data: { display: string, solves: Solve[] }) => {
+  const openPBModal = useCallback((type: string, data: { display: string, solves: Solve[] }) => {
     if (data.solves.length === 0) return;
-    setStatsModal({
-      show: true,
-      type: type,
-      average: data.display,
-      solves: data.solves
+    setStatsModal({ show: true, type, average: data.display, solves: data.solves });
+  }, []);
+
+  const handleToggleAnalytics = () => {
+    if (!showAnalytics) {
+      if (cardPosition.x === 0 && cardPosition.y === 0) {
+        setCardPosition({
+          x: Math.max(20, (window.innerWidth - 360) / 2),
+          y: Math.max(20, (window.innerHeight - 450) / 2)
+        });
+      }
+      if (isAnalyticsMinimized) setIsAnalyticsMinimized(false);
+    }
+    setShowAnalytics(prev => !prev);
+  };
+
+  const startWidgetDrag = (e: React.MouseEvent) => {
+    if (isAnalyticsFullscreen) return; 
+    setIsDraggingAnalytics(true);
+    dragOffset.current = {
+      x: e.clientX - cardPosition.x,
+      y: e.clientY - cardPosition.y
+    };
+  };
+
+  const handleChartRef = useCallback((node: HTMLDivElement | null) => {
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect();
+    }
+    if (node) {
+      const observer = new ResizeObserver((entries) => {
+        const { width, height } = entries[0].contentRect;
+        if (width > 0 && height > 0) {
+          setChartSize(prev => (prev.w === width && prev.h === height) ? prev : { w: width, h: height });
+        }
+      });
+      observer.observe(node);
+      resizeObserverRef.current = observer;
+    }
+  }, []);
+
+
+
+
+  const analyticsCards = useMemo(() => {
+    return AnalyticsCards({
+      analytics,
+      showTimeLine,
+      showAo5Line,
+      showAo12Line,
+      analyticsRange,
+      visibleTrendPoints,
+      chartSize,
+      graphData,
+      displaySolves,
+      hoveredPoint,
+      onShowTimeLineChange: setShowTimeLine,
+      onShowAo5LineChange: setShowAo5Line,
+      onShowAo12LineChange: setShowAo12Line,
+      onAnalyticsRangeChange: setAnalyticsRange,
+      onHoverPoint: setHoveredPoint,
+      onChartRef: handleChartRef,
     });
-  };
-
-  const getTimerColor = () => {
-    if (timerState === 'ready') return 'text-emerald-500';
-    if (timerState === 'inspecting') return 'text-red-500';
-    return 'text-slate-800';
-  };
-
-  // Pre-calculate bests
-  const bestSingle = getBestSingle(displaySolves);
-  const bestAo5 = getBestAverage(displaySolves, 5);
-  const bestAo12 = getBestAverage(displaySolves, 12);
+  }, [analytics, showTimeLine, showAo5Line, showAo12Line, analyticsRange, visibleTrendPoints, chartSize, graphData, displaySolves, hoveredPoint, handleChartRef]);
 
   return (
     <div className="flex h-[calc(100vh-64px)] bg-slate-50 select-none overflow-hidden font-sans">
       
-      <aside className="w-80 border-r border-slate-200 bg-white hidden md:flex flex-col shadow-sm z-10 relative">
-        <div className="p-4 border-b border-slate-100">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sessions</h2>
-            <button onClick={() => addSession(`Session ${sessions.length + 1}`)} className="text-indigo-600 text-[10px] font-bold hover:underline">+ NEW</button>
-          </div>
-          <select value={activeSessionId} onChange={(e) => setActiveSession(e.target.value)} className="w-full p-2 bg-slate-50 border border-slate-200 rounded text-sm font-medium outline-none cursor-pointer">
-            {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
-        </div>
+      {/* Sidebar */}
+      <TimerSidebar
+        sessions={sessions}
+        activeSessionId={activeSessionId}
+        displaySolves={displaySolves}
+        currentAo5={currentAo5}
+        currentAo12={currentAo12}
+        sessionMean={sessionMean}
+        onAddSession={addSession}
+        onSetActiveSession={setActiveSession}
+        onClearSession={clearActiveSession}
+        onToggleExpand={(id) => setExpandedId(expandedId === id ? null : id)}
+        onTogglePenalty={togglePenalty}
+        onDeleteSolve={(id) => {deleteSolve(id); setExpandedId(null);}}
+        onOpenAverageDetails={openAverageDetails}
+        calculateAverageFromSlice={calculateAverageFromSlice}
+        getDisplayTime={getDisplayTime}
+        expandedId={expandedId}
+      />
 
-        <div className="p-5 border-b border-slate-100 bg-slate-50/50">
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => openAverageDetails(displaySolves.length - 1, 5)} className="flex flex-col items-start hover:bg-white p-2 rounded-lg transition-all border border-transparent hover:border-slate-200">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Ao5</span>
-              <span className="text-xl font-mono font-black text-indigo-600 leading-tight">{calculateAverageFromSlice(displaySolves, 5)}</span>
-            </button>
-            <button onClick={() => openAverageDetails(displaySolves.length - 1, 12)} className="flex flex-col items-start hover:bg-white p-2 rounded-lg transition-all border border-transparent hover:border-slate-200">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Ao12</span>
-              <span className="text-xl font-mono font-black text-indigo-600 leading-tight">{calculateAverageFromSlice(displaySolves, 12)}</span>
-            </button>
-            <div className="flex flex-col p-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Solves</span>
-              <span className="text-base font-mono font-bold text-slate-700">{displaySolves.length}</span>
-            </div>
-            <div className="flex flex-col p-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Mean</span>
-              <span className="text-base font-mono font-bold text-slate-700">{calculateMean(displaySolves)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto">
-          <table className="w-full border-collapse text-left">
-            <thead className="sticky top-0 bg-white border-b border-slate-100 z-10">
-              <tr className="text-[10px] font-black text-slate-400 uppercase tracking-tight">
-                <th className="py-2 pl-4 w-10">#</th>
-                <th className="py-2 px-2">Time</th>
-                <th className="py-2 px-2">Ao5</th>
-                <th className="py-2 px-2 pr-4">Ao12</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {[...displaySolves].reverse().map((solve, revIndex) => {
-                const actualIndex = displaySolves.length - 1 - revIndex;
-                const ao5 = calculateAverageFromSlice(displaySolves.slice(0, actualIndex + 1), 5);
-                const ao12 = calculateAverageFromSlice(displaySolves.slice(0, actualIndex + 1), 12);
-                
-                return (
-                  <tr key={solve.id} className="group hover:bg-slate-50 transition-colors">
-                    <td className="py-3 pl-4 text-xs font-mono text-slate-300">{actualIndex + 1}.</td>
-                    <td className="py-3 px-2">
-                       <button onClick={() => setExpandedId(expandedId === solve.id ? null : solve.id)} className={`font-mono font-bold text-sm ${solve.penalty === 'DNF' ? 'text-red-400 line-through' : 'text-slate-700'}`}>
-                         {getDisplayTime(solve)}
-                       </button>
-
-                       {expandedId === solve.id && (
-                        <div ref={popupRef} className="fixed left-80 top-1/2 -translate-y-1/2 ml-4 w-80 p-5 bg-white shadow-2xl rounded-2xl border border-slate-200 z-50 animate-in fade-in zoom-in duration-150">
-                          <div className="flex justify-between items-center mb-3">
-                            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Solve Details</h4>
-                            <button onClick={() => setExpandedId(null)} className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"><X size={16} /></button>
-                          </div>
-                          <div className="space-y-4">
-                            <div>
-                              <span className="text-[9px] font-bold text-slate-400 uppercase block mb-1">Scramble</span>
-                              <p className="text-xs font-mono text-slate-600 bg-slate-50 p-3 rounded-xl leading-relaxed border border-slate-100 break-words">{solve.scramble}</p>
-                            </div>
-                            <div className="flex gap-2">
-                               <button onClick={() => togglePenalty(solve.id, '+2')} className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${solve.penalty === '+2' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-slate-500 hover:border-indigo-200'}`}>+2</button>
-                               <button onClick={() => togglePenalty(solve.id, 'DNF')} className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${solve.penalty === 'DNF' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-white text-slate-500 hover:border-indigo-200'}`}>DNF</button>
-                               <button onClick={() => {deleteSolve(solve.id); setExpandedId(null);}} className="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">Delete</button>
-                            </div>
-                            <button onClick={() => setExpandedId(null)} className="w-full py-2 bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-indigo-600 transition-all shadow-lg active:scale-95">Done</button>
-                          </div>
-                        </div>
-                       )}
-                    </td>
-                    <td className="py-3 px-2">
-                      <button onClick={() => openAverageDetails(actualIndex, 5)} className="font-mono text-xs text-indigo-500 hover:underline">{ao5}</button>
-                    </td>
-                    <td className="py-3 px-2 pr-4">
-                      <button onClick={() => openAverageDetails(actualIndex, 12)} className="font-mono text-xs text-indigo-500 hover:underline">{ao12}</button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        
-        {displaySolves.length > 0 && (
-          <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-            <button onClick={clearActiveSession} className="w-full py-2.5 text-xs font-bold text-slate-400 uppercase tracking-widest bg-white border border-slate-200 rounded-lg hover:text-red-500 transition-colors shadow-sm">Clear Session</button>
-          </div>
-        )}
-      </aside>
-
+      {/* Main Timer View */}
       <main className="flex-grow flex flex-col items-center justify-center p-8 relative overflow-hidden h-full">
-        <div className="absolute top-8 right-8 flex items-center gap-3">
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">15s Inspection</span>
-          <button onClick={() => setUseInspection(!useInspection)} className={`w-12 h-6 rounded-full transition-colors relative ${useInspection ? 'bg-indigo-600' : 'bg-slate-300'}`}>
-            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${useInspection ? 'left-7' : 'left-1'}`} />
-          </button>
-        </div>
+        <TimerControls
+          showAnalytics={showAnalytics}
+          useInspection={useInspection}
+          onToggleAnalytics={handleToggleAnalytics}
+          onToggleInspection={() => setUseInspection(!useInspection)}
+        />
 
-        <div className={`text-2xl md:text-4xl font-mono font-bold text-center text-slate-700 max-w-4xl tracking-wide mb-24 transition-opacity duration-200 ${timerState === 'solving' ? 'opacity-0' : 'opacity-100'}`}>
-          {currentScramble}
-        </div>
+        <TimerDisplay
+          time={time}
+          currentScramble={currentScramble}
+          timerState={timerState}
+          inspectionTime={inspectionTime}
+          isHoldingForSolve={isHoldingForSolve}
+          formatTime={formatTime}
+        />
 
-        <div className={`text-[8rem] md:text-[12rem] font-black font-mono leading-none tracking-tighter transition-colors duration-150 ${getTimerColor()}`}>
-          {(timerState === 'inspecting' || (timerState === 'ready' && isHoldingForSolve)) ? (
-             <span>{inspectionTime > 0 ? inspectionTime : inspectionTime > -2 ? '+2' : 'DNF'}</span>
-          ) : formatTime(time)}
-        </div>
+        {/* Analytics Widget */}
+        <AnalyticsDashboard
+          show={mounted && showAnalytics}
+          isMinimized={isAnalyticsMinimized}
+          isFullscreen={isAnalyticsFullscreen}
+          position={cardPosition}
+          isDragging={isDraggingAnalytics}
+          cardOrder={cardOrder}
+          analyticsCards={analyticsCards}
+          timerState={timerState}
+          onClose={() => setShowAnalytics(false)}
+          onToggleMinimize={() => setIsAnalyticsMinimized(!isAnalyticsMinimized)}
+          onToggleFullscreen={() => { setIsAnalyticsFullscreen(!isAnalyticsFullscreen); setIsAnalyticsMinimized(false); }}
+          onStartDrag={startWidgetDrag}
+          onCardOrderChange={setCardOrder}
+        />
 
-        <div className={`absolute bottom-24 text-slate-400 font-bold uppercase tracking-widest transition-opacity duration-200 ${timerState === 'solving' ? 'opacity-0' : 'opacity-100'}`}>
-          {timerState === 'inspecting' || isHoldingForSolve ? 'Hold Space to start solve' : 'Hold Space to start'}
-        </div>
-
-        <div className={`absolute bottom-0 left-0 right-0 bg-white/50 backdrop-blur-sm border-t border-slate-200 px-8 py-4 flex justify-center gap-12 transition-opacity duration-200 ${timerState === 'solving' ? 'opacity-0' : 'opacity-100'}`}>
-          <button 
-            onClick={() => openPBModal("Best Single", bestSingle)}
-            className="flex flex-col items-center hover:bg-white/50 p-1 px-4 rounded-lg transition-all border border-transparent hover:border-slate-200"
-          >
-            <span className="text-[10px] font-black uppercase text-slate-400">Best Single</span>
-            <span className="text-sm font-mono font-bold text-slate-700">{bestSingle.display}</span>
-          </button>
-          <button 
-            onClick={() => openPBModal("Best Ao5", bestAo5)}
-            className="flex flex-col items-center border-x border-slate-200 px-12 hover:bg-white/50 rounded-lg transition-all"
-          >
-            <span className="text-[10px] font-black uppercase text-slate-400">Best Ao5</span>
-            <span className="text-sm font-mono font-bold text-slate-700">{bestAo5.display}</span>
-          </button>
-          <button 
-            onClick={() => openPBModal("Best Ao12", bestAo12)}
-            className="flex flex-col items-center hover:bg-white/50 p-1 px-4 rounded-lg transition-all border border-transparent hover:border-slate-200"
-          >
-            <span className="text-[10px] font-black uppercase text-slate-400">Best Ao12</span>
-            <span className="text-sm font-mono font-bold text-slate-700">{bestAo12.display}</span>
-          </button>
-        </div>
+        {/* Record Bar */}
+        <RecordBar
+          timerState={timerState}
+          bestSingle={bestSingle}
+          bestAo5={bestAo5}
+          bestAo12={bestAo12}
+          onOpenPBModal={openPBModal}
+        />
       </main>
 
-      {statsModal?.show && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <div>
-                <h3 className="text-lg font-black uppercase text-slate-800 tracking-tight">Record Details</h3>
-                <p className="text-sm text-slate-500 font-medium">Session: {sessions.find(s => s.id === activeSessionId)?.name}</p>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-bold text-slate-400 uppercase block leading-none">{statsModal.type}</span>
-                <span className="text-2xl font-mono font-black text-indigo-600">{statsModal.average}</span>
-              </div>
-            </div>
-            <div className="p-6 max-h-[60vh] overflow-y-auto">
-              <table className="w-full text-sm font-mono">
-                <thead className="text-left text-slate-400 uppercase text-[10px] border-b border-slate-100">
-                  <tr><th className="pb-2 font-black">#</th><th className="pb-2 font-black">Time</th><th className="pb-2 font-black">Scramble</th></tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {statsModal.solves.map((s, i) => (
-                    <tr key={s.id} className="group">
-                      <td className="py-3 text-slate-300">{i + 1}</td>
-                      <td className={`py-3 font-bold pr-4 whitespace-nowrap ${s.penalty === 'DNF' ? 'text-red-400 line-through' : 'text-slate-700'}`}>{getDisplayTime(s)}</td>
-                      <td className="py-3 text-[11px] text-slate-500 leading-relaxed group-hover:text-slate-800 transition-colors">{s.scramble}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-              <button onClick={() => setStatsModal(null)} className="px-6 py-2 bg-slate-800 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 transition-all shadow-lg active:scale-95">Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Stats Modal */}
+      <StatsModal
+        show={statsModal?.show || false}
+        type={statsModal?.type || ''}
+        average={statsModal?.average || ''}
+        solves={statsModal?.solves || []}
+        sessionName={sessions.find(s => s.id === activeSessionId)?.name || ''}
+        onClose={() => setStatsModal(null)}
+      />
     </div>
   );
 }

@@ -1,0 +1,43 @@
+"use client";
+
+interface RecordBarProps {
+  timerState: 'idle' | 'ready' | 'inspecting' | 'solving';
+  bestSingle: { display: string; solves: any[] };
+  bestAo5: { display: string; solves: any[] };
+  bestAo12: { display: string; solves: any[] };
+  onOpenPBModal: (type: string, data: { display: string; solves: any[] }) => void;
+}
+
+export function RecordBar({
+  timerState,
+  bestSingle,
+  bestAo5,
+  bestAo12,
+  onOpenPBModal,
+}: RecordBarProps) {
+  return (
+    <div className={`absolute bottom-0 left-0 right-0 bg-white/50 backdrop-blur-sm border-t border-slate-200 px-8 py-4 flex justify-center gap-12 transition-opacity duration-200 ${timerState === 'solving' ? 'opacity-0' : 'opacity-100'}`}>
+      <button 
+        onClick={() => onOpenPBModal("Best Single", bestSingle)}
+        className="flex flex-col items-center hover:bg-white/50 p-1 px-4 rounded-lg transition-all border border-transparent hover:border-slate-200"
+      >
+        <span className="text-[10px] font-black uppercase text-slate-400">Best Single</span>
+        <span className="text-sm font-mono font-bold text-slate-700">{bestSingle.display}</span>
+      </button>
+      <button 
+        onClick={() => onOpenPBModal("Best Ao5", bestAo5)}
+        className="flex flex-col items-center border-x border-slate-200 px-12 hover:bg-white/50 rounded-lg transition-all"
+      >
+        <span className="text-[10px] font-black uppercase text-slate-400">Best Ao5</span>
+        <span className="text-sm font-mono font-bold text-slate-700">{bestAo5.display}</span>
+      </button>
+      <button 
+        onClick={() => onOpenPBModal("Best Ao12", bestAo12)}
+        className="flex flex-col items-center hover:bg-white/50 p-1 px-4 rounded-lg transition-all border border-transparent hover:border-slate-200"
+      >
+        <span className="text-[10px] font-black uppercase text-slate-400">Best Ao12</span>
+        <span className="text-sm font-mono font-bold text-slate-700">{bestAo12.display}</span>
+      </button>
+    </div>
+  );
+}

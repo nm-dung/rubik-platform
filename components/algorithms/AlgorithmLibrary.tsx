@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Category, Algorithm } from "@/lib/types";
+import { Category, Algorithm, AlgorithmPracticeStats } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import AlgorithmCard from "./AlgorithmCard";
 
@@ -10,24 +10,47 @@ const CATEGORIES: Category[] = ['F2L', 'OLL', 'PLL'];
 export default function AlgorithmLibrary() {
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
+  const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    async function fetchAlgorithms() {
+    async function fetchData() {
       try {
-        const { data, error: supabaseError } = await supabase
+        if (!supabase) {
+          setAlgorithms([]);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch algorithms
+        const { data: algData, error: algError } = await supabase
           .from('algorithms')
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (supabaseError) {
-          setError(`Failed to load algorithms: ${supabaseError.message}`);
-          console.error('Supabase error:', supabaseError);
+        if (algError) {
+          setError(`Failed to load algorithms: ${algError.message}`);
+          console.error('Supabase error:', algError);
         } else {
-          setAlgorithms(data || []);
+          setAlgorithms(algData || []);
+        }
+
+        // Fetch practice stats using the same placeholder user as the trainer.
+        const userId = '00000000-0000-0000-0000-000000000001';
+        const { data: statsData, error: statsError } = await supabase
+          .from('algorithm_practice_stats')
+          .select('*')
+          .eq('user_id', userId);
+
+        if (!statsError && statsData) {
+          const statsMap: Record<string, AlgorithmPracticeStats> = {};
+          statsData.forEach(stat => {
+            statsMap[stat.algorithm_id] = stat;
+          });
+          setStats(statsMap);
         }
       } catch (err) {
         setError('Failed to load algorithms');
@@ -37,14 +60,14 @@ export default function AlgorithmLibrary() {
       }
     }
 
-    fetchAlgorithms();
+    fetchData();
   }, []);
 
   const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
 
   return (
     <div className="w-full max-w-3xl mx-auto bg-slate-50 rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col h-[600px]">
-      
+
       <div className="bg-white px-6 pt-6 border-b border-slate-200">
         <h2 className="text-2xl font-black text-slate-800 mb-4">Algorithm Library</h2>
         <div className="flex gap-4">
@@ -53,8 +76,8 @@ export default function AlgorithmLibrary() {
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`pb-3 px-2 text-sm font-bold uppercase tracking-wide border-b-2 transition-colors ${
-                activeCategory === cat 
-                  ? "border-indigo-600 text-indigo-600" 
+                activeCategory === cat
+                  ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -77,7 +100,7 @@ export default function AlgorithmLibrary() {
         )}
         {!loading && !error && filteredAlgs.length > 0 ? (
           filteredAlgs.map((alg) => (
-            <AlgorithmCard key={alg.id} alg={alg} />
+            <AlgorithmCard key={alg.id} alg={alg} stats={stats[alg.id]} />
           ))
         ) : !loading && !error ? (
           <div className="text-center text-slate-400 py-10 font-medium">

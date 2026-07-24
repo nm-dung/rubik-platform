@@ -2,9 +2,9 @@
 
 import { use, useState, useEffect } from "react";
 import { getDictionary } from "@/lib/dictionary";
-import { Lesson, LessonDifficulty } from "@/lib/types";
+import { Lesson, LearningPath } from "@/lib/types";
 import LessonCard from "@/components/lessons/LessonCard";
-import { Lightbulb, Target, Zap } from "lucide-react";
+import { Lightbulb, Zap } from "lucide-react";
 
 type Dictionary = {
   learn: {
@@ -17,10 +17,10 @@ type Dictionary = {
 export default function LearnPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
   const resolvedParams = use(params);
   const [dict, setDict] = useState<Dictionary | null>(null);
-  const [lessons, setLessons] = useState<Record<LessonDifficulty, Lesson[]>>({
+  const [lessons, setLessons] = useState<Record<LearningPath, Lesson[]>>({
     beginner: [],
-    intermediate: [],
     advanced: [],
+    both: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,16 +34,16 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
         // Fetch lessons from API
         const response = await fetch('/api/lessons');
         if (!response.ok) throw new Error('Failed to fetch lessons');
-        
+
         const lessonsData: Lesson[] = await response.json();
-        
-        // Group by difficulty
-        const grouped: Record<LessonDifficulty, Lesson[]> = {
-          beginner: lessonsData.filter(l => l.difficulty === 'beginner'),
-          intermediate: lessonsData.filter(l => l.difficulty === 'intermediate'),
-          advanced: lessonsData.filter(l => l.difficulty === 'advanced'),
+
+        // Group by learning path
+        const grouped: Record<LearningPath, Lesson[]> = {
+          beginner: lessonsData.filter(l => l.learning_path === 'beginner'),
+          advanced: lessonsData.filter(l => l.learning_path === 'advanced'),
+          both: lessonsData.filter(l => l.learning_path === 'both'),
         };
-        
+
         setLessons(grouped);
         setError(null);
       } catch (err) {
@@ -79,11 +79,11 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
           {dict.learn.title}
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl">
-          Learn to solve the Rubik&apos;s Cube step-by-step with our interactive lessons. Progress from complete beginner to advanced speed cuber.
+          Choose your learning path. Start from zero as a complete beginner, or improve specific skills if you already know the basics.
         </p>
       </section>
 
-      {/* Beginner Path */}
+      {/* Beginner Path - Structured, Linear */}
       <section className="mb-16">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-green-100 rounded-lg">
@@ -91,57 +91,40 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
           </div>
           <div>
             <h2 className="text-3xl font-black text-slate-900">Beginner Path</h2>
-            <p className="text-slate-600">Start from scratch with the Layer-by-Layer method</p>
+            <p className="text-slate-600">Complete beginner? Start here. Step-by-step lessons to your first solve.</p>
           </div>
         </div>
-        
+
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+          <p className="text-sm text-green-800">
+            <strong>Linear progression:</strong> Complete lessons in order. Each lesson builds on the previous one.
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.beginner.length > 0 ? (
-            lessons.beginner.map((lesson) => (
-              <LessonCard 
-                key={lesson.id} 
-                lesson={lesson} 
-                locale={resolvedParams.locale}
-              />
-            ))
+            lessons.beginner
+              .sort((a, b) => a.order - b.order)
+              .map((lesson, index) => (
+                <div key={lesson.id} className="relative">
+                  <div className="absolute -top-3 -left-3 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-sm z-10">
+                    {index + 1}
+                  </div>
+                  <LessonCard
+                    lesson={lesson}
+                    locale={resolvedParams.locale}
+                  />
+                </div>
+              ))
           ) : (
             <div className="col-span-full p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-              Coming soon...
+              Beginner lessons coming soon...
             </div>
           )}
         </div>
       </section>
 
-      {/* Intermediate Path */}
-      <section className="mb-16">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <Target className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-3xl font-black text-slate-900">Intermediate Path</h2>
-            <p className="text-slate-600">Master the CFOP method used by most speed cubers</p>
-          </div>
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {lessons.intermediate.length > 0 ? (
-            lessons.intermediate.map((lesson) => (
-              <LessonCard 
-                key={lesson.id} 
-                lesson={lesson} 
-                locale={resolvedParams.locale}
-              />
-            ))
-          ) : (
-            <div className="col-span-full p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-              Coming soon...
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Advanced Path */}
+      {/* Advanced Path - Self-Directed */}
       <section>
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-purple-100 rounded-lg">
@@ -149,22 +132,30 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
           </div>
           <div>
             <h2 className="text-3xl font-black text-slate-900">Advanced Path</h2>
-            <p className="text-slate-600">Optimize your technique and explore alternative methods</p>
+            <p className="text-slate-600">Already know the basics? Choose lessons to improve specific skills.</p>
           </div>
         </div>
-        
+
+        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
+          <p className="text-sm text-purple-800">
+            <strong>Self-directed:</strong> Choose any lesson. Focus on CFOP, F2L, OLL, PLL, or advanced techniques.
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.advanced.length > 0 ? (
-            lessons.advanced.map((lesson) => (
-              <LessonCard 
-                key={lesson.id} 
-                lesson={lesson} 
-                locale={resolvedParams.locale}
-              />
-            ))
+            lessons.advanced
+              .sort((a, b) => a.order - b.order)
+              .map((lesson) => (
+                <LessonCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  locale={resolvedParams.locale}
+                />
+              ))
           ) : (
             <div className="col-span-full p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-              Coming soon...
+              Advanced lessons coming soon...
             </div>
           )}
         </div>

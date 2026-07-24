@@ -2,6 +2,27 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### 1. Environment variables
+
+Create a local environment file by copying the example file:
+
+```bash
+copy .env.local.example .env.local
+```
+
+Then replace the placeholder values with your actual Supabase and admin credentials.
+
+### 2. Supabase database setup
+
+Run the SQL in [SUPABASE_SETUP.sql](SUPABASE_SETUP.sql) inside your Supabase SQL Editor.
+
+This adds the extra fields used by the admin content manager:
+- lessons.image_url
+- algorithms.image_url
+- algorithms.alternate_notations
+
+### 3. Run the app
+
 First, run the development server:
 
 ```bash
