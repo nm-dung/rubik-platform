@@ -1,8 +1,30 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Temporary user ID until auth is implemented
+// Helper function to get user ID
+function getUserId(): string | null {
+  if (typeof window === 'undefined') return null;
+  
+  // Try to get from localStorage (Supabase stores session there)
+  const session = localStorage.getItem('sb-rubik-platform-auth-token');
+  if (session) {
+    try {
+      const parsed = JSON.parse(session);
+      return parsed.user?.id || null;
+    } catch {
+      return null;
+    }
+  }
+  
+  return null;
+}
+
+// Temporary user ID fallback for when auth is not available
 const TEMP_USER_ID = '00000000-0000-0000-0000-000000000001';
+
+function getCurrentUserId(): string {
+  return getUserId() || TEMP_USER_ID;
+}
 
 interface LessonProgressStore {
   completedLessonIds: string[];
@@ -23,6 +45,7 @@ export const useLessonProgressStore = create<LessonProgressStore>()(
       toggleCompletedLesson: async (lessonId: string) => {
         const currentState = get();
         const isCurrentlyCompleted = currentState.completedLessonIds.includes(lessonId);
+        const userId = getCurrentUserId();
         
         // Optimistic update
         const newCompletedIds = isCurrentlyCompleted
@@ -41,33 +64,24 @@ export const useLessonProgressStore = create<LessonProgressStore>()(
           }
         });
 
-        // Sync with database
-        try {
-          const response = await fetch('/api/lesson-progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: TEMP_USER_ID,
-              lessonId,
-              completed: !isCurrentlyCompleted,
-            }),
-          });
-
-          if (!response.ok) {
-            console.error('Failed to sync lesson progress with database');
-            // Revert on error
-            set({ completedLessonIds: currentState.completedLessonIds });
-          }
-        } catch (error) {
-          console.error('Error syncing lesson progress:', error);
-          // Revert on error
-          set({ completedLessonIds: currentState.completedLessonIds });
-        }
+        // Sync with database (fire and forget - don't revert on error)
+        fetch('/api/lesson-progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            lessonId,
+            completed: !isCurrentlyCompleted,
+          }),
+        }).catch(error => {
+          console.error('Error syncing lesson progress (saved locally only):', error);
+        });
       },
 
       incrementReview: async (lessonId: string) => {
         const currentState = get();
         const currentProgress = currentState.lessonProgress[lessonId] || { completed: false, reviewCount: 0 };
+        const userId = getCurrentUserId();
         
         // Optimistic update
         set({
@@ -81,44 +95,37 @@ export const useLessonProgressStore = create<LessonProgressStore>()(
           }
         });
 
-        // Sync with database
-        try {
-          const response = await fetch('/api/lesson-progress', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: TEMP_USER_ID,
-              lessonId,
-              incrementReview: true,
-            }),
-          });
+        // Sync with database (fire and forget - don't revert on error)
+        fetch('/api/lesson-progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            lessonId,
+            incrementReview: true,
+          }),
+        }).catch(error => {
+          console.error('Error syncing lesson review (saved locally only):', error);
+        });
 
-          if (!response.ok) {
-            console.error('Failed to sync lesson review with database');
-            // Revert on error
-            set({
-              lessonProgress: {
-                ...currentState.lessonProgress,
-                [lessonId]: currentProgress
-              }
-            });
-          }
-        } catch (error) {
-          console.error('Error syncing lesson review:', error);
-          // Revert on error
-          set({
-            lessonProgress: {
-              ...currentState.lessonProgress,
-              [lessonId]: currentProgress
-            }
-          });
-        }
+        // Create review history entry (separate call)
+        fetch('/api/lesson-review-history/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            lessonId,
+          }),
+        }).catch(error => {
+          console.error('Error creating review history entry:', error);
+        });
       },
 
       syncWithDatabase: async () => {
         set({ isLoading: true });
+        const userId = getCurrentUserId();
         try {
-          const response = await fetch(`/api/lesson-progress?userId=${TEMP_USER_ID}`);
+          const response = await fetch(`/api/lesson-progress?userId=${userId}`);
           if (response.ok) {
             const data = await response.json();
             const completedIds = data

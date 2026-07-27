@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BookOpen, CheckCircle2, Clock, Sparkles, RotateCcw } from "lucide-react";
 import { useLessonProgressStore } from "@/hooks/useLessonProgressStore";
 import ContributionRequestForm from "@/components/lessons/ContributionRequestForm";
+import { ReviewHistoryModal } from "@/components/lessons/ReviewHistoryModal";
 import type { Lesson, LessonDifficulty } from "@/lib/types";
 
 interface LessonDetailContentProps {
@@ -23,6 +24,9 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
   const lessonProgress = useLessonProgressStore((state) => state.lessonProgress);
   const toggleCompletedLesson = useLessonProgressStore((state) => state.toggleCompletedLesson);
   const incrementReview = useLessonProgressStore((state) => state.incrementReview);
+  const syncWithDatabase = useLessonProgressStore((state) => state.syncWithDatabase);
+
+  const [showReviewHistory, setShowReviewHistory] = useState(false);
 
   const isCompleted = completedLessonIds.includes(lesson.id);
   const progress = lessonProgress[lesson.id] || { completed: false, reviewCount: 0, lastReviewed: null };
@@ -120,6 +124,17 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
             {progress.reviewCount > 0 && <span className="bg-slate-200 text-slate-600 rounded-full px-2 py-0.5 text-xs">{progress.reviewCount}</span>}
           </button>
 
+          {progress.reviewCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowReviewHistory(true)}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition"
+            >
+              <Clock className="w-4 h-4" />
+              {locale === "vi" ? "Xem lịch sử" : "View history"}
+            </button>
+          )}
+
           {progress.lastReviewed && (
             <span className="text-xs text-slate-500">
               {locale === "vi" ? "Ôn tập lần cuối: " : "Last reviewed: "}
@@ -204,6 +219,14 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
           <ContributionRequestForm lessonId={lesson.id} lessonTitle={title} locale={locale} />
         </aside>
       </section>
+
+      <ReviewHistoryModal
+        show={showReviewHistory}
+        lessonId={lesson.id}
+        locale={locale}
+        onClose={() => setShowReviewHistory(false)}
+        onReviewDeleted={() => syncWithDatabase()}
+      />
     </main>
   );
 }

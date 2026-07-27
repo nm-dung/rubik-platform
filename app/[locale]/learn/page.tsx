@@ -5,6 +5,7 @@ import { getDictionary } from "@/lib/dictionary";
 import { Lesson, LearningPath } from "@/lib/types";
 import LessonCard from "@/components/lessons/LessonCard";
 import { Lightbulb, Zap } from "lucide-react";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 type Dictionary = {
   learn: {
@@ -24,6 +25,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function loadData() {
@@ -57,6 +59,40 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
     loadData();
   }, [resolvedParams.locale]);
 
+  // Filter lessons based on search query
+  const filteredLessons = {
+    beginner: lessons.beginner.filter(lesson => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        lesson.title_en.toLowerCase().includes(query) ||
+        lesson.title_vi.toLowerCase().includes(query) ||
+        lesson.description_en.toLowerCase().includes(query) ||
+        lesson.description_vi.toLowerCase().includes(query)
+      );
+    }),
+    advanced: lessons.advanced.filter(lesson => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        lesson.title_en.toLowerCase().includes(query) ||
+        lesson.title_vi.toLowerCase().includes(query) ||
+        lesson.description_en.toLowerCase().includes(query) ||
+        lesson.description_vi.toLowerCase().includes(query)
+      );
+    }),
+    both: lessons.both.filter(lesson => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        lesson.title_en.toLowerCase().includes(query) ||
+        lesson.title_vi.toLowerCase().includes(query) ||
+        lesson.description_en.toLowerCase().includes(query) ||
+        lesson.description_vi.toLowerCase().includes(query)
+      );
+    }),
+  };
+
   if (loading || !dict) {
     return <div className="p-20 text-center font-bold text-slate-400">Loading...</div>;
   }
@@ -75,12 +111,22 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
     <main className="max-w-6xl mx-auto p-8">
       {/* Hero Section */}
       <section className="mb-16">
-        <h1 className="text-5xl font-black text-slate-900 mb-4">
-          {dict.learn.title}
-        </h1>
-        <p className="text-xl text-slate-600 max-w-2xl">
-          Choose your learning path. Start from zero as a complete beginner, or improve specific skills if you already know the basics.
-        </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <div>
+            <h1 className="text-5xl font-black text-slate-900 mb-4">
+              {dict.learn.title}
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl">
+              Choose your learning path. Start from zero as a complete beginner, or improve specific skills if you already know the basics.
+            </p>
+          </div>
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={resolvedParams.locale === 'vi' ? 'Tìm kiếm bài học...' : 'Search lessons...'}
+            className="w-full sm:w-64"
+          />
+        </div>
       </section>
 
       {/* Beginner Path - Structured, Linear */}
@@ -102,8 +148,8 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {lessons.beginner.length > 0 ? (
-            lessons.beginner
+          {filteredLessons.beginner.length > 0 ? (
+            filteredLessons.beginner
               .sort((a, b) => a.order - b.order)
               .map((lesson, index) => (
                 <div key={lesson.id} className="relative">
@@ -118,7 +164,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
               ))
           ) : (
             <div className="col-span-full p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-              Beginner lessons coming soon...
+              {searchQuery ? 'No lessons found matching your search.' : 'Beginner lessons coming soon...'}
             </div>
           )}
         </div>
@@ -143,8 +189,8 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {lessons.advanced.length > 0 ? (
-            lessons.advanced
+          {filteredLessons.advanced.length > 0 ? (
+            filteredLessons.advanced
               .sort((a, b) => a.order - b.order)
               .map((lesson) => (
                 <LessonCard
@@ -155,7 +201,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: 'en' |
               ))
           ) : (
             <div className="col-span-full p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
-              Advanced lessons coming soon...
+              {searchQuery ? 'No lessons found matching your search.' : 'Advanced lessons coming soon...'}
             </div>
           )}
         </div>

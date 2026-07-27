@@ -7,7 +7,23 @@ import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
 import { Play, ArrowRight, BarChart3, Clock, Trophy, RotateCcw, Square } from "lucide-react";
 
 type TrainerState = 'selection' | 'training' | 'summary';
-const PRACTICE_USER_ID = '00000000-0000-0000-0000-000000000001';
+
+// Helper function to get user ID
+function getUserId(): string {
+  if (typeof window === 'undefined') return '00000000-0000-0000-0000-000000000001';
+  
+  const session = localStorage.getItem('sb-rubik-platform-auth-token');
+  if (session) {
+    try {
+      const parsed = JSON.parse(session);
+      return parsed.user?.id || '00000000-0000-0000-0000-000000000001';
+    } catch {
+      return '00000000-0000-0000-0000-000000000001';
+    }
+  }
+  
+  return '00000000-0000-0000-0000-000000000001';
+}
 
 export default function AlgorithmTrainerPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
   const resolvedParams = params;
@@ -40,7 +56,8 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
         if (error) throw error;
         setAlgorithms(data || []);
 
-        const statsResponse = await fetch(`/api/algorithm-stats?userId=${PRACTICE_USER_ID}`);
+        const userId = getUserId();
+        const statsResponse = await fetch(`/api/algorithm-stats?userId=${userId}`);
         if (statsResponse.ok) {
           const statsData: AlgorithmPracticeStats[] = await statsResponse.json();
           const statsMap: Record<string, AlgorithmPracticeStats> = {};
@@ -142,8 +159,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
     // Save session results to database
     try {
       if (sessionResults.length > 0) {
-        // For now, use a stable placeholder userId until user auth is connected.
-        const userId = PRACTICE_USER_ID;
+        const userId = getUserId();
 
         await fetch('/api/algorithm-stats', {
           method: 'POST',

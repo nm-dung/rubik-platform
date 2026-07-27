@@ -52,6 +52,15 @@ export interface LessonProgress {
   updated_at?: string;
 }
 
+export interface LessonReviewHistory {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  reviewed_at: string;
+  notes?: string;
+  created_at?: string;
+}
+
 export interface AlgorithmPracticeStats {
   id?: string;
   user_id: string;
@@ -71,4 +80,13 @@ export interface AlgorithmPracticeSession {
   algorithm_id: string;
   time_ms: number;
   timestamp?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
 }

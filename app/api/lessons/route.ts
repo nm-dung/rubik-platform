@@ -3,11 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * GET /api/lessons
- * Fetch all lessons, optionally filtered by learning_path
+ * Fetch all lessons, optionally filtered by learning_path, difficulty, or search
  *
  * Query params:
  * - learning_path?: 'beginner' | 'advanced' | 'both'
  * - difficulty?: 'beginner' | 'intermediate' | 'advanced'
+ * - search?: string - search in title_en, title_vi, description_en, description_vi
  */
 export async function GET(request: NextRequest) {
   try {
@@ -18,6 +19,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const learningPath = searchParams.get('learning_path');
     const difficulty = searchParams.get('difficulty');
+    const search = searchParams.get('search');
 
     let query = supabase.from('lessons').select('*').order('difficulty').order('order');
 
@@ -27,6 +29,10 @@ export async function GET(request: NextRequest) {
 
     if (difficulty && ['beginner', 'intermediate', 'advanced'].includes(difficulty)) {
       query = query.eq('difficulty', difficulty);
+    }
+
+    if (search) {
+      query = query.or(`title_en.ilike.%${search}%,title_vi.ilike.%${search}%,description_en.ilike.%${search}%,description_vi.ilike.%${search}%`);
     }
 
     const { data, error } = await query;

@@ -5,6 +5,7 @@ import { getDictionary } from "../../lib/dictionary";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { ToastContainer } from "../../components/layout/ToastContainer";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,17 +35,19 @@ export default async function RootLayout({
   return (
     <html lang={resolvedParams.locale}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
-        <ToastContainer />
-        
-        <Navbar dict={dict.nav} locale={resolvedParams.locale} />
-        
-        
-        <div className="flex-grow flex flex-col">
-          {children}
-        </div>
+        <AuthProvider>
+          <ToastContainer />
+          
+          <Navbar dict={dict.nav} locale={resolvedParams.locale} />
+          
+          
+          <div className="flex-grow flex flex-col">
+            {children}
+          </div>
 
-       
-        <Footer dict={dict.footer} />
+         
+          <Footer dict={dict.footer} />
+        </AuthProvider>
       </body>
     </html>
   );

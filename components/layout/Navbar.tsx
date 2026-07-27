@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { Settings } from "lucide-react";
 
 // We define the shape of the dictionary props we expect
 type NavbarProps = {
@@ -16,6 +21,9 @@ type NavbarProps = {
 };
 
 export default function Navbar({ dict, locale }: NavbarProps) {
+  const { user, profile, signOut, loading } = useAuth();
+  const isVietnamese = locale === 'vi';
+
   return (
     <header className="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -47,6 +55,48 @@ export default function Navbar({ dict, locale }: NavbarProps) {
 
           <ThemeToggle />
           <LanguageSwitcher currentLocale={locale} />
+
+          {!loading && (
+            <>
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-600 hidden sm:block">
+                    {profile?.username || user.email}
+                  </span>
+                  <Link
+                    href={`/${locale}/settings`}
+                    className="text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors flex items-center gap-1"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {isVietnamese ? "Cài đặt" : "Settings"}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={signOut}
+                    className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    {isVietnamese ? "Đăng xuất" : "Sign out"}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Link
+                    href={`/${locale}/auth/login`}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {isVietnamese ? "Đăng nhập" : "Sign in"}
+                  </Link>
+                  <Link
+                    href={`/${locale}/auth/signup`}
+                    className="text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    {isVietnamese ? "Đăng ký" : "Sign up"}
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
         </nav>
 
       </div>

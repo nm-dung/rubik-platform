@@ -8,8 +8,24 @@ import CubeScene from "@/components/cube/CubeScene";
 import AlgorithmCard from "@/components/algorithms/AlgorithmCard"; 
 import { useCubeStore } from "@/hooks/useCubeStore";
 import { AlgorithmPracticeStats } from "@/lib/types";
+import { SearchInput } from "@/components/ui/SearchInput";
 
-const PRACTICE_USER_ID = '00000000-0000-0000-0000-000000000001';
+// Helper function to get user ID
+function getUserId(): string {
+  if (typeof window === 'undefined') return '00000000-0000-0000-0000-000000000001';
+  
+  const session = localStorage.getItem('sb-rubik-platform-auth-token');
+  if (session) {
+    try {
+      const parsed = JSON.parse(session);
+      return parsed.user?.id || '00000000-0000-0000-0000-000000000001';
+    } catch {
+      return '00000000-0000-0000-0000-000000000001';
+    }
+  }
+  
+  return '00000000-0000-0000-0000-000000000001';
+}
 
 export default function AlgorithmsPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
   const resolvedParams = use(params);
@@ -22,6 +38,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
 
@@ -32,24 +49,16 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
         const d = await getDictionary(locale);
         setDict(d);
 
-        if (!supabase) {
-          setError('Supabase is not configured');
-          return;
+        // Fetch algorithms from API
+        const response = await fetch('/api/algorithms');
+        if (!response.ok) {
+          throw new Error('Failed to fetch algorithms');
         }
+        const data: Algorithm[] = await response.json();
+        setAlgorithms(data);
 
-        const { data, error: supabaseError } = await supabase
-          .from('algorithms')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (supabaseError) {
-          setError(`Failed to load algorithms: ${supabaseError.message}`);
-          console.error("Supabase error:", supabaseError);
-        } else {
-          setAlgorithms(data || []);
-        }
-
-        const statsResponse = await fetch(`/api/algorithm-stats?userId=${PRACTICE_USER_ID}`);
+        const userId = getUserId();
+        const statsResponse = await fetch(`/api/algorithm-stats?userId=${userId}`);
         if (statsResponse.ok) {
           const statsData: AlgorithmPracticeStats[] = await statsResponse.json();
           const statsMap: Record<string, AlgorithmPracticeStats> = {};
@@ -71,7 +80,17 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
   if (loading || !dict) return <div className="p-20 text-center font-bold text-slate-400">Loading Dictionary...</div>;
 
   const categories: Category[] = ['F2L', 'OLL', 'PLL'];
-  const filteredAlgs = algorithms.filter(alg => alg.category === activeTab);
+  const filteredAlgs = algorithms
+    .filter(alg => alg.category === activeTab)
+    .filter(alg => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        alg.name_en.toLowerCase().includes(query) ||
+        alg.name_vi.toLowerCase().includes(query) ||
+        alg.notation.toLowerCase().includes(query)
+      );
+    });
 
   const totalInTab = filteredAlgs.length;
   const learnedInTab = mounted 
@@ -111,6 +130,13 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: '
             </button>
           ))}
         </div>
+
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={locale === 'vi' ? 'Tìm kiếm thuật toán...' : 'Search algorithms...'}
+          className="w-full sm:w-64"
+        />
 
         <div className="pb-4 flex flex-col items-start sm:items-end w-full sm:w-auto">
           <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
