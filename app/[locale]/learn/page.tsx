@@ -30,7 +30,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
   useEffect(() => {
     async function loadData() {
       try {
-        const d = await getDictionary(resolvedParams.locale);
+        const d = await getDictionary(resolvedParams.locale as 'en' | 'vi');
         setDict(d);
 
         // Fetch lessons from API

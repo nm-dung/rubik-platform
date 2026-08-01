@@ -3,7 +3,7 @@ import CubeScene from "@/components/cube/CubeScene";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = await params;
-  const dict = await getDictionary(resolvedParams.locale);
+  const dict = await getDictionary(resolvedParams.locale as 'en' | 'vi');
 
   return (
     <main className="max-w-6xl mx-auto p-8 grid lg:grid-cols-2 gap-12 items-center flex-grow">

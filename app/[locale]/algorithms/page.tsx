@@ -29,7 +29,7 @@ function getUserId(): string {
 
 export default function AlgorithmsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
 
   const [activeTab, setActiveTab] = useState<Category>('PLL');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);

@@ -30,7 +30,7 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const resolvedParams = await params;
-  const dict = await getDictionary(resolvedParams.locale);
+  const dict = await getDictionary(resolvedParams.locale as 'en' | 'vi');
 
   return (
     <html lang={resolvedParams.locale}>
