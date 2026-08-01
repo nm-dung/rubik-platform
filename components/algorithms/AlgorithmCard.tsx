@@ -119,7 +119,7 @@ export default function AlgorithmCard({
       <div className="relative">
         <AlgorithmPractice
           notation={alg.notation}
-          algorithmName={locale === 'vi' ? alg.name_vi : (alg.name_en || alg.name)}
+          algorithmName={locale === 'vi' ? alg.name_vi : alg.name_en}
           onComplete={() => {
             setShowPractice(false);
             toggleLearned(alg.id);
@@ -142,7 +142,7 @@ export default function AlgorithmCard({
 
       <div className="w-full md:w-32 h-32 bg-slate-50 rounded-xl flex-shrink-0 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
         {alg.image_url ? (
-          <img src={alg.image_url} alt={alg.name_en || alg.name} className="w-full h-full object-contain p-2 mix-blend-multiply" />
+          <img src={alg.image_url} alt={alg.name_en} className="w-full h-full object-contain p-2 mix-blend-multiply" />
         ) : (
           <div className="text-[10px] font-bold text-slate-300 uppercase text-center p-2">Pattern Image</div>
         )}
@@ -153,7 +153,7 @@ export default function AlgorithmCard({
           <div>
             <div className="flex items-center gap-3">
               <h3 className="text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
-                {locale === 'vi' ? alg.name_vi : (alg.name_en || alg.name)}
+                {locale === 'vi' ? alg.name_vi : alg.name_en}
               </h3>
               {isLearned && (
                 <span className="text-emerald-500 bg-emerald-100 p-1 rounded-full">

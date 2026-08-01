@@ -1,19 +1,11 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
-import { getDictionary } from "@/lib/dictionary";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import { Lesson, LearningPath } from "@/lib/types";
 import LessonCard from "@/components/lessons/LessonCard";
 import { Lightbulb, Zap } from "lucide-react";
 import { SearchInput } from "@/components/ui/SearchInput";
-
-type Dictionary = {
-  learn: {
-    title: string;
-    description: string;
-  };
-  [key: string]: unknown;
-};
 
 export default function LearnPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);

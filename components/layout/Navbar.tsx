@@ -6,17 +6,11 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { Settings } from "lucide-react";
+import type { Dictionary } from "@/lib/dictionary";
 
 // We define the shape of the dictionary props we expect
 type NavbarProps = {
-  dict: {
-    logo: string;
-    learn: string;
-    algorithms: string;
-    timer?: string;
-    trainer?: string;
-    admin?: string;
-  };
+  dict: Dictionary['nav'];
   locale: string;
 };
 

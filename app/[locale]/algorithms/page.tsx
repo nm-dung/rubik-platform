@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, use } from "react"; 
-import { getDictionary } from "@/lib/dictionary";
+import { useState, useEffect, use } from "react";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import { supabase } from "@/lib/supabase";
 import { Algorithm, Category } from "@/lib/types";
 import CubeScene from "@/components/cube/CubeScene";
-import AlgorithmCard from "@/components/algorithms/AlgorithmCard"; 
+import AlgorithmCard from "@/components/algorithms/AlgorithmCard";
 import { useCubeStore } from "@/hooks/useCubeStore";
 import { AlgorithmPracticeStats } from "@/lib/types";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -33,7 +33,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
 
   const [activeTab, setActiveTab] = useState<Category>('PLL');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
-  const [dict, setDict] = useState<Record<string, unknown> | null>(null);
+  const [dict, setDict] = useState<Dictionary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);

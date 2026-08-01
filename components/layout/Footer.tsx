@@ -1,4 +1,6 @@
-export default function Footer({ dict }: { dict: { rights: string } }) {
+import type { Dictionary } from "@/lib/dictionary";
+
+export default function Footer({ dict }: { dict: Dictionary['footer'] }) {
   const currentYear = new Date().getFullYear();
 
   return (
