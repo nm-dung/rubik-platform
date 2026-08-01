@@ -1,11 +1,13 @@
 "use client";
 
+import type { Solve } from "@/hooks/useTimerStore";
+
 interface RecordBarProps {
   timerState: 'idle' | 'ready' | 'inspecting' | 'solving';
-  bestSingle: { display: string; solves: number[] };
-  bestAo5: { display: string; solves: number[] };
-  bestAo12: { display: string; solves: number[] };
-  onOpenPBModal: (type: string, data: { display: string; solves: number[] }) => void;
+  bestSingle: { display: string; solves: Solve[] };
+  bestAo5: { display: string; solves: Solve[] };
+  bestAo12: { display: string; solves: Solve[] };
+  onOpenPBModal: (type: string, data: { display: string; solves: Solve[] }) => void;
 }
 
 export function RecordBar({

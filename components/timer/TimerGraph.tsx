@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useMemo } from "react";
 import { TrendPoint } from "@/lib/timerAnalytics";
+import type { Solve } from "@/hooks/useTimerStore";
 
 interface TimerGraphProps {
   visibleTrendPoints: TrendPoint[];
@@ -10,7 +11,7 @@ interface TimerGraphProps {
   showAo12Line: boolean;
   chartSize: { w: number; h: number };
   graphData: { minVal: number; maxVal: number; range: number } | null;
-  displaySolves: number[];
+  displaySolves: Solve[];
   hoveredPoint: number | null;
   onHoverPoint: (index: number | null) => void;
 }

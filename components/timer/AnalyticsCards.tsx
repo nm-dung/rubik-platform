@@ -3,6 +3,7 @@
 import { GripVertical } from "lucide-react";
 import { TimerGraph } from "./TimerGraph";
 import { TrendPoint } from "@/lib/timerAnalytics";
+import type { Solve } from "@/hooks/useTimerStore";
 
 interface AnalyticsCardsProps {
   analytics: {
@@ -16,7 +17,7 @@ interface AnalyticsCardsProps {
   visibleTrendPoints: TrendPoint[];
   chartSize: { w: number; h: number };
   graphData: { minVal: number; maxVal: number; range: number } | null;
-  displaySolves: number[];
+  displaySolves: Solve[];
   hoveredPoint: number | null;
   onShowTimeLineChange: (show: boolean) => void;
   onShowAo5LineChange: (show: boolean) => void;
