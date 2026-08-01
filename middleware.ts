@@ -4,9 +4,7 @@ import type { NextRequest } from 'next/server';
 const locales = ['en', 'vi'];
 const defaultLocale = 'en';
 
-export const runtime = 'nodejs';
-
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // ============================================================================
@@ -54,7 +52,6 @@ export function proxy(request: NextRequest) {
   return NextResponse.redirect(request.nextUrl);
 }
 
-// This tells Next.js NOT to run proxy on images, API routes, etc.
 export const config = {
   matcher: ['/((?!_next|api|favicon.ico).*)'],
 };
