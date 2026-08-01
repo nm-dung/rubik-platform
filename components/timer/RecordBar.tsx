@@ -2,10 +2,10 @@
 
 interface RecordBarProps {
   timerState: 'idle' | 'ready' | 'inspecting' | 'solving';
-  bestSingle: { display: string; solves: any[] };
-  bestAo5: { display: string; solves: any[] };
-  bestAo12: { display: string; solves: any[] };
-  onOpenPBModal: (type: string, data: { display: string; solves: any[] }) => void;
+  bestSingle: { display: string; solves: number[] };
+  bestAo5: { display: string; solves: number[] };
+  bestAo12: { display: string; solves: number[] };
+  onOpenPBModal: (type: string, data: { display: string; solves: number[] }) => void;
 }
 
 export function RecordBar({

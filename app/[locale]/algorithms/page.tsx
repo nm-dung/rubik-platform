@@ -33,7 +33,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
 
   const [activeTab, setActiveTab] = useState<Category>('PLL');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
-  const [dict, setDict] = useState<any>(null);
+  const [dict, setDict] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);

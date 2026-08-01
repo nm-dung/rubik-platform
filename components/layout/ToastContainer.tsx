@@ -5,7 +5,7 @@
  */
 
 import { useEffect } from 'react';
-import { useToastStore } from '@/lib/toast';
+import { useToastStore, type Toast } from '@/lib/toast';
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 export function ToastContainer() {
@@ -20,7 +20,7 @@ export function ToastContainer() {
   );
 }
 
-function ToastItem({ toast, onClose }: { toast: any; onClose: () => void }) {
+function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
   useEffect(() => {
     if (toast.duration && toast.duration > 0) {
       const timer = setTimeout(onClose, toast.duration);

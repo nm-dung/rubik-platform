@@ -10,7 +10,7 @@ interface TimerGraphProps {
   showAo12Line: boolean;
   chartSize: { w: number; h: number };
   graphData: { minVal: number; maxVal: number; range: number } | null;
-  displaySolves: any[];
+  displaySolves: number[];
   hoveredPoint: number | null;
   onHoverPoint: (index: number | null) => void;
 }

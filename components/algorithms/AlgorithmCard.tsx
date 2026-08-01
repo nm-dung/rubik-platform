@@ -3,7 +3,7 @@
 import { useCubeStore } from "@/hooks/useCubeStore";
 import { useEffect, useState } from "react";
 import { AlgorithmPractice } from "./AlgorithmPractice";
-import { AlgorithmPracticeSession, AlgorithmPracticeStats } from "@/lib/types";
+import { AlgorithmPracticeSession, AlgorithmPracticeStats, Algorithm } from "@/lib/types";
 import { History, Trash2, X } from "lucide-react";
 
 // Helper function to get user ID
@@ -29,7 +29,7 @@ export default function AlgorithmCard({
   stats,
   onStatsChange,
 }: {
-  alg: any;
+  alg: Algorithm;
   locale?: string;
   stats?: AlgorithmPracticeStats;
   onStatsChange?: (algorithmId: string, stats: AlgorithmPracticeStats | null) => void;

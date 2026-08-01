@@ -30,7 +30,7 @@ function Cubie({ position }: { position: [number, number, number] }) {
 }
 
 
-function AnimatedCubeGroup({ positions, isSpinning, onSpinEnd }: { positions: any[], isSpinning: boolean, onSpinEnd: () => void }) {
+function AnimatedCubeGroup({ positions, isSpinning, onSpinEnd }: { positions: [number, number, number][], isSpinning: boolean, onSpinEnd: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
 
   // useFrame runs 60 FPS

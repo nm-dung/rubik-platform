@@ -16,7 +16,7 @@ interface AnalyticsCardsProps {
   visibleTrendPoints: TrendPoint[];
   chartSize: { w: number; h: number };
   graphData: { minVal: number; maxVal: number; range: number } | null;
-  displaySolves: any[];
+  displaySolves: number[];
   hoveredPoint: number | null;
   onShowTimeLineChange: (show: boolean) => void;
   onShowAo5LineChange: (show: boolean) => void;
