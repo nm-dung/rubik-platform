@@ -7,11 +7,15 @@ import LessonDetailContent from "@/components/lessons/LessonDetailContent";
 export default async function LessonDetailPage({
   params,
 }: {
-  params: Promise<{ locale: "en" | "vi"; lessonId: string }>;
+  params: Promise<{ locale: string; lessonId: string }>;
 }) {
   const resolvedParams = await params;
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as "en" | "vi";
   const lessonId = resolvedParams.lessonId;
+
+  if (!supabase) {
+    notFound();
+  }
 
   const { data: lesson, error } = await supabase
     .from("lessons")
@@ -28,7 +32,7 @@ export default async function LessonDetailPage({
     : [];
 
   let relatedAlgorithms: Array<{ id: string; name_en: string; name_vi: string }> = [];
-  if (relatedIds.length > 0) {
+  if (relatedIds.length > 0 && supabase) {
     const { data } = await supabase
       .from("algorithms")
       .select("id, name_en, name_vi")

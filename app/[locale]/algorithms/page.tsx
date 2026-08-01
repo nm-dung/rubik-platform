@@ -27,7 +27,7 @@ function getUserId(): string {
   return '00000000-0000-0000-0000-000000000001';
 }
 
-export default function AlgorithmsPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
+export default function AlgorithmsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
   const locale = resolvedParams.locale;
 

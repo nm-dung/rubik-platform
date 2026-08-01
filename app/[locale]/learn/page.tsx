@@ -15,7 +15,7 @@ type Dictionary = {
   [key: string]: unknown;
 };
 
-export default function LearnPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
+export default function LearnPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
   const [dict, setDict] = useState<Dictionary | null>(null);
   const [lessons, setLessons] = useState<Record<LearningPath, Lesson[]>>({

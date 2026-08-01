@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { User, Lock, Trash2, Shield, ChevronRight, X } from "lucide-react";
 
-export default function SettingsPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
+export default function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
   const { user, profile, deleteAccount, updatePassword, updateProfile, loading } = useAuth();
   const router = useRouter();

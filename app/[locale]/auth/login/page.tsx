@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
-export default function LoginPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
+export default function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
   const { signIn, user } = useAuth();
   const router = useRouter();

@@ -1,7 +1,7 @@
 import { getDictionary } from "@/lib/dictionary";
 import CubeScene from "@/components/cube/CubeScene";
 
-export default async function Home({ params }: { params: { locale: 'en' | 'vi' } }) {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = await params;
   const dict = await getDictionary(resolvedParams.locale);
 

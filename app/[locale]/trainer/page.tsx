@@ -25,7 +25,7 @@ function getUserId(): string {
   return '00000000-0000-0000-0000-000000000001';
 }
 
-export default function AlgorithmTrainerPage({ params }: { params: Promise<{ locale: 'en' | 'vi' }> }) {
+export default function AlgorithmTrainerPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = params;
   const [state, setState] = useState<TrainerState>('selection');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
