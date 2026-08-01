@@ -15,7 +15,7 @@ export default function EditAlgorithmPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const algorithmId = resolvedParams.id;
   const router = useRouter();
   const [algorithm, setAlgorithm] = useState<(Algorithm & { status?: string }) | null>(null);

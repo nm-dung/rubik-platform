@@ -13,7 +13,7 @@ export default function NewAlgorithmPage({
   params: Promise<{ locale: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const router = useRouter();
 
   return (

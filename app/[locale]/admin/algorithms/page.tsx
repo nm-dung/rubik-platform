@@ -17,7 +17,7 @@ export default function AlgorithmsListPage({
   params: Promise<{ locale: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const [algorithms, setAlgorithms] = useState<(Algorithm & { status?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all');

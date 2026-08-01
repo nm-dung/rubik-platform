@@ -33,12 +33,12 @@ export default async function RootLayout({
   const dict = await getDictionary(resolvedParams.locale as 'en' | 'vi');
 
   return (
-    <html lang={resolvedParams.locale}>
+    <html lang={resolvedParams.locale as 'en' | 'vi'}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
         <AuthProvider>
           <ToastContainer />
           
-          <Navbar dict={dict.nav} locale={resolvedParams.locale} />
+          <Navbar dict={dict.nav} locale={resolvedParams.locale as 'en' | 'vi'} />
           
           
           <div className="flex-grow flex flex-col">

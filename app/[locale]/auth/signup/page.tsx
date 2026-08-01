@@ -21,31 +21,31 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push(`/${resolvedParams.locale}`);
+      router.push(`/${resolvedParams.locale as 'en' | 'vi'}`);
     }
-  }, [user, router, resolvedParams.locale]);
+  }, [user, router, resolvedParams.locale as 'en' | 'vi']);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     if (username.length < 3) {
-      setError(resolvedParams.locale === 'vi' ? "Tên người dùng phải có ít nhất 3 ký tự" : "Username must be at least 3 characters");
+      setError((resolvedParams.locale as 'en' | 'vi') === 'vi' ? "Tên người dùng phải có ít nhất 3 ký tự" : "Username must be at least 3 characters");
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setError(resolvedParams.locale === 'vi' ? "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới" : "Username can only contain letters, numbers, and underscores");
+      setError((resolvedParams.locale as 'en' | 'vi') === 'vi' ? "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới" : "Username can only contain letters, numbers, and underscores");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError(resolvedParams.locale === 'vi' ? "Mật khẩu không khớp" : "Passwords do not match");
+      setError((resolvedParams.locale as 'en' | 'vi') === 'vi' ? "Mật khẩu không khớp" : "Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      setError(resolvedParams.locale === 'vi' ? "Mật khẩu phải có ít nhất 6 ký tự" : "Password must be at least 6 characters");
+      setError((resolvedParams.locale as 'en' | 'vi') === 'vi' ? "Mật khẩu phải có ít nhất 6 ký tự" : "Password must be at least 6 characters");
       return;
     }
 
@@ -58,11 +58,11 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
       setLoading(false);
     } else {
       // Success - user may need to confirm email
-      router.push(`/${resolvedParams.locale}/auth/login`);
+      router.push(`/${resolvedParams.locale as 'en' | 'vi'}/auth/login`);
     }
   };
 
-  const isVietnamese = resolvedParams.locale === 'vi';
+  const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -169,7 +169,7 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
             <p className="text-slate-600">
               {isVietnamese ? "Đã có tài khoản?" : "Already have an account?"}{" "}
               <Link
-                href={`/${resolvedParams.locale}/auth/login`}
+                href={`/${resolvedParams.locale as 'en' | 'vi'}/auth/login`}
                 className="text-indigo-600 font-semibold hover:text-indigo-700"
               >
                 {isVietnamese ? "Đăng nhập" : "Sign in"}

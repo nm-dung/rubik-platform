@@ -10,7 +10,7 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
   const resolvedParams = use(params);
   const { user, profile, deleteAccount, updatePassword, updateProfile, loading } = useAuth();
   const router = useRouter();
-  const isVietnamese = resolvedParams.locale === 'vi';
+  const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -29,9 +29,9 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
-      router.push(`/${resolvedParams.locale}/auth/login`);
+      router.push(`/${resolvedParams.locale as 'en' | 'vi'}/auth/login`);
     }
-  }, [user, loading, router, resolvedParams.locale]);
+  }, [user, loading, router, resolvedParams.locale as 'en' | 'vi']);
 
   useEffect(() => {
     if (profile) {

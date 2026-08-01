@@ -17,7 +17,7 @@ export default function LessonsListPage({
   params: Promise<{ locale: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const [lessons, setLessons] = useState<(Lesson & { status?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'draft' | 'published' | 'beginner' | 'intermediate' | 'advanced'>('all');

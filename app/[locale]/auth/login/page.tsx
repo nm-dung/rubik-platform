@@ -19,9 +19,9 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push(`/${resolvedParams.locale}`);
+      router.push(`/${resolvedParams.locale as 'en' | 'vi'}`);
     }
-  }, [user, router, resolvedParams.locale]);
+  }, [user, router, resolvedParams.locale as 'en' | 'vi']);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +34,11 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
       setError(error);
       setLoading(false);
     } else {
-      router.push(`/${resolvedParams.locale}`);
+      router.push(`/${resolvedParams.locale as 'en' | 'vi'}`);
     }
   };
 
-  const isVietnamese = resolvedParams.locale === 'vi';
+  const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -113,7 +113,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
             <p className="text-slate-600">
               {isVietnamese ? "Chưa có tài khoản?" : "Don't have an account?"}{" "}
               <Link
-                href={`/${resolvedParams.locale}/auth/signup`}
+                href={`/${resolvedParams.locale as 'en' | 'vi'}/auth/signup`}
                 className="text-indigo-600 font-semibold hover:text-indigo-700"
               >
                 {isVietnamese ? "Đăng ký" : "Sign up"}

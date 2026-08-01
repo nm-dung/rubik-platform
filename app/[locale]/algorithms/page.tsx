@@ -157,7 +157,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
           <AlgorithmCard
             key={alg.id}
             alg={alg}
-            locale={locale}
+            locale={locale as 'en' | 'vi'}
             stats={stats[alg.id]}
             onStatsChange={(algorithmId, updatedStats) => {
               setStats((currentStats) => {

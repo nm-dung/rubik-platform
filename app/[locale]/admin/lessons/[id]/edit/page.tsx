@@ -15,7 +15,7 @@ export default function EditLessonPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const lessonId = resolvedParams.id;
   const router = useRouter();
   const [lesson, setLesson] = useState<(Lesson & { status?: string }) | null>(null);

@@ -57,7 +57,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
     }
 
     loadData();
-  }, [resolvedParams.locale]);
+  }, [resolvedParams.locale as 'en' | 'vi']);
 
   // Filter lessons based on search query
   const filteredLessons = {
@@ -123,7 +123,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder={resolvedParams.locale === 'vi' ? 'Tìm kiếm bài học...' : 'Search lessons...'}
+            placeholder={(resolvedParams.locale as 'en' | 'vi') === 'vi' ? 'Tìm kiếm bài học...' : 'Search lessons...'}
             className="w-full sm:w-64"
           />
         </div>
@@ -158,7 +158,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
                   </div>
                   <LessonCard
                     lesson={lesson}
-                    locale={resolvedParams.locale}
+                    locale={resolvedParams.locale as 'en' | 'vi'}
                   />
                 </div>
               ))
@@ -196,7 +196,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
                 <LessonCard
                   key={lesson.id}
                   lesson={lesson}
-                  locale={resolvedParams.locale}
+                  locale={resolvedParams.locale as 'en' | 'vi'}
                 />
               ))
           ) : (

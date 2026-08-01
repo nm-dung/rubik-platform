@@ -30,7 +30,7 @@ export default function SubmissionsReviewPage({
   params: Promise<{ locale: string }>;
 }) {
   const resolvedParams = use(params);
-  const locale = resolvedParams.locale;
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const [submissions, setSubmissions] = useState<ContributionRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
