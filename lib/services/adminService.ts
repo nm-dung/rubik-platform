@@ -247,7 +247,7 @@ export async function createLesson(
     const relatedAlgorithmIds = Array.isArray(payload.related_algorithm_ids)
       ? payload.related_algorithm_ids
       : typeof payload.related_algorithm_ids === 'string'
-        ? payload.related_algorithm_ids
+        ? (payload.related_algorithm_ids as string)
             .split(',')
             .map((id) => id.trim())
             .filter(Boolean)
@@ -298,7 +298,7 @@ export async function updateLesson(
     const relatedAlgorithmIds = Array.isArray(payload.related_algorithm_ids)
       ? payload.related_algorithm_ids
       : typeof payload.related_algorithm_ids === 'string'
-        ? payload.related_algorithm_ids
+        ? (payload.related_algorithm_ids as string)
             .split(',')
             .map((x) => x.trim())
             .filter(Boolean)
