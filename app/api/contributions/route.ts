@@ -3,6 +3,13 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const payload = await request.json();
 
     const { data, error } = await supabase.from('contribution_requests').insert({

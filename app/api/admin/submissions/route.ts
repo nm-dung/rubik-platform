@@ -7,6 +7,13 @@ import { supabase } from '@/lib/supabase';
  */
 export async function GET(request: NextRequest) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('contribution_requests')
       .select('*')

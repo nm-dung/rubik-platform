@@ -8,6 +8,13 @@ export async function GET(
   try {
     const { lessonId } = await params;
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('lessons')
       .select('*')
