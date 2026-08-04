@@ -26,6 +26,39 @@
   "algorithms": {
     "title": "Algorithm Library",
     "description": "The database of OLL, PLL, and F2L algorithms will go here."
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "subtitle": "Track your learning progress",
+    "lessons": "Lessons",
+    "completed": "Completed",
+    "reviews": "Reviews",
+    "total": "Total",
+    "algorithms": "Algorithms",
+    "learned": "Learned",
+    "solves": "Solves",
+    "current_session": "Current session",
+    "timer_stats": "Timer Stats",
+    "best_single": "Best Single",
+    "ao5": "Ao5",
+    "ao12": "Ao12",
+    "mean": "Mean",
+    "learning_progress": "Learning Progress",
+    "lessons_completed": "Lessons Completed",
+    "total_reviews": "Total Reviews",
+    "algorithms_learned": "Algorithms Learned",
+    "timer_sessions": "Timer Sessions",
+    "quick_actions": "Quick Actions",
+    "learn": "Learn",
+    "trainer": "Trainer",
+    "timer": "Timer",
+    "current_streak": "Current Streak",
+    "longest_streak": "Longest Streak",
+    "days": "days",
+    "achievements": "Achievements",
+    "points": "points",
+    "unlocked": "Unlocked",
+    "total_points": "Total Points"
   }
   
 }

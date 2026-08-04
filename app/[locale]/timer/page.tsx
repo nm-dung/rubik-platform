@@ -10,6 +10,7 @@ import { AnalyticsDashboard } from "@/components/timer/AnalyticsDashboard";
 import { AnalyticsCards } from "@/components/timer/AnalyticsCards";
 import { StatsModal } from "@/components/timer/StatsModal";
 import { RecordBar } from "@/components/timer/RecordBar";
+import { useStreaks } from "@/hooks/useStreaks";
 
 // --- Helper Functions ---
 const formatTime = (time: number) => (time / 1000).toFixed(2);
@@ -143,6 +144,7 @@ export default function TimerPage() {
   const clearActiveSession = useTimerStore((state) => state.clearActiveSession);
   const setActiveSession = useTimerStore((state) => state.setActiveSession);
   const addSession = useTimerStore((state) => state.addSession);
+  const { updateStreak } = useStreaks();
 
   const displaySolves = useMemo(() => {
     return mounted ? allSolves.filter(s => s.sessionId === activeSessionId) : [];
@@ -284,6 +286,7 @@ export default function TimerPage() {
             if (inspectionTime < -2) autoPenalty = 'DNF';
           }
           addSolve({ time: finalTime, scramble: currentScramble, penalty: autoPenalty });
+          updateStreak();
           setTimerState('idle');
           setInspectionTime(15);
           setIsHoldingForSolve(false);

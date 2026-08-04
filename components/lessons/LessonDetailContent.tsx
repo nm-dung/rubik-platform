@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { BookOpen, CheckCircle2, Clock, Sparkles, RotateCcw } from "lucide-react";
 import { useLessonProgressStore } from "@/hooks/useLessonProgressStore";
+import { useStreaks } from "@/hooks/useStreaks";
 import ContributionRequestForm from "@/components/lessons/ContributionRequestForm";
 import { ReviewHistoryModal } from "@/components/lessons/ReviewHistoryModal";
 import type { Lesson, LessonDifficulty } from "@/lib/types";
@@ -25,6 +26,7 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
   const toggleCompletedLesson = useLessonProgressStore((state) => state.toggleCompletedLesson);
   const incrementReview = useLessonProgressStore((state) => state.incrementReview);
   const syncWithDatabase = useLessonProgressStore((state) => state.syncWithDatabase);
+  const { updateStreak } = useStreaks();
 
   const [showReviewHistory, setShowReviewHistory] = useState(false);
 
@@ -101,7 +103,10 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={() => toggleCompletedLesson(lesson.id)}
+            onClick={() => {
+              toggleCompletedLesson(lesson.id);
+              updateStreak();
+            }}
             className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
               isCompleted
                 ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
@@ -116,7 +121,10 @@ export default function LessonDetailContent({ lesson, locale, relatedAlgorithms 
 
           <button
             type="button"
-            onClick={() => incrementReview(lesson.id)}
+            onClick={() => {
+              incrementReview(lesson.id);
+              updateStreak();
+            }}
             className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
           >
             <RotateCcw className="w-4 h-4" />

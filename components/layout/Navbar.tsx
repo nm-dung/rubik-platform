@@ -43,6 +43,12 @@ export default function Navbar({ dict, locale }: NavbarProps) {
           <Link href={`/${locale}/timer`} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
             {dict.timer || "Timer"}
           </Link>
+
+          {!loading && user && (
+            <Link href={`/${locale}/dashboard`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+              {locale === 'vi' ? "Thống kê" : "Dashboard"}
+            </Link>
+          )}
           <Link href={`/${locale}/admin`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
             {dict.admin || "Admin"}
           </Link>
@@ -137,6 +143,15 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             >
               {dict.timer || "Timer"}
             </Link>
+            {!loading && user && (
+              <Link
+                href={`/${locale}/dashboard`}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {locale === 'vi' ? "Thống kê" : "Dashboard"}
+              </Link>
+            )}
             <Link
               href={`/${locale}/admin`}
               className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors py-2"

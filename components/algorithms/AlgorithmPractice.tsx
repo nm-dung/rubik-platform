@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle2 } from "lucide-react";
 import { parseAlgorithm, Move } from "@/lib/notationParser";
+import { useStreaks } from "@/hooks/useStreaks";
 
 interface AlgorithmPracticeProps {
   notation: string;
@@ -13,6 +14,7 @@ interface AlgorithmPracticeProps {
 export function AlgorithmPractice({ notation, algorithmName, onComplete }: AlgorithmPracticeProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const { updateStreak } = useStreaks();
 
   const moves = parseAlgorithm(notation);
   const currentMove = moves[currentStep];
@@ -23,6 +25,7 @@ export function AlgorithmPractice({ notation, algorithmName, onComplete }: Algor
       setCurrentStep(currentStep + 1);
     } else {
       setCompleted(true);
+      updateStreak();
       onComplete?.();
     }
   };

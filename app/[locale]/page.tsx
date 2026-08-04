@@ -1,10 +1,22 @@
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import CubeScene from "@/components/cube/CubeScene";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = await params;
   const dict: Dictionary = await getDictionary(resolvedParams.locale as 'en' | 'vi');
+
+  // Check if user is authenticated
+  let isAuthenticated = false;
+  if (supabase) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      isAuthenticated = !!session;
+    } catch (error) {
+      // Ignore auth errors
+    }
+  }
 
   return (
     <main className="max-w-6xl mx-auto p-4 sm:p-8 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center flex-grow">
@@ -16,12 +28,21 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {(dict.home as Dictionary['home']).subtitle}
         </p>
         <div className="mt-6 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          <Link
-            href={`/${resolvedParams.locale}/learn`}
-            className="px-6 sm:px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all text-center"
-          >
-            Get Started
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href={`/${resolvedParams.locale}/dashboard`}
+              className="px-6 sm:px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all text-center"
+            >
+              Go to Dashboard
+            </Link>
+          ) : (
+            <Link
+              href={`/${resolvedParams.locale}/learn`}
+              className="px-6 sm:px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all text-center"
+            >
+              Get Started
+            </Link>
+          )}
         </div>
       </div>
 

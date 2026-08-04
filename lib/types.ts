@@ -90,3 +90,34 @@ export interface UserProfile {
   created_at: string;
   updated_at: string;
 }
+
+export interface UserStreak {
+  id: string;
+  user_id: string;
+  current_streak: number;
+  longest_streak: number;
+  last_activity_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Achievement {
+  id: string;
+  name_en: string;
+  name_vi: string;
+  description_en: string;
+  description_vi: string;
+  icon: string;
+  requirement_type: 'lessons_completed' | 'algorithms_practiced' | 'streak_days' | 'avg_time' | 'total_solves';
+  requirement_value: number;
+  points: number;
+  created_at: string;
+}
+
+export interface UserAchievement {
+  id: string;
+  user_id: string;
+  achievement_id: string;
+  unlocked_at: string;
+  achievement?: Achievement;
+}

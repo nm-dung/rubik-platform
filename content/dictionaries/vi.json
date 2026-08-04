@@ -26,5 +26,38 @@
   "algorithms": {
     "title": "Thư viện Thuật toán",
     "description": "Cơ sở dữ liệu các thuật toán OLL, PLL, và F2L sẽ được đặt ở đây."
+  },
+  "dashboard": {
+    "welcome": "Xin chào",
+    "subtitle": "Theo dõi tiến độ học tập của bạn",
+    "lessons": "Bài học",
+    "completed": "Đã hoàn thành",
+    "reviews": "Ôn tập",
+    "total": "Tổng số",
+    "algorithms": "Thuật toán",
+    "learned": "Đã học",
+    "solves": "Giải",
+    "current_session": "Phiên hiện tại",
+    "timer_stats": "Thống kê bấm giờ",
+    "best_single": "Lần giải tốt nhất",
+    "ao5": "Trung bình 5",
+    "ao12": "Trung bình 12",
+    "mean": "Trung bình",
+    "learning_progress": "Tiến độ học tập",
+    "lessons_completed": "Bài học hoàn thành",
+    "total_reviews": "Tổng lần ôn tập",
+    "algorithms_learned": "Thuật toán đã học",
+    "timer_sessions": "Phiên bấm giờ",
+    "quick_actions": "Hành động nhanh",
+    "learn": "Học",
+    "trainer": "Luyện tập",
+    "timer": "Bấm giờ",
+    "current_streak": "Chuỗi hoạt động",
+    "longest_streak": "Chuỗi dài nhất",
+    "days": "ngày",
+    "achievements": "Thành tích",
+    "points": "điểm",
+    "unlocked": "Đã mở khóa",
+    "total_points": "Tổng điểm"
   }
 }

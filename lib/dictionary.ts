@@ -25,6 +25,39 @@ export interface Dictionary {
     title: string;
     description: string;
   };
+  dashboard: {
+    welcome: string;
+    subtitle: string;
+    lessons: string;
+    completed: string;
+    reviews: string;
+    total: string;
+    algorithms: string;
+    learned: string;
+    solves: string;
+    current_session: string;
+    timer_stats: string;
+    best_single: string;
+    ao5: string;
+    ao12: string;
+    mean: string;
+    learning_progress: string;
+    lessons_completed: string;
+    total_reviews: string;
+    algorithms_learned: string;
+    timer_sessions: string;
+    quick_actions: string;
+    learn: string;
+    trainer: string;
+    timer: string;
+    current_streak: string;
+    longest_streak: string;
+    days: string;
+    achievements: string;
+    points: string;
+    unlocked: string;
+    total_points: string;
+  };
   [key: string]: unknown;
 }
 
