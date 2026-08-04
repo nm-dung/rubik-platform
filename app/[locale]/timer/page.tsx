@@ -392,7 +392,7 @@ export default function TimerPage() {
   }, [analytics, showTimeLine, showAo5Line, showAo12Line, analyticsRange, visibleTrendPoints, chartSize, graphData, displaySolves, hoveredPoint, handleChartRef]);
 
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-slate-50 select-none overflow-hidden font-sans">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-slate-50 select-none overflow-hidden font-sans">
       
       {/* Sidebar */}
       <TimerSidebar

@@ -35,52 +35,52 @@ export default function LessonCard({ lesson, locale }: LessonCardProps) {
 
   return (
     <Link href={`/${locale}/learn/${lesson.id}`} className="block group">
-      <div className={`${colors.bg} border-2 ${isCompleted ? 'border-emerald-300' : 'border-slate-200'} rounded-2xl p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 h-full relative`}>
+      <div className={`${colors.bg} border-2 ${isCompleted ? 'border-emerald-300' : 'border-slate-200'} rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 h-full relative`}>
         
         {isCompleted && (
-          <div className="absolute top-4 right-4">
-            <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+          <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+            <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
           </div>
         )}
 
-        <div className="flex items-start justify-between mb-4 pr-8">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white rounded-lg">
-              <BookOpen className="w-5 h-5 text-indigo-600" />
+        <div className="flex items-start justify-between mb-3 sm:mb-4 pr-6 sm:pr-8">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-white rounded-lg">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
                 {title}
               </h3>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className={`inline-block px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${colors.badge}`}>
+              <div className="flex items-center gap-1 sm:gap-2 mt-1 flex-wrap">
+                <span className={`inline-block px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider ${colors.badge}`}>
                   {difficultyLabel}
                 </span>
                 {lesson.duration_minutes && (
-                  <div className="flex items-center gap-1 text-xs text-slate-500">
-                    <Clock className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-[10px] sm:text-xs text-slate-500">
+                    <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                     {lesson.duration_minutes} min
                   </div>
                 )}
                 {progress.reviewCount > 0 && (
-                  <div className="flex items-center gap-1 text-xs text-slate-500 bg-white/50 pr-2 py-1 rounded-full">
-                    <RotateCcw className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-[10px] sm:text-xs text-slate-500 bg-white/50 pr-1.5 sm:pr-2 py-0.5 sm:py-1 rounded-full">
+                    <RotateCcw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                     {progress.reviewCount}
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
         </div>
 
-        <p className="text-slate-600 text-sm leading-relaxed mb-4">
+        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4">
           {description}
         </p>
 
         {lesson.related_algorithm_ids && lesson.related_algorithm_ids.length > 0 && (
-          <div className="pt-4 border-t border-slate-200/50">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <div className="pt-3 sm:pt-4 border-t border-slate-200/50">
+            <p className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">
               Related Algorithms: {lesson.related_algorithm_ids.length}
             </p>
           </div>

@@ -143,28 +143,28 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-8 sm:py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-black text-slate-900 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">
             {isVietnamese ? "Cài đặt" : "Settings"}
           </h1>
-          <p className="text-slate-600">
+          <p className="text-sm sm:text-base text-slate-600">
             {isVietnamese ? "Quản lý tài khoản và cài đặt của bạn" : "Manage your account and settings"}
           </p>
         </div>
 
         {/* Account Info */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
-              <User className="w-6 h-6 text-indigo-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900">
                 {isVietnamese ? "Thông tin tài khoản" : "Account Information"}
               </h2>
-              <p className="text-sm text-slate-600">{user.email}</p>
+              <p className="text-xs sm:text-sm text-slate-600 truncate">{user.email}</p>
             </div>
           </div>
 
@@ -186,12 +186,12 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                       value={usernameInput}
                       onChange={(e) => setUsernameInput(e.target.value)}
                       placeholder={isVietnamese ? "rubikmaster" : "rubikmaster"}
-                      className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="flex-1 px-3 sm:px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     />
                     <button
                       onClick={handleCreateProfile}
                       disabled={updatingUsername}
-                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 text-sm"
                     >
                       {updatingUsername ? (isVietnamese ? "Đang tạo..." : "Creating...") : (isVietnamese ? "Tạo hồ sơ" : "Create Profile")}
                     </button>
@@ -206,12 +206,12 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                     type="text"
                     value={usernameInput}
                     onChange={(e) => setUsernameInput(e.target.value)}
-                    className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="flex-1 px-3 sm:px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   />
                   <button
                     onClick={handleUpdateUsername}
                     disabled={updatingUsername}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                    className="px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 text-sm"
                   >
                     {updatingUsername ? (isVietnamese ? "Đang lưu..." : "Saving...") : (isVietnamese ? "Lưu" : "Save")}
                   </button>
@@ -221,20 +221,20 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                       setUsernameInput(profile?.username || "");
                       setUsernameError(null);
                     }}
-                    className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors"
+                    className="px-3 sm:px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors text-sm"
                   >
                     {isVietnamese ? "Hủy" : "Cancel"}
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <span className="font-medium text-slate-900">{profile?.username || 'N/A'}</span>
+                  <span className="font-medium text-slate-900 text-sm">{profile?.username || 'N/A'}</span>
                   <button
                     onClick={() => {
                       setEditingUsername(true);
                       setUsernameInput(profile?.username || "");
                     }}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                    className="text-xs sm:text-sm text-indigo-600 hover:text-indigo-700 font-medium"
                   >
                     {isVietnamese ? "Chỉnh sửa" : "Edit"}
                   </button>
@@ -248,37 +248,37 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
         </div>
 
         {/* Security Settings */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-indigo-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6">
+          <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
             {isVietnamese ? "Bảo mật" : "Security"}
           </h2>
 
           <div className="space-y-3">
             <button
               onClick={() => setShowPasswordModal(true)}
-              className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+              className="w-full flex items-center justify-between p-3 sm:p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
             >
-              <div className="flex items-center gap-3">
-                <Lock className="w-5 h-5 text-slate-600" />
-                <span className="font-medium text-slate-900">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
+                <span className="font-medium text-slate-900 text-sm">
                   {isVietnamese ? "Đổi mật khẩu" : "Change Password"}
                 </span>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
             </button>
           </div>
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-red-100">
-          <h2 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
-            <Trash2 className="w-5 h-5" />
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border-2 border-red-100">
+          <h2 className="text-base sm:text-lg font-semibold text-red-600 mb-3 sm:mb-4 flex items-center gap-2">
+            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
             {isVietnamese ? "Vùng nguy hiểm" : "Danger Zone"}
           </h2>
 
-          <div className="bg-red-50 rounded-xl p-4">
-            <p className="text-sm text-red-700 mb-4">
+          <div className="bg-red-50 rounded-xl p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-red-700 mb-3 sm:mb-4">
               {isVietnamese 
                 ? "Xóa tài khoản sẽ xóa vĩnh viễn tất cả dữ liệu của bạn bao gồm tiến độ bài học, lịch sử ôn tập và thống kê thuật toán. Hành động này không thể hoàn tác."
                 : "Deleting your account will permanently remove all your data including lesson progress, review history, and algorithm statistics. This action cannot be undone."
@@ -286,7 +286,7 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
             </p>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+              className="w-full px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors text-sm"
             >
               {isVietnamese ? "Xóa tài khoản" : "Delete Account"}
             </button>
@@ -297,28 +297,28 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-slate-900 mb-2">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
                 {isVietnamese ? "Xóa tài khoản?" : "Delete Account?"}
               </h3>
-              <p className="text-slate-600 mb-6">
+              <p className="text-sm sm:text-base text-slate-600 mb-4 sm:mb-6">
                 {isVietnamese 
                   ? "Hành động này không thể hoàn tác. Tất cả dữ liệu của bạn sẽ bị xóa vĩnh viễn."
                   : "This action cannot be undone. All your data will be permanently deleted."
                 }
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
-                  className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50 text-sm"
                 >
                   {isVietnamese ? "Hủy" : "Cancel"}
                 </button>
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deleting}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 text-sm"
                 >
                   {deleting 
                     ? (isVietnamese ? "Đang xóa..." : "Deleting...")
@@ -334,20 +334,20 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
       {showPasswordModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900">
                   {isVietnamese ? "Đổi mật khẩu" : "Change Password"}
                 </h3>
                 <button
                   onClick={() => setShowPasswordModal(false)}
                   className="text-slate-400 hover:text-slate-600"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     {isVietnamese ? "Mật khẩu mới" : "New Password"}
@@ -356,7 +356,7 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     placeholder={isVietnamese ? "••••••••" : "••••••••"}
                   />
                 </div>
@@ -369,29 +369,29 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     placeholder={isVietnamese ? "••••••••" : "••••••••"}
                   />
                 </div>
 
                 {passwordError && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm">
                     {passwordError}
                   </div>
                 )}
 
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   <button
                     onClick={() => setShowPasswordModal(false)}
                     disabled={updatingPassword}
-                    className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+                    className="flex-1 px-3 sm:px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50 text-sm"
                   >
                     {isVietnamese ? "Hủy" : "Cancel"}
                   </button>
                   <button
                     onClick={handleUpdatePassword}
                     disabled={updatingPassword}
-                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                    className="flex-1 px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 text-sm"
                   >
                     {updatingPassword 
                       ? (isVietnamese ? "Đang cập nhật..." : "Updating...")

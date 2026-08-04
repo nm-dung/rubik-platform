@@ -136,11 +136,11 @@ export default function AlgorithmCard({
   }
 
   return (
-    <div className={`group relative flex flex-col md:flex-row gap-6 p-6 border rounded-2xl bg-white hover:shadow-xl transition-all duration-300 ${
+    <div className={`group relative flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 border rounded-xl sm:rounded-2xl bg-white hover:shadow-xl transition-all duration-300 ${
       isLearned ? 'border-emerald-400 bg-emerald-50/10' : 'border-slate-200 hover:border-indigo-100'
     }`}>
 
-      <div className="w-full md:w-32 h-32 bg-slate-50 rounded-xl flex-shrink-0 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
+      <div className="w-full h-24 sm:h-32 bg-slate-50 rounded-lg sm:rounded-xl flex-shrink-0 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
         {alg.image_url ? (
           <img src={alg.image_url} alt={alg.name_en} className="w-full h-full object-contain p-2 mix-blend-multiply" />
         ) : (
@@ -149,10 +149,10 @@ export default function AlgorithmCard({
       </div>
 
       <div className="flex-grow flex flex-col">
-        <div className="flex justify-between items-start mb-3">
-          <div>
-            <div className="flex items-center gap-3">
-              <h3 className="text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+          <div className="w-full">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
                 {locale === 'vi' ? alg.name_vi : alg.name_en}
               </h3>
               {isLearned && (
@@ -161,7 +161,7 @@ export default function AlgorithmCard({
                 </span>
               )}
             </div>
-            <div className="flex gap-2 mt-1">
+            <div className="flex flex-wrap gap-2 mt-1">
               <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded uppercase tracking-tighter border border-indigo-100">
                 {alg.difficulty || alg.category}
               </span>
@@ -173,10 +173,10 @@ export default function AlgorithmCard({
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => setShowPractice(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition-all shadow-sm active:scale-95"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition-all shadow-sm active:scale-95"
             >
               <span>Practice</span>
             </button>
@@ -195,7 +195,7 @@ export default function AlgorithmCard({
           </div>
         </div>
 
-        <div className="mt-auto p-4 bg-slate-900 rounded-xl shadow-inner font-mono text-lg text-indigo-300 tracking-widest overflow-x-auto whitespace-nowrap">
+        <div className="mt-auto p-3 sm:p-4 bg-slate-900 rounded-lg sm:rounded-xl shadow-inner font-mono text-sm sm:text-lg text-indigo-300 tracking-widest overflow-x-auto whitespace-nowrap">
           {alg.notation}
         </div>
 

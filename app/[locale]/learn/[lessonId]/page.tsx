@@ -43,7 +43,7 @@ export default async function LessonDetailPage({
 
   return (
     <div>
-      <div className="max-w-5xl mx-auto px-8 pt-8 lg:px-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 lg:px-10">
         <Link
           href={`/${locale}/learn`}
           className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700"

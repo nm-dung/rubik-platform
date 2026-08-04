@@ -192,10 +192,10 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-black text-slate-900 mb-2">Algorithm Trainer</h1>
-        <p className="text-slate-600">Practice algorithms with timed sessions and track your progress</p>
+    <main className="max-w-4xl mx-auto p-4 sm:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-2">Algorithm Trainer</h1>
+        <p className="text-sm sm:text-base text-slate-600">Practice algorithms with timed sessions and track your progress</p>
       </div>
 
       {state === 'selection' && (
@@ -209,9 +209,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
             <button
               onClick={handleStartTraining}
               disabled={selectedIds.length === 0}
-              className="flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all disabled:bg-slate-300 disabled:cursor-not-allowed shadow-lg"
+              className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all disabled:bg-slate-300 disabled:cursor-not-allowed shadow-lg text-sm sm:text-base"
             >
-              <Play className="w-5 h-5" />
+              <Play className="w-4 h-4 sm:w-5 sm:h-5" />
               Start Training ({selectedIds.length} algorithms)
             </button>
           </div>
@@ -219,81 +219,81 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
       )}
 
       {state === 'training' && currentAlgorithm && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Progress */}
-          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-semibold text-slate-600">
+          <div className="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-200">
+            <div className="flex justify-between items-center gap-2">
+              <span className="text-xs sm:text-sm font-semibold text-slate-600">
                 Algorithms practiced: {sessionResults.length}
               </span>
-              <span className="text-sm font-semibold text-slate-600">
+              <span className="text-xs sm:text-sm font-semibold text-slate-600">
                 Avg: {sessionResults.length > 0 ? formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0) / sessionResults.length) : '--'}
               </span>
             </div>
           </div>
 
           {/* Current Algorithm */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-slate-900 mb-2">{currentAlgorithm.name_en}</h2>
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-4 sm:p-8">
+            <div className="text-center mb-4 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-2">{currentAlgorithm.name_en}</h2>
               {stats[currentAlgorithm.id]?.practice_count > 0 && (
-                <p className="text-sm font-semibold text-slate-500 mb-4">
+                <p className="text-xs sm:text-sm font-semibold text-slate-500 mb-4">
                   Best: {formatTime(stats[currentAlgorithm.id].best_time_ms || 0)} ·
                   Avg: {formatTime(stats[currentAlgorithm.id].avg_time_ms || 0)} ·
                   {stats[currentAlgorithm.id].practice_count} practices
                 </p>
               )}
-              <div className="inline-block bg-slate-900 rounded-xl px-6 py-4">
-                <div className="text-4xl font-black text-indigo-400 tracking-wider">
+              <div className="inline-block bg-slate-900 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
+                <div className="text-2xl sm:text-4xl font-black text-indigo-400 tracking-wider break-all">
                   {currentAlgorithm.notation}
                 </div>
               </div>
             </div>
 
             {/* Timer */}
-            <div className="text-center mb-8">
-              <div className="text-7xl font-black text-slate-900 mb-6 font-mono">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 mb-4 sm:mb-6 font-mono">
                 {formatTime(currentTime)}
               </div>
-              <div className="flex justify-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
                 {!isRunning ? (
                   <button
                     onClick={handleStartTimer}
-                    className="flex items-center gap-2 px-8 py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg"
+                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg text-sm sm:text-base"
                   >
-                    <Play className="w-6 h-6" />
+                    <Play className="w-4 h-4 sm:w-6 sm:h-6" />
                     Start (Space)
                   </button>
                 ) : (
                   <button
                     onClick={handleStopTimer}
-                    className="flex items-center gap-2 px-8 py-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg"
+                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg text-sm sm:text-base"
                   >
-                    <Square className="w-6 h-6" />
+                    <Square className="w-4 h-4 sm:w-6 sm:h-6" />
                     Stop (Space)
                   </button>
                 )}
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-2 px-6 py-4 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition-all"
+                  className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition-all text-sm sm:text-base"
                 >
-                  <RotateCcw className="w-5 h-5" />
+                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
                   Reset
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
             <button
               onClick={handleBackToSelection}
-              className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+              className="text-slate-600 hover:text-slate-900 font-medium transition-colors text-center"
             >
               ← Back to Selection
             </button>
             <button
               onClick={handleEndSession}
-              className="text-indigo-600 hover:text-indigo-900 font-medium transition-colors"
+              className="text-indigo-600 hover:text-indigo-900 font-medium transition-colors text-center"
             >
               End Session →
             </button>
@@ -302,55 +302,55 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
       )}
 
       {state === 'summary' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-4">
-                <Trophy className="w-8 h-8 text-emerald-600" />
+        <div className="space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-4 sm:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-emerald-100 rounded-full mb-4">
+                <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 mb-2">Training Complete!</h2>
-              <p className="text-slate-600">Great job practicing {sessionResults.length} algorithms</p>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-2">Training Complete!</h2>
+              <p className="text-sm sm:text-base text-slate-600">Great job practicing {sessionResults.length} algorithms</p>
             </div>
 
             {/* Session Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-slate-50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-black text-indigo-600 mb-1">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-slate-50 rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-indigo-600 mb-1">
                   {sessionResults.length}
                 </div>
-                <div className="text-sm text-slate-600">Algorithms</div>
+                <div className="text-xs sm:text-sm text-slate-600">Algorithms</div>
               </div>
-              <div className="bg-slate-50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-black text-emerald-600 mb-1">
+              <div className="bg-slate-50 rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-emerald-600 mb-1">
                   {formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0))}
                 </div>
-                <div className="text-sm text-slate-600">Total Time</div>
+                <div className="text-xs sm:text-sm text-slate-600">Total Time</div>
               </div>
-              <div className="bg-slate-50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-black text-purple-600 mb-1">
+              <div className="bg-slate-50 rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-purple-600 mb-1">
                   {formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0) / sessionResults.length)}
                 </div>
-                <div className="text-sm text-slate-600">Average</div>
+                <div className="text-xs sm:text-sm text-slate-600">Average</div>
               </div>
             </div>
 
             {/* Individual Results */}
-            <div className="space-y-3">
-              <h3 className="font-bold text-slate-900 mb-4">Individual Results</h3>
+            <div className="space-y-2 sm:space-y-3">
+              <h3 className="font-bold text-slate-900 mb-4 text-sm sm:text-base">Individual Results</h3>
               {sessionResults.map((result, index) => {
                 const alg = algorithms.find(a => a.id === result.algorithmId);
                 return (
-                  <div key={`${result.algorithmId}-${index}`} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-600">
+                  <div key={`${result.algorithmId}-${index}`} className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 rounded-xl">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-600 text-xs sm:text-sm">
                         {index + 1}
                       </div>
                       <div>
-                        <div className="font-semibold text-slate-900">{alg?.name_en}</div>
-                        <div className="text-sm text-slate-500 font-mono">{alg?.notation}</div>
+                        <div className="font-semibold text-slate-900 text-sm">{alg?.name_en}</div>
+                        <div className="text-xs sm:text-sm text-slate-500 font-mono">{alg?.notation}</div>
                       </div>
                     </div>
-                    <div className="text-2xl font-black text-slate-900 font-mono">
+                    <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono">
                       {formatTime(result.time)}
                     </div>
                   </div>
@@ -362,9 +362,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           <div className="flex justify-center gap-4">
             <button
               onClick={handleBackToSelection}
-              className="flex items-center gap-2 px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition-all"
+              className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition-all text-sm sm:text-base"
             >
-              <ArrowRight className="w-5 h-5 rotate-180" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
               New Session
             </button>
           </div>

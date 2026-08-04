@@ -41,14 +41,14 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
   const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-indigo-50 to-purple-50 py-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-slate-900 mb-2">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">
               {isVietnamese ? "Đăng nhập" : "Sign In"}
             </h1>
-            <p className="text-slate-600">
+            <p className="text-sm sm:text-base text-slate-600">
               {isVietnamese 
                 ? "Chào mừng trở lại với Rubik's Learning Platform"
                 : "Welcome back to Rubik's Learning Platform"
@@ -57,12 +57,12 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
                 {isVietnamese ? "Email" : "Email"}
@@ -73,7 +73,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder={isVietnamese ? "email@example.com" : "email@example.com"}
               />
             </div>
@@ -88,7 +88,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder={isVietnamese ? "••••••••" : "••••••••"}
               />
             </div>
@@ -96,11 +96,11 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-indigo-600 text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                   {isVietnamese ? "Đang đăng nhập..." : "Signing in..."}
                 </>
               ) : (
@@ -109,8 +109,8 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-slate-600">
+          <div className="mt-4 sm:mt-6 text-center">
+            <p className="text-sm text-slate-600">
               {isVietnamese ? "Chưa có tài khoản?" : "Don't have an account?"}{" "}
               <Link
                 href={`/${resolvedParams.locale as 'en' | 'vi'}/auth/signup`}
