@@ -92,6 +92,13 @@ CREATE TABLE IF NOT EXISTS achievements (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Enable RLS and expose achievements publicly so the app can read them.
+ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view achievements" ON achievements;
+CREATE POLICY "Anyone can view achievements"
+  ON achievements FOR SELECT
+  USING (true);
+
 -- Insert some default achievements
 INSERT INTO achievements (name_en, name_vi, description_en, description_vi, icon, requirement_type, requirement_value, points) VALUES
 ('First Steps', 'Bước đầu tiên', 'Complete your first lesson', 'Hoàn thành bài học đầu tiên', '🎯', 'lessons_completed', 1, 10),

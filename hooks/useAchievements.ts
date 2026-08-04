@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Achievement } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLessonProgressStore } from './useLessonProgressStore';
 import { useCubeStore } from './useCubeStore';
@@ -25,7 +26,7 @@ export function useAchievements() {
   const { streak } = useStreaks();
 
   const fetchAchievements = useCallback(async () => {
-    if (!user) {
+    if (!user || !supabase) {
       setAchievements(emptyAchievements);
       setError(null);
       setLoading(false);
@@ -34,14 +35,25 @@ export function useAchievements() {
 
     try {
       setLoading(true);
-      const response = await fetch('/api/achievements');
-      if (!response.ok) {
-        console.error('Failed to fetch achievements, using empty array');
-        setAchievements(emptyAchievements);
-        return;
+      const { data, error } = await supabase
+        .from('achievements')
+        .select(`*, user_achievements (id, unlocked_at)`)
+        .order('points', { ascending: false });
+
+      if (error) {
+        throw error;
       }
-      const data = await response.json();
-      setAchievements(data);
+
+      const transformed = (data || []).map((achievement: {
+        user_achievements?: Array<{ unlocked_at?: string | null }> | null;
+        [key: string]: unknown;
+      }) => ({
+        ...achievement,
+        isUnlocked: Boolean(achievement.user_achievements && achievement.user_achievements.length > 0),
+        unlockedAt: achievement.user_achievements?.[0]?.unlocked_at || null
+      }));
+
+      setAchievements(transformed as AchievementWithStatus[]);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch achievements');
@@ -53,7 +65,7 @@ export function useAchievements() {
 
   const checkAchievements = async () => {
     try {
-      if (!user) {
+      if (!user || !supabase) {
         return [];
       }
 
@@ -71,27 +83,77 @@ export function useAchievements() {
         ? validTimes.reduce((a, b) => a + b, 0) / validTimes.length 
         : 0;
 
-      const response = await fetch('/api/achievements', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          lessonsCompleted,
-          algorithmsPracticed,
-          currentStreak,
-          avgTimeMs,
-          totalSolves
-        })
-      });
+      const { data: allAchievements, error: fetchError } = await supabase
+        .from('achievements')
+        .select('*')
+        .order('points', { ascending: false });
 
-      if (!response.ok) {
-        console.error('Failed to check achievements, but continuing...');
-        return [];
+      if (fetchError) throw fetchError;
+
+      const { data: userAchievements, error: userAchievementsError } = await supabase
+        .from('user_achievements')
+        .select('achievement_id')
+        .eq('user_id', user.id);
+
+      if (userAchievementsError) throw userAchievementsError;
+
+      const unlockedIds = new Set((userAchievements || []).map((ua: { achievement_id: string }) => ua.achievement_id));
+      const newlyUnlocked: Array<Record<string, unknown>> = [];
+
+      for (const achievement of allAchievements || []) {
+        if (unlockedIds.has(achievement.id)) continue;
+
+        let shouldUnlock = false;
+
+        switch (achievement.requirement_type) {
+          case 'lessons_completed':
+            shouldUnlock = lessonsCompleted >= achievement.requirement_value;
+            break;
+          case 'algorithms_practiced':
+            shouldUnlock = algorithmsPracticed >= achievement.requirement_value;
+            break;
+          case 'streak_days':
+            shouldUnlock = currentStreak >= achievement.requirement_value;
+            break;
+          case 'avg_time':
+            shouldUnlock = avgTimeMs > 0 && avgTimeMs <= achievement.requirement_value;
+            break;
+          case 'total_solves':
+            shouldUnlock = totalSolves >= achievement.requirement_value;
+            break;
+        }
+
+        if (shouldUnlock) {
+          const { error: insertError } = await supabase
+            .from('user_achievements')
+            .insert({ user_id: user.id, achievement_id: achievement.id });
+
+          if (!insertError) {
+            newlyUnlocked.push({
+              ...achievement,
+              isUnlocked: true,
+              unlockedAt: new Date().toISOString()
+            });
+          }
+        }
       }
-      const data = await response.json();
-      setAchievements(data.achievements);
-      return data.newlyUnlocked || [];
+
+      const { data: updatedAchievements } = await supabase
+        .from('achievements')
+        .select(`*, user_achievements (id, unlocked_at)`)
+        .order('points', { ascending: false });
+
+      const transformed = (updatedAchievements || []).map((achievement: {
+        user_achievements?: Array<{ unlocked_at?: string | null }> | null;
+        [key: string]: unknown;
+      }) => ({
+        ...achievement,
+        isUnlocked: Boolean(achievement.user_achievements && achievement.user_achievements.length > 0),
+        unlockedAt: achievement.user_achievements?.[0]?.unlocked_at || null
+      }));
+
+      setAchievements(transformed as AchievementWithStatus[]);
+      return newlyUnlocked;
     } catch (err) {
       console.error('Error checking achievements:', err);
       return [];

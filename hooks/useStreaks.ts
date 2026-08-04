@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { UserStreak } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
 const defaultStreak: UserStreak = {
@@ -20,7 +21,7 @@ export function useStreaks() {
   const { user } = useAuth();
 
   const fetchStreak = useCallback(async () => {
-    if (!user) {
+    if (!user || !supabase) {
       setStreak(defaultStreak);
       setError(null);
       setLoading(false);
@@ -29,13 +30,23 @@ export function useStreaks() {
 
     try {
       setLoading(true);
-      const response = await fetch('/api/streaks');
-      if (!response.ok) {
-        setStreak(defaultStreak);
-        return;
+      const { data, error } = await supabase
+        .from('user_streaks')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
       }
-      const data = await response.json();
-      setStreak(data);
+
+      setStreak(
+        data || {
+          current_streak: 0,
+          longest_streak: 0,
+          last_activity_date: null
+        }
+      );
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch streak');
@@ -47,18 +58,27 @@ export function useStreaks() {
 
   const updateStreak = async () => {
     try {
-      if (!user) {
+      if (!user || !supabase) {
         return null;
       }
 
-      const response = await fetch('/api/streaks', { method: 'POST' });
-      if (!response.ok) {
+      const { error } = await supabase.rpc('update_user_streak', {
+        user_uuid: user.id
+      });
+
+      if (error) {
         console.error('Failed to update streak, but continuing...');
         return null;
       }
-      const data = await response.json();
-      setStreak(data);
-      return data;
+
+      const { data } = await supabase
+        .from('user_streaks')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      setStreak(data || defaultStreak);
+      return data || defaultStreak;
     } catch (err) {
       console.error('Error updating streak:', err);
       return null;
