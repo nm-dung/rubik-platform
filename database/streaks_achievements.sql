@@ -92,6 +92,54 @@ CREATE TABLE IF NOT EXISTS achievements (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Clean up duplicate achievement rows before adding the uniqueness guard.
+WITH ranked AS (
+  SELECT id,
+         name_en,
+         requirement_type,
+         requirement_value,
+         ROW_NUMBER() OVER (
+           PARTITION BY name_en, requirement_type, requirement_value
+           ORDER BY created_at ASC, id ASC
+         ) AS rn
+  FROM achievements
+), keep_rows AS (
+  SELECT id AS keep_id,
+         name_en,
+         requirement_type,
+         requirement_value
+  FROM ranked
+  WHERE rn = 1
+)
+UPDATE user_achievements ua
+SET achievement_id = kr.keep_id
+FROM ranked r
+JOIN keep_rows kr
+  ON kr.name_en = r.name_en
+ AND kr.requirement_type = r.requirement_type
+ AND kr.requirement_value = r.requirement_value
+WHERE ua.achievement_id = r.id
+  AND r.rn > 1;
+
+WITH ranked AS (
+  SELECT id,
+         name_en,
+         requirement_type,
+         requirement_value,
+         ROW_NUMBER() OVER (
+           PARTITION BY name_en, requirement_type, requirement_value
+           ORDER BY created_at ASC, id ASC
+         ) AS rn
+  FROM achievements
+)
+DELETE FROM achievements a
+USING ranked r
+WHERE a.id = r.id
+  AND r.rn > 1;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_achievements_unique_name_req
+  ON achievements (name_en, requirement_type, requirement_value);
+
 -- Enable RLS and expose achievements publicly so the app can read them.
 ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Anyone can view achievements" ON achievements;

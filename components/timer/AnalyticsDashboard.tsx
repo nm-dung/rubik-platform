@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo } from "react";
-import { GripVertical, Minus, Maximize2, Minimize2, X } from "lucide-react";
+import { GripVertical, Maximize2, Minimize2, X } from "lucide-react";
 import { TrendPoint } from "@/lib/timerAnalytics";
 
 interface AnalyticsDashboardProps {
   show: boolean;
-  isMinimized: boolean;
   isFullscreen: boolean;
   position: { x: number; y: number };
   isDragging: boolean;
@@ -14,7 +13,6 @@ interface AnalyticsDashboardProps {
   analyticsCards: Record<string, React.ReactNode>;
   timerState: 'idle' | 'ready' | 'inspecting' | 'solving';
   onClose: () => void;
-  onToggleMinimize: () => void;
   onToggleFullscreen: () => void;
   onStartDrag: (e: React.MouseEvent) => void;
   onCardOrderChange: (newOrder: string[]) => void;
@@ -22,7 +20,6 @@ interface AnalyticsDashboardProps {
 
 export function AnalyticsDashboard({
   show,
-  isMinimized,
   isFullscreen,
   position,
   isDragging,
@@ -30,7 +27,6 @@ export function AnalyticsDashboard({
   analyticsCards,
   timerState,
   onClose,
-  onToggleMinimize,
   onToggleFullscreen,
   onStartDrag,
   onCardOrderChange,
@@ -53,6 +49,8 @@ export function AnalyticsDashboard({
     localStorage.setItem('analyticsCardOrder', JSON.stringify(cardOrder));
   };
 
+
+
   if (!show) return null;
 
   return (
@@ -62,7 +60,7 @@ export function AnalyticsDashboard({
         transition-opacity duration-200 flex flex-col bg-slate-50/90 backdrop-blur-md shadow-2xl z-[100]
         ${timerState === 'solving' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
         ${isFullscreen 
-          ? 'fixed inset-0 !w-full !h-full rounded-none m-0 top-0 left-0 border-0' 
+          ? 'fixed inset-0 !w-full !h-full rounded-none m-0 top-0 left-0 border-0 p-4' 
           : 'absolute w-[360px] h-[450px] border border-slate-200 rounded-2xl resize overflow-hidden min-w-[320px] min-h-[350px] pb-1 pr-1'}
       `}
     >
@@ -76,13 +74,7 @@ export function AnalyticsDashboard({
         </span>
         <div className="flex items-center gap-1.5" onMouseDown={(e) => e.stopPropagation()}>
           <button 
-            onClick={onToggleMinimize} 
-            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded transition-colors"
-          >
-            <Minus size={14} />
-          </button>
-          <button 
-            onClick={() => { onToggleFullscreen(); onToggleMinimize(); }} 
+            onClick={onToggleFullscreen} 
             className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded transition-colors"
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
@@ -97,25 +89,25 @@ export function AnalyticsDashboard({
       </div>
 
       {/* Inner Wrapper */}
-      {!isMinimized && (
-        <div className={`p-3 flex flex-col gap-3 flex-1 min-h-0 ${isFullscreen ? 'overflow-hidden' : 'overflow-y-auto'}`}>
-          {cardOrder.map(id => {
-            const card = analyticsCards[id];
-            if (!card) return null;
-            return (
-              <div 
-                key={id}
-                draggable
-                onDragStart={() => handleDragStart(id)}
-                onDragOver={(e) => handleDragOver(e, id)}
-                onDrop={handleDrop}
-              >
-                {card}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <div className={`p-3 flex flex-col gap-3 flex-1 min-h-0 ${isFullscreen ? 'overflow-hidden h-full' : 'overflow-y-auto'}`}>
+        {cardOrder.map(id => {
+          const card = analyticsCards[id];
+          if (!card) return null;
+          return (
+            <div 
+              key={id}
+              draggable
+              onDragStart={() => handleDragStart(id)}
+              onDragOver={(e) => handleDragOver(e, id)}
+              onDrop={handleDrop}
+              className={id === 'chart' ? 'flex-1 min-h-0 w-full h-full' : ''}
+              style={id === 'chart' && isFullscreen ? { minHeight: '400px' } : {}}
+            >
+              {card}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

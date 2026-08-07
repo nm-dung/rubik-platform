@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Algorithm, AlgorithmPracticeStats } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
@@ -33,10 +33,14 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const [currentAlgorithm, setCurrentAlgorithm] = useState<Algorithm | null>(null);
   const [sessionResults, setSessionResults] = useState<{ algorithmId: string; time: number }[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [lastCompletedTime, setLastCompletedTime] = useState(0);
   const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
   const [loading, setLoading] = useState(true);
+  
+  const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load algorithms
   useEffect(() => {
@@ -86,23 +90,6 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
     return () => clearInterval(interval);
   }, [isRunning, startTime]);
 
-  // Spacebar controls
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === 'Space' && state === 'training') {
-        e.preventDefault();
-        if (isRunning) {
-          handleStopTimer();
-        } else {
-          handleStartTimer();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isRunning, state]);
-
   const selectedAlgorithms = algorithms.filter(alg => selectedIds.includes(alg.id));
 
   const getRandomAlgorithm = useCallback(() => {
@@ -116,35 +103,78 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
     setState('training');
     setCurrentAlgorithm(getRandomAlgorithm());
     setSessionResults([]);
-  };
-
-  const handleStartTimer = () => {
-    setIsRunning(true);
-    setStartTime(Date.now());
-    setCurrentTime(0);
-  };
-
-  const handleStopTimer = () => {
-    if (!isRunning || !currentAlgorithm) return;
+    setIsReady(false);
     setIsRunning(false);
-    const finalTime = startTime === null ? currentTime : Date.now() - startTime;
-
-    // Save the result with the final time
-    setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
-
-    // Move to random next algorithm
-    setCurrentAlgorithm(getRandomAlgorithm());
-
-    // Reset timer for next start
-    setCurrentTime(0);
     setStartTime(null);
+    setCurrentTime(0);
+    setLastCompletedTime(0);
   };
 
   const handleReset = () => {
     setIsRunning(false);
     setStartTime(null);
     setCurrentTime(0);
+    setLastCompletedTime(0);
+    setIsReady(false);
   };
+
+  // Spacebar controls with CSTimer-style hold-to-release logic
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && state === 'training' && !isRunning) {
+        e.preventDefault();
+        
+        // Clear any existing timeouts
+        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+        
+        // Set ready state after holding for 100ms
+        readyTimeoutRef.current = setTimeout(() => {
+          setIsReady(true);
+        }, 100);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && state === 'training') {
+        e.preventDefault();
+        
+        // Clear timeout
+        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+        
+        if (isReady && !isRunning) {
+          // Start timer when releasing space after being ready
+          setIsRunning(true);
+          setStartTime(Date.now());
+          setCurrentTime(0);
+          setLastCompletedTime(0);
+          setIsReady(false);
+        } else if (isRunning) {
+          // Stop timer when pressing space while running
+          setIsRunning(false);
+          const finalTime = startTime === null ? currentTime : Date.now() - startTime;
+          setLastCompletedTime(finalTime);
+          setCurrentTime(finalTime);
+          setStartTime(null);
+          
+          if (currentAlgorithm) {
+            setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
+            setCurrentAlgorithm(getRandomAlgorithm());
+          }
+        } else {
+          // Reset ready state if released before ready
+          setIsReady(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+    };
+  }, [state, isRunning, isReady, startTime, currentTime, currentAlgorithm, getRandomAlgorithm]);
 
   const handleBackToSelection = () => {
     setState('selection');
@@ -252,21 +282,65 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
 
             {/* Timer */}
             <div className="text-center mb-6 sm:mb-8">
-              <div className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 mb-4 sm:mb-6 font-mono">
-                {formatTime(currentTime)}
+              <div className={`text-5xl sm:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 font-mono transition-colors duration-200 ${
+                isReady ? 'text-emerald-500' : isRunning ? 'text-slate-900' : 'text-slate-900'
+              }`}>
+                {formatTime(isRunning ? currentTime : lastCompletedTime)}
               </div>
               <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
                 {!isRunning ? (
                   <button
-                    onClick={handleStartTimer}
-                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg text-sm sm:text-base"
+                    onMouseDown={() => {
+                      // Clear any existing timeouts
+                      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+                      
+                      // Set ready state after holding for 100ms
+                      readyTimeoutRef.current = setTimeout(() => {
+                        setIsReady(true);
+                      }, 100);
+                    }}
+                    onMouseUp={() => {
+                      // Clear timeout
+                      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+                      
+                      if (isReady) {
+                        // Start timer when releasing after being ready
+                        setIsRunning(true);
+                        setStartTime(Date.now());
+                        setCurrentTime(0);
+                        setLastCompletedTime(0);
+                        setIsReady(false);
+                      } else {
+                        // Reset ready state if released before ready
+                        setIsReady(false);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      // Clear timeout if mouse leaves button
+                      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+                      setIsReady(false);
+                    }}
+                    className={`flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-white font-bold rounded-xl transition-all shadow-lg text-sm sm:text-base ${
+                      isReady ? 'bg-emerald-500' : 'bg-emerald-600 hover:bg-emerald-700'
+                    }`}
                   >
                     <Play className="w-4 h-4 sm:w-6 sm:h-6" />
-                    Start (Space)
+                    {isReady ? 'Release to Start' : 'Hold Space (100ms)'}
                   </button>
                 ) : (
                   <button
-                    onClick={handleStopTimer}
+                    onClick={() => {
+                      setIsRunning(false);
+                      const finalTime = startTime === null ? currentTime : Date.now() - startTime;
+                      setLastCompletedTime(finalTime);
+                      setCurrentTime(finalTime);
+                      setStartTime(null);
+                      
+                      if (currentAlgorithm) {
+                        setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
+                        setCurrentAlgorithm(getRandomAlgorithm());
+                      }
+                    }}
                     className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg text-sm sm:text-base"
                   >
                     <Square className="w-4 h-4 sm:w-6 sm:h-6" />

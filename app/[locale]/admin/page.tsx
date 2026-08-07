@@ -40,7 +40,7 @@ export default function AdminDashboardPage({
   return (
     <AdminGuard>
       <div className="space-y-8">
-        <div>
+        <div className="animate-fade-in">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome to Admin Panel</h2>
           <p className="text-slate-600">
             Manage content, algorithms, and lessons for the Rubik's Learning Platform
@@ -48,7 +48,7 @@ export default function AdminDashboardPage({
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {quickActions.map((action) => {
+          {quickActions.map((action, index) => {
             const Icon = action.icon;
             const bgColor = {
               indigo: 'bg-indigo-50 border-indigo-200',
@@ -72,14 +72,15 @@ export default function AdminDashboardPage({
               <Link
                 key={action.href}
                 href={action.href}
-                className={`block rounded-2xl border ${bgColor} p-6 transition-all hover:shadow-lg`}
+                className={`block rounded-2xl border ${bgColor} p-6 transition-all duration-300 hover:shadow-xl hover:shadow-${action.color}-500/20 hover:-translate-y-1 hover:scale-105 animate-fade-in`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Icon className={`h-8 w-8 ${iconColor} mb-3`} />
+                <Icon className={`h-8 w-8 ${iconColor} mb-3 transition-transform duration-300 group-hover:scale-110`} />
                 <h3 className="font-bold text-slate-900 mb-1">{action.title}</h3>
                 <p className="text-sm text-slate-600 mb-4">{action.description}</p>
                 <button
                   onClick={(e) => e.preventDefault()}
-                  className={`text-sm font-semibold text-white px-4 py-2 rounded-full ${buttonColor} transition-colors`}
+                  className={`text-sm font-semibold text-white px-4 py-2 rounded-full ${buttonColor} transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-${action.color}-500/30`}
                 >
                   Go
                 </button>
@@ -88,7 +89,7 @@ export default function AdminDashboardPage({
           })}
         </div>
 
-        <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-6">
+        <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-6 animate-fade-in" style={{ animationDelay: '400ms' }}>
           <h3 className="font-bold text-slate-900 mb-4">Recent Activity</h3>
           <p className="text-sm text-slate-600">
             Activity logs will be displayed here. Currently, no recent activity.

@@ -139,7 +139,9 @@ async function ensureDefaultAchievements(supabase: Awaited<ReturnType<typeof cre
 
   const { error: insertError } = await supabase
     .from('achievements')
-    .insert(defaultAchievements);
+    .upsert(defaultAchievements, {
+      onConflict: 'name_en, requirement_type, requirement_value'
+    });
 
   if (insertError) {
     throw insertError;

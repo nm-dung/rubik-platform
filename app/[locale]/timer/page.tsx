@@ -113,7 +113,6 @@ export default function TimerPage() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   
   // Dashboard states
-  const [isAnalyticsMinimized, setIsAnalyticsMinimized] = useState(false);
   const [isAnalyticsFullscreen, setIsAnalyticsFullscreen] = useState(false);
   const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
   const [isDraggingAnalytics, setIsDraggingAnalytics] = useState(false);
@@ -340,9 +339,25 @@ export default function TimerPage() {
           y: Math.max(20, (window.innerHeight - 450) / 2)
         });
       }
-      if (isAnalyticsMinimized) setIsAnalyticsMinimized(false);
     }
     setShowAnalytics(prev => !prev);
+  };
+
+  const handleToggleFullscreen = () => {
+    setIsAnalyticsFullscreen(prev => !prev);
+    // Force chart size recalculation after fullscreen change
+    setTimeout(() => {
+      setChartSize(prev => ({ w: 1, h: 1 })); // Force re-render
+      setTimeout(() => {
+        const chartContainer = document.querySelector('[data-chart-container]');
+        if (chartContainer) {
+          const rect = chartContainer.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            setChartSize({ w: rect.width, h: rect.height });
+          }
+        }
+      }, 50);
+    }, 100);
   };
 
   const startWidgetDrag = (e: React.MouseEvent) => {
@@ -360,13 +375,31 @@ export default function TimerPage() {
     }
     if (node) {
       const observer = new ResizeObserver((entries) => {
-        const { width, height } = entries[0].contentRect;
-        if (width > 0 && height > 0) {
-          setChartSize(prev => (prev.w === width && prev.h === height) ? prev : { w: width, h: height });
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          if (width > 0 && height > 0) {
+            setChartSize(prev => (prev.w === width && prev.h === height) ? prev : { w: width, h: height });
+          }
         }
       });
       observer.observe(node);
       resizeObserverRef.current = observer;
+      
+      // Initial size calculation with delay to ensure container is rendered
+      setTimeout(() => {
+        const rect = node.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setChartSize({ w: rect.width, h: rect.height });
+        }
+      }, 100);
+      
+      // Additional size calculation attempts
+      setTimeout(() => {
+        const rect = node.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setChartSize({ w: rect.width, h: rect.height });
+        }
+      }, 300);
     }
   }, []);
 
@@ -438,7 +471,6 @@ export default function TimerPage() {
         {/* Analytics Widget */}
         <AnalyticsDashboard
           show={mounted && showAnalytics}
-          isMinimized={isAnalyticsMinimized}
           isFullscreen={isAnalyticsFullscreen}
           position={cardPosition}
           isDragging={isDraggingAnalytics}
@@ -446,8 +478,7 @@ export default function TimerPage() {
           analyticsCards={analyticsCards}
           timerState={timerState}
           onClose={() => setShowAnalytics(false)}
-          onToggleMinimize={() => setIsAnalyticsMinimized(!isAnalyticsMinimized)}
-          onToggleFullscreen={() => { setIsAnalyticsFullscreen(!isAnalyticsFullscreen); setIsAnalyticsMinimized(false); }}
+          onToggleFullscreen={handleToggleFullscreen}
           onStartDrag={startWidgetDrag}
           onCardOrderChange={setCardOrder}
         />

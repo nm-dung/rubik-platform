@@ -111,7 +111,7 @@ export function AnalyticsCards({
       </div>
     ),
     chart: (
-      <div key="chart" className="relative p-4 bg-white rounded-xl shadow-sm border border-slate-100 cursor-move flex-1 min-h-[120px] flex flex-col overflow-hidden">
+      <div key="chart" className="relative p-4 bg-white rounded-xl shadow-sm border border-slate-100 cursor-move flex-1 min-h-[120px] flex flex-col overflow-hidden w-full h-full">
         <div className="absolute top-2 left-2 cursor-move z-10"><GripVertical size={14} className="text-slate-300" /></div>
         
         {hoveredPoint !== null && visibleTrendPoints[hoveredPoint] && (
@@ -126,7 +126,7 @@ export function AnalyticsCards({
           </div>
         )}
 
-        <div ref={onChartRef}>
+        <div ref={onChartRef} className="flex-1 min-h-0 w-full h-full relative" style={{ minHeight: '200px' }} data-chart-container>
           <TimerGraph
             visibleTrendPoints={visibleTrendPoints}
             showTimeLine={showTimeLine}

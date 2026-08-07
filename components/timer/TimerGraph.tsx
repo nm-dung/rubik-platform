@@ -47,11 +47,14 @@ export function TimerGraph({
     if (!graphData || visibleTrendPoints.length === 0) return null;
     const { minVal, range } = graphData;
 
-    const PADDING = { top: 10, right: 10, bottom: 25, left: 40 };
+    const PADDING = { top: 20, right: 10, bottom: 45, left: 40 };
     const innerWidth = Math.max(10, chartSize.w - PADDING.left - PADDING.right);
     const innerHeight = Math.max(10, chartSize.h - PADDING.top - PADDING.bottom);
 
-    const mapX = (index: number) => PADDING.left + (index / Math.max(visibleTrendPoints.length - 1, 1)) * innerWidth;
+    const mapX = (index: number) => {
+      if (visibleTrendPoints.length === 1) return PADDING.left + innerWidth / 2;
+      return PADDING.left + (index / Math.max(visibleTrendPoints.length - 1, 1)) * innerWidth;
+    };
     const mapY = (val: number) => PADDING.top + ((graphData.maxVal - val) / range) * innerHeight;
 
     const getPoints = (series: 'time' | 'ao5' | 'ao12') => {
@@ -70,10 +73,12 @@ export function TimerGraph({
     return (
       <svg 
         ref={svgRef}
-        viewBox={`0 0 ${chartSize.w} ${chartSize.h}`} 
-        className="h-full w-full cursor-crosshair overflow-visible block" 
+        width="100%"
+        height="100%"
+        className="cursor-crosshair overflow-visible block" 
         onMouseMove={handleGraphMouseMove}
         onMouseLeave={() => onHoverPoint(null)}
+        style={{ minHeight: '200px' }}
       >
         {/* Y Axis Guides */}
         {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
@@ -136,7 +141,7 @@ export function TimerGraph({
 
   return (
     <div className="flex-1 w-full pt-4 min-h-0 relative">
-      {visibleTrendPoints.length > 0 ? renderGraphLines() : (
+      {visibleTrendPoints.length > 0 && chartSize.w > 0 && chartSize.h > 0 ? renderGraphLines() : (
         <div className="absolute inset-0 flex items-center justify-center border border-dashed border-slate-200 rounded-lg text-sm text-slate-400 bg-slate-50">
           Solve a few times to see your trend chart.
         </div>

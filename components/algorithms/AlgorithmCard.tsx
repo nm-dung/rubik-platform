@@ -136,11 +136,14 @@ export default function AlgorithmCard({
   }
 
   return (
-    <div className={`group relative flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 border rounded-xl sm:rounded-2xl bg-white hover:shadow-xl transition-all duration-300 ${
-      isLearned ? 'border-emerald-400 bg-emerald-50/10' : 'border-slate-200 hover:border-indigo-100'
+    <div className={`group relative flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 border rounded-xl sm:rounded-2xl bg-white hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 overflow-hidden ${
+      isLearned ? 'border-emerald-400 bg-emerald-50/10' : 'border-slate-200 hover:border-indigo-300'
     }`}>
+      
+      {/* Animated gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-indigo-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="w-full h-24 sm:h-32 bg-slate-50 rounded-lg sm:rounded-xl flex-shrink-0 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-colors">
+      <div className="w-full h-24 sm:h-32 bg-slate-50 rounded-lg sm:rounded-xl flex-shrink-0 flex items-center justify-center border border-slate-100 group-hover:bg-white group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 relative z-10">
         {alg.image_url ? (
           <img src={alg.image_url} alt={alg.name_en} className="w-full h-full object-contain p-2 mix-blend-multiply" />
         ) : (
@@ -148,25 +151,25 @@ export default function AlgorithmCard({
         )}
       </div>
 
-      <div className="flex-grow flex flex-col">
+      <div className="flex-grow flex flex-col relative z-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
           <div className="w-full">
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all duration-300">
                 {locale === 'vi' ? alg.name_vi : alg.name_en}
               </h3>
               {isLearned && (
-                <span className="text-emerald-500 bg-emerald-100 p-1 rounded-full">
+                <span className="text-emerald-500 bg-emerald-100 p-1 rounded-full animate-pulse">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
               )}
             </div>
             <div className="flex flex-wrap gap-2 mt-1">
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded uppercase tracking-tighter border border-indigo-100">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded uppercase tracking-tighter border border-indigo-100 group-hover:scale-110 group-hover:bg-indigo-100 transition-all duration-300">
                 {alg.difficulty || alg.category}
               </span>
               {stats && stats.practice_count > 0 && (
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded uppercase tracking-tighter border border-emerald-100">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded uppercase tracking-tighter border border-emerald-100 group-hover:scale-110 group-hover:bg-emerald-100 transition-all duration-300">
                   Avg: {formatTime(stats.avg_time_ms || 0)}s ({stats.practice_count}×)
                 </span>
               )}
@@ -176,17 +179,17 @@ export default function AlgorithmCard({
           <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => setShowPractice(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 transition-all shadow-sm active:scale-95"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95"
             >
               <span>Practice</span>
             </button>
 
             <button
               onClick={() => toggleLearned(alg.id)}
-              className={`p-2 rounded-lg transition-all border ${
+              className={`p-2 rounded-lg transition-all border hover:scale-110 ${
                 isLearned
-                  ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600'
-                  : 'text-slate-400 bg-white border-slate-200 hover:border-emerald-400 hover:text-emerald-500'
+                  ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30'
+                  : 'text-slate-400 bg-white border-slate-200 hover:border-emerald-400 hover:text-emerald-500 hover:shadow-md'
               }`}
               title="Mark as learned"
             >
@@ -195,7 +198,7 @@ export default function AlgorithmCard({
           </div>
         </div>
 
-        <div className="mt-auto p-3 sm:p-4 bg-slate-900 rounded-lg sm:rounded-xl shadow-inner font-mono text-sm sm:text-lg text-indigo-300 tracking-widest overflow-x-auto whitespace-nowrap">
+        <div className="mt-auto p-3 sm:p-4 bg-slate-900 rounded-lg sm:rounded-xl shadow-inner font-mono text-sm sm:text-lg text-indigo-300 tracking-widest overflow-x-auto whitespace-nowrap group-hover:bg-slate-800 group-hover:shadow-inner-lg transition-all duration-300 relative z-10">
           {alg.notation}
         </div>
 

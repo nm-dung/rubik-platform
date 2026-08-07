@@ -83,22 +83,26 @@ export default function AlgorithmLibrary() {
   const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-slate-50 rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col h-[600px]">
+    <div className="w-full max-w-3xl mx-auto bg-slate-50 rounded-3xl border border-slate-200 shadow-xl overflow-hidden flex flex-col h-[600px] hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
 
       <div className="bg-white px-6 pt-6 border-b border-slate-200">
         <h2 className="text-2xl font-black text-slate-800 mb-4">Algorithm Library</h2>
         <div className="flex gap-4">
-          {CATEGORIES.map((cat) => (
+          {CATEGORIES.map((cat, index) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`pb-3 px-2 text-sm font-bold uppercase tracking-wide border-b-2 transition-colors ${
+              className={`pb-3 px-2 text-sm font-bold uppercase tracking-wide border-b-2 transition-all duration-300 hover:scale-110 relative ${
                 activeCategory === cat
                   ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               {cat}
+              {activeCategory === cat && (
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 animate-pulse" />
+              )}
             </button>
           ))}
         </div>
@@ -106,21 +110,27 @@ export default function AlgorithmLibrary() {
 
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
         {loading && (
-          <div className="text-center text-slate-400 py-10 font-medium">
+          <div className="text-center text-slate-400 py-10 font-medium animate-pulse">
             Loading algorithms...
           </div>
         )}
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-shake">
             {error}
           </div>
         )}
         {!loading && !error && filteredAlgs.length > 0 ? (
-          filteredAlgs.map((alg) => (
-            <AlgorithmCard key={alg.id} alg={alg} stats={stats[alg.id]} />
+          filteredAlgs.map((alg, index) => (
+            <div 
+              key={alg.id} 
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <AlgorithmCard key={alg.id} alg={alg} stats={stats[alg.id]} />
+            </div>
           ))
         ) : !loading && !error ? (
-          <div className="text-center text-slate-400 py-10 font-medium">
+          <div className="text-center text-slate-400 py-10 font-medium animate-fade-in">
             No algorithms added for {activeCategory} yet.
           </div>
         ) : null}
