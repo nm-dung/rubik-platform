@@ -133,7 +133,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
               {user ? (
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-gray-600 hidden sm:block">
-                    {profile?.username || user.email}
+                    {profile?.username || 'User'}
                   </span>
                   <Link
                     href={`/${locale}/settings`}

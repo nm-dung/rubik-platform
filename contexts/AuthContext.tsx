@@ -62,31 +62,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
-      setUser(currentUser);
-      if (currentUser) {
-        loadProfile(currentUser.id);
+    const supabaseClient = supabase;
+
+    // Check active session on mount
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        console.log('Initial session check:', session ? 'Session found' : 'No session');
+        const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
+        setUser(currentUser);
+        if (currentUser) {
+          await loadProfile(currentUser.id);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
-      setUser(currentUser);
-      if (currentUser) {
-        await loadProfile(currentUser.id);
-      } else {
-        setProfile(null);
-      }
-      setLoading(false);
-    });
+    let subscription: { unsubscribe: () => void } | null = null;
+    if (supabaseClient) {
+      const {
+        data: { subscription: sub },
+      } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
+        
+        // Skip INITIAL_SESSION event since we already check session on mount
+        if (event === 'INITIAL_SESSION') {
+          return;
+        }
+        
+        const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
+        setUser(currentUser);
+        if (currentUser) {
+          await loadProfile(currentUser.id);
+        } else {
+          setProfile(null);
+        }
+        setLoading(false);
+      });
+      subscription = sub;
+    }
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
