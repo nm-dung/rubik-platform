@@ -39,10 +39,10 @@ export default function AdminDashboardPage({
 
   return (
     <AdminGuard>
-      <div className="space-y-8">
+      <div className="space-y-8 bg-white dark:bg-gray-900 min-h-screen p-4 sm:p-8">
         <div className="animate-fade-in">
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome to Admin Panel</h2>
-          <p className="text-slate-600">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome to Admin Panel</h2>
+          <p className="text-slate-600 dark:text-slate-300">
             Manage content, algorithms, and lessons for the Rubik's Learning Platform
           </p>
         </div>
@@ -51,21 +51,21 @@ export default function AdminDashboardPage({
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             const bgColor = {
-              indigo: 'bg-indigo-50 border-indigo-200',
-              emerald: 'bg-emerald-50 border-emerald-200',
-              amber: 'bg-amber-50 border-amber-200',
+              indigo: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800',
+              emerald: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800',
+              amber: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800',
             }[action.color];
 
             const iconColor = {
-              indigo: 'text-indigo-600',
-              emerald: 'text-emerald-600',
-              amber: 'text-amber-600',
+              indigo: 'text-indigo-600 dark:text-indigo-400',
+              emerald: 'text-emerald-600 dark:text-emerald-400',
+              amber: 'text-amber-600 dark:text-amber-400',
             }[action.color];
 
             const buttonColor = {
-              indigo: 'bg-indigo-600 hover:bg-indigo-700',
-              emerald: 'bg-emerald-600 hover:bg-emerald-700',
-              amber: 'bg-amber-600 hover:bg-amber-700',
+              indigo: 'bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600',
+              emerald: 'bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600',
+              amber: 'bg-amber-600 dark:bg-amber-500 hover:bg-amber-700 dark:hover:bg-amber-600',
             }[action.color];
 
             return (
@@ -76,8 +76,8 @@ export default function AdminDashboardPage({
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <Icon className={`h-8 w-8 ${iconColor} mb-3 transition-transform duration-300 group-hover:scale-110`} />
-                <h3 className="font-bold text-slate-900 mb-1">{action.title}</h3>
-                <p className="text-sm text-slate-600 mb-4">{action.description}</p>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">{action.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{action.description}</p>
                 <button
                   onClick={(e) => e.preventDefault()}
                   className={`text-sm font-semibold text-white px-4 py-2 rounded-full ${buttonColor} transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-${action.color}-500/30`}
@@ -89,9 +89,9 @@ export default function AdminDashboardPage({
           })}
         </div>
 
-        <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-6 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="font-bold text-slate-900 mb-4">Recent Activity</h3>
-          <p className="text-sm text-slate-600">
+        <div className="mt-12 rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 animate-fade-in" style={{ animationDelay: '400ms' }}>
+          <h3 className="font-bold text-slate-900 dark:text-white mb-4">Recent Activity</h3>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Activity logs will be displayed here. Currently, no recent activity.
           </p>
         </div>

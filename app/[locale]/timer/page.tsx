@@ -470,7 +470,7 @@ export default function TimerPage() {
   }, [analytics, showTimeLine, showAo5Line, showAo12Line, analyticsRange, visibleTrendPoints, chartSize, graphData, displaySolves, hoveredPoint, handleChartRef]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-slate-50 select-none overflow-hidden font-sans">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-slate-50 dark:bg-gray-900 select-none overflow-hidden font-sans">
       
       {/* Sidebar */}
       <TimerSidebar
@@ -493,7 +493,7 @@ export default function TimerPage() {
       />
 
       {/* Main Timer View */}
-      <main className="flex-grow flex flex-col items-center justify-center p-8 relative overflow-hidden h-full">
+      <main className="flex-grow flex flex-col items-center justify-center p-8 relative overflow-hidden h-full bg-white dark:bg-gray-900">
         <TimerControls
           showAnalytics={showAnalytics}
           useInspection={useInspection}

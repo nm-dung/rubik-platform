@@ -42,11 +42,11 @@ export default async function LessonDetailPage({
   }
 
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-900 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-6 sm:pt-8 lg:px-10">
         <Link
           href={`/${locale}/learn`}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
         >
           <ArrowLeft className="w-4 h-4" />
           {locale === "vi" ? "Quay lại lộ trình" : "Back to learning path"}

@@ -57,31 +57,31 @@ export function AnalyticsDashboard({
     <div 
       style={isFullscreen ? {} : { left: position.x, top: position.y }}
       className={`
-        transition-opacity duration-200 flex flex-col bg-slate-50/90 backdrop-blur-md shadow-2xl z-[100]
+        transition-opacity duration-200 flex flex-col bg-slate-50/90 dark:bg-gray-800/90 backdrop-blur-md shadow-2xl z-[100]
         ${timerState === 'solving' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
         ${isFullscreen 
           ? 'fixed inset-0 !w-full !h-full rounded-none m-0 top-0 left-0 border-0 p-4' 
-          : 'absolute w-[360px] h-[450px] border border-slate-200 rounded-2xl resize overflow-hidden min-w-[320px] min-h-[350px] pb-1 pr-1'}
+          : 'absolute w-[360px] h-[450px] border border-slate-200 dark:border-gray-700 rounded-2xl resize overflow-hidden min-w-[320px] min-h-[350px] pb-1 pr-1'}
       `}
     >
       {/* Widget Header */}
       <div 
-        className={`flex items-center justify-between px-4 py-3 border-b border-slate-200/50 shrink-0 ${isFullscreen ? '' : 'cursor-move active:cursor-grabbing'}`}
+        className={`flex items-center justify-between px-4 py-3 border-b border-slate-200/50 dark:border-gray-700/50 shrink-0 ${isFullscreen ? '' : 'cursor-move active:cursor-grabbing'}`}
         onMouseDown={onStartDrag}
       >
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 pointer-events-none">
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 pointer-events-none">
           Analytics Dashboard
         </span>
         <div className="flex items-center gap-1.5" onMouseDown={(e) => e.stopPropagation()}>
           <button 
             onClick={onToggleFullscreen} 
-            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded transition-colors"
+            className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-gray-700/50 rounded transition-colors"
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
           <button 
             onClick={onClose} 
-            className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+            className="p-1 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
           >
             <X size={14} />
           </button>

@@ -108,30 +108,30 @@ export default function ContributionRequestForm({ lessonId, lessonTitle, locale 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 p-4">
       <div className="flex items-center gap-2">
-        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-        <h4 className="text-lg font-black text-slate-900">{text.title}</h4>
+        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+        <h4 className="text-lg font-black text-slate-900 dark:text-white">{text.title}</h4>
       </div>
-      <p className="text-sm text-slate-600">{text.description}</p>
+      <p className="text-sm text-slate-600 dark:text-slate-300">{text.description}</p>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <label className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           <span className="mb-1 block">{text.name}</span>
           <input
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-slate-900 dark:text-white"
             placeholder={locale === "vi" ? "Ví dụ: Linh" : "e.g. Alex"}
           />
         </label>
 
-        <label className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           <span className="mb-1 block">{text.role}</span>
           <select
             value={form.role}
             onChange={(event) => setForm({ ...form, role: event.target.value })}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-slate-900 dark:text-white"
           >
             {Object.entries(text.roleOptions).map(([value, label]) => (
               <option key={value} value={value}>
@@ -142,12 +142,12 @@ export default function ContributionRequestForm({ lessonId, lessonTitle, locale 
         </label>
       </div>
 
-      <label className="block text-sm font-medium text-slate-700">
+      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
         <span className="mb-1 block">{text.type}</span>
         <select
           value={form.type}
           onChange={(event) => setForm({ ...form, type: event.target.value })}
-          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-slate-900 dark:text-white"
         >
           {Object.entries(text.typeOptions).map(([value, label]) => (
             <option key={value} value={value}>
@@ -157,12 +157,12 @@ export default function ContributionRequestForm({ lessonId, lessonTitle, locale 
         </select>
       </label>
 
-      <label className="block text-sm font-medium text-slate-700">
+      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
         <span className="mb-1 block">{text.details}</span>
         <textarea
           value={form.details}
           onChange={(event) => setForm({ ...form, details: event.target.value })}
-          className="min-h-24 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+          className="min-h-24 w-full rounded-xl border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-slate-900 dark:text-white"
           placeholder={locale === "vi" ? "Ví dụ: Tôi muốn thêm một video giải thích F2L" : "e.g. I want to add a short video explaining F2L"}
         />
       </label>
@@ -170,16 +170,16 @@ export default function ContributionRequestForm({ lessonId, lessonTitle, locale 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center gap-2 rounded-full bg-indigo-600 dark:bg-indigo-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-70"
       >
         <SendHorizonal className="w-4 h-4" />
         {isSubmitting ? (locale === "vi" ? "Đang gửi..." : "Sending...") : text.submit}
       </button>
 
       {submitted ? (
-        <p className="text-sm font-medium text-emerald-700">{text.success}</p>
+        <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{text.success}</p>
       ) : null}
-      {error ? <p className="text-sm font-medium text-amber-700">{error}</p> : null}
+      {error ? <p className="text-sm font-medium text-amber-700 dark:text-amber-400">{error}</p> : null}
     </form>
   );
 }

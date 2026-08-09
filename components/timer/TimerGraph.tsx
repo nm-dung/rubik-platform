@@ -86,8 +86,8 @@ export function TimerGraph({
           const y = mapY(val);
           return (
             <g key={`y-${ratio}`}>
-              <line x1={PADDING.left} y1={y} x2={chartSize.w - PADDING.right} y2={y} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4 4" />
-              <text x={PADDING.left - 8} y={y + 4} fontSize="11" fill="#9ca3af" textAnchor="end" className="font-mono select-none">{val.toFixed(1)}s</text>
+              <line x1={PADDING.left} y1={y} x2={chartSize.w - PADDING.right} y2={y} stroke="#e5e7eb" className="dark:stroke-gray-700" strokeWidth="1" strokeDasharray="4 4" />
+              <text x={PADDING.left - 8} y={y + 4} fontSize="11" fill="#9ca3af" className="dark:fill-gray-500 font-mono select-none">{val.toFixed(1)}s</text>
             </g>
           );
         })}
@@ -99,18 +99,18 @@ export function TimerGraph({
           const x = mapX(idx);
           const solveNumber = displaySolves.length - visibleTrendPoints.length + idx + 1;
           return (
-            <text key={`x-${ratio}`} x={x} y={chartSize.h - 5} fontSize="11" fill="#9ca3af" textAnchor="middle" className="font-mono select-none">#{solveNumber}</text>
+            <text key={`x-${ratio}`} x={x} y={chartSize.h - 5} fontSize="11" fill="#9ca3af" className="dark:fill-gray-500 font-mono select-none">#{solveNumber}</text>
           );
         })}
 
         {/* Axis Base Lines */}
-        <line x1={PADDING.left} y1={chartSize.h - PADDING.bottom} x2={chartSize.w - PADDING.right} y2={chartSize.h - PADDING.bottom} stroke="#d1d5db" strokeWidth="2" />
-        <line x1={PADDING.left} y1={PADDING.top} x2={PADDING.left} y2={chartSize.h - PADDING.bottom} stroke="#d1d5db" strokeWidth="2" />
+        <line x1={PADDING.left} y1={chartSize.h - PADDING.bottom} x2={chartSize.w - PADDING.right} y2={chartSize.h - PADDING.bottom} stroke="#d1d5db" className="dark:stroke-gray-600" strokeWidth="2" />
+        <line x1={PADDING.left} y1={PADDING.top} x2={PADDING.left} y2={chartSize.h - PADDING.bottom} stroke="#d1d5db" className="dark:stroke-gray-600" strokeWidth="2" />
 
         {/* Data Polylines */}
-        {showTimeLine && <polyline fill="none" stroke="#94a3b8" strokeWidth="2" points={getPoints('time')} strokeLinejoin="round" />}
-        {showAo5Line && <polyline fill="none" stroke="#ef4444" strokeWidth="3" points={getPoints('ao5')} strokeLinejoin="round" />}
-        {showAo12Line && <polyline fill="none" stroke="#3b82f6" strokeWidth="3" points={getPoints('ao12')} strokeLinejoin="round" />}
+        {showTimeLine && <polyline fill="none" stroke="#94a3b8" className="dark:stroke-gray-400" strokeWidth="2" points={getPoints('time')} strokeLinejoin="round" />}
+        {showAo5Line && <polyline fill="none" stroke="#ef4444" className="dark:stroke-red-400" strokeWidth="3" points={getPoints('ao5')} strokeLinejoin="round" />}
+        {showAo12Line && <polyline fill="none" stroke="#3b82f6" className="dark:stroke-blue-400" strokeWidth="3" points={getPoints('ao12')} strokeLinejoin="round" />}
 
         {/* Hover State Renderer */}
         {hoveredPoint !== null && visibleTrendPoints[hoveredPoint] && (
@@ -121,17 +121,18 @@ export function TimerGraph({
               x2={mapX(hoveredPoint)} 
               y2={chartSize.h - PADDING.bottom} 
               stroke="#cbd5e1" 
+              className="dark:stroke-gray-600"
               strokeWidth="1" 
               strokeDasharray="4 4" 
             />
             {showTimeLine && visibleTrendPoints[hoveredPoint].timeSeconds && (
-              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].timeSeconds!)} r="4" fill="#94a3b8" />
+              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].timeSeconds!)} r="4" fill="#94a3b8" className="dark:fill-gray-400" />
             )}
             {showAo5Line && visibleTrendPoints[hoveredPoint].ao5Seconds && (
-              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].ao5Seconds!)} r="4" fill="#ef4444" />
+              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].ao5Seconds!)} r="4" fill="#ef4444" className="dark:fill-red-400" />
             )}
             {showAo12Line && visibleTrendPoints[hoveredPoint].ao12Seconds && (
-              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].ao12Seconds!)} r="4" fill="#3b82f6" />
+              <circle cx={mapX(hoveredPoint)} cy={mapY(visibleTrendPoints[hoveredPoint].ao12Seconds!)} r="4" fill="#3b82f6" className="dark:fill-blue-400" />
             )}
           </g>
         )}
@@ -142,7 +143,7 @@ export function TimerGraph({
   return (
     <div className="flex-1 w-full pt-4 min-h-0 relative">
       {visibleTrendPoints.length > 0 && chartSize.w > 0 && chartSize.h > 0 ? renderGraphLines() : (
-        <div className="absolute inset-0 flex items-center justify-center border border-dashed border-slate-200 rounded-lg text-sm text-slate-400 bg-slate-50">
+        <div className="absolute inset-0 flex items-center justify-center border border-dashed border-slate-200 dark:border-gray-700 rounded-lg text-sm text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-gray-800">
           Solve a few times to see your trend chart.
         </div>
       )}

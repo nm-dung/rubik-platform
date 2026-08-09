@@ -34,7 +34,7 @@ export default async function RootLayout({
 
   return (
     <html lang={resolvedParams.locale as 'en' | 'vi'}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white dark:bg-gray-900`}>
         <AuthProvider>
           <ToastContainer />
           

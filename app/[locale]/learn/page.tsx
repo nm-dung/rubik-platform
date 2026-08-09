@@ -86,13 +86,13 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
   };
 
   if (loading || !dict) {
-    return <div className="p-20 text-center font-bold text-slate-400">Loading...</div>;
+    return <div className="p-20 text-center font-bold text-slate-400 dark:text-slate-500 bg-white dark:bg-gray-900 min-h-screen">Loading...</div>;
   }
 
   if (error) {
     return (
-      <main className="max-w-5xl mx-auto p-8">
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+      <main className="max-w-5xl mx-auto p-8 bg-white dark:bg-gray-900 min-h-screen">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
           {error}
         </div>
       </main>
@@ -100,15 +100,15 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
   }
 
   return (
-    <main className="max-w-6xl mx-auto p-4 sm:p-8">
+    <main className="max-w-6xl mx-auto p-4 sm:p-8 bg-white dark:bg-gray-900 min-h-screen">
       {/* Hero Section */}
       <section className="mb-8 sm:mb-16">
         <div className="flex flex-col gap-4 mb-4">
           <div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-2 sm:mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-2 sm:mb-4">
               {dict.learn.title}
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-2xl">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl">
               Choose your learning path. Start from zero as a complete beginner, or improve specific skills if you already know the basics.
             </p>
           </div>
@@ -124,17 +124,17 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
       {/* Beginner Path - Structured, Linear */}
       <section className="mb-8 sm:mb-16">
         <div className="flex items-center gap-3 mb-4 sm:mb-6">
-          <div className="p-2 sm:p-3 bg-green-100 rounded-lg">
-            <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+          <div className="p-2 sm:p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+            <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Beginner Path</h2>
-            <p className="text-sm sm:text-base text-slate-600">Complete beginner? Start here. Step-by-step lessons to your first solve.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Beginner Path</h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Complete beginner? Start here. Step-by-step lessons to your first solve.</p>
           </div>
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
-          <p className="text-xs sm:text-sm text-green-800">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <p className="text-xs sm:text-sm text-green-800 dark:text-green-400">
             <strong>Linear progression:</strong> Complete lessons in order. Each lesson builds on the previous one.
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
                 </div>
               ))
           ) : (
-            <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+            <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 dark:border-gray-700 rounded-xl text-slate-400 dark:text-slate-500">
               {searchQuery ? 'No lessons found matching your search.' : 'Beginner lessons coming soon...'}
             </div>
           )}
@@ -165,17 +165,17 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
       {/* Advanced Path - Self-Directed */}
       <section>
         <div className="flex items-center gap-3 mb-4 sm:mb-6">
-          <div className="p-2 sm:p-3 bg-purple-100 rounded-lg">
-            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+          <div className="p-2 sm:p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Advanced Path</h2>
-            <p className="text-sm sm:text-base text-slate-600">Already know the basics? Choose lessons to improve specific skills.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Advanced Path</h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Already know the basics? Choose lessons to improve specific skills.</p>
           </div>
         </div>
 
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
-          <p className="text-xs sm:text-sm text-purple-800">
+        <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <p className="text-xs sm:text-sm text-purple-800 dark:text-purple-400">
             <strong>Self-directed:</strong> Choose any lesson. Focus on CFOP, F2L, OLL, PLL, or advanced techniques.
           </p>
         </div>
@@ -192,7 +192,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
                 />
               ))
           ) : (
-            <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+            <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 dark:border-gray-700 rounded-xl text-slate-400 dark:text-slate-500">
               {searchQuery ? 'No lessons found matching your search.' : 'Advanced lessons coming soon...'}
             </div>
           )}

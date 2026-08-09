@@ -41,13 +41,13 @@ export function TimerSidebar({
   expandedId,
 }: TimerSidebarProps) {
   return (
-    <aside className="w-80 border-r border-slate-200 bg-white hidden md:flex flex-col shadow-sm z-10 relative">
-      <div className="p-4 border-b border-slate-100">
+    <aside className="w-80 border-r border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 hidden md:flex flex-col shadow-sm z-10 relative">
+      <div className="p-4 border-b border-slate-100 dark:border-gray-700">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sessions</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Sessions</h2>
           <button 
             onClick={() => onAddSession(`Session ${sessions.length + 1}`)} 
-            className="text-indigo-600 text-[10px] font-bold hover:underline"
+            className="text-indigo-600 dark:text-indigo-400 text-[10px] font-bold hover:underline"
           >
             + NEW
           </button>
@@ -55,35 +55,35 @@ export function TimerSidebar({
         <select 
           value={activeSessionId} 
           onChange={(e) => onSetActiveSession(e.target.value)} 
-          className="w-full p-2 bg-slate-50 border border-slate-200 rounded text-sm font-medium outline-none cursor-pointer"
+          className="w-full p-2 bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded text-sm font-medium outline-none cursor-pointer text-slate-900 dark:text-white"
         >
           {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
       </div>
 
-      <div className="p-5 border-b border-slate-100 bg-slate-50/50">
+      <div className="p-5 border-b border-slate-100 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-700/50">
         <div className="grid grid-cols-2 gap-4">
           <button 
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 5)} 
-            className="flex flex-col items-start hover:bg-white p-2 rounded-lg transition-all border border-transparent hover:border-slate-200"
+            className="flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Ao5</span>
-            <span className="text-xl font-mono font-black text-indigo-600 leading-tight">{currentAo5}</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao5</span>
+            <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo5}</span>
           </button>
           <button 
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 12)} 
-            className="flex flex-col items-start hover:bg-white p-2 rounded-lg transition-all border border-transparent hover:border-slate-200"
+            className="flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Ao12</span>
-            <span className="text-xl font-mono font-black text-indigo-600 leading-tight">{currentAo12}</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao12</span>
+            <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo12}</span>
           </button>
           <div className="flex flex-col p-2">
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Solves</span>
-            <span className="text-base font-mono font-bold text-slate-700">{displaySolves.length}</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Solves</span>
+            <span className="text-base font-mono font-bold text-slate-700 dark:text-slate-300">{displaySolves.length}</span>
           </div>
           <div className="flex flex-col p-2">
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Mean</span>
-            <span className="text-base font-mono font-bold text-slate-700">{sessionMean}</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Mean</span>
+            <span className="text-base font-mono font-bold text-slate-700 dark:text-slate-300">{sessionMean}</span>
           </div>
         </div>
       </div>
@@ -102,10 +102,10 @@ export function TimerSidebar({
       </div>
       
       {displaySolves.length > 0 && (
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="p-4 border-t border-slate-100 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-700/50">
           <button 
             onClick={onClearSession} 
-            className="w-full py-2.5 text-xs font-bold text-slate-400 uppercase tracking-widest bg-white border border-slate-200 rounded-lg hover:text-red-500 transition-colors shadow-sm"
+            className="w-full py-2.5 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors shadow-sm"
           >
             Clear Session
           </button>

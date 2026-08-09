@@ -19,7 +19,7 @@ export default function LanguageSwitcher({ currentLocale }: { currentLocale: str
   return (
     <Link 
       href={redirectedPathname(targetLocale)}
-      className="px-3 py-1 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-100 hover:scale-110 hover:border-indigo-300 hover:text-indigo-600 transition-all duration-300"
+      className="px-3 py-1 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-110 hover:border-indigo-300 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 text-slate-700 dark:text-slate-300"
     >
       {targetLabel}
     </Link>

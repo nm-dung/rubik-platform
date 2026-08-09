@@ -5,8 +5,10 @@ import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check localStorage or system preference
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -33,10 +35,22 @@ export function ThemeToggle() {
     }
   };
 
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <button
+        className="p-2 rounded-lg hover:bg-slate-100 hover:scale-110 transition-all duration-300"
+        aria-label="Toggle theme"
+      >
+        <Moon className="w-5 h-5 text-slate-600" />
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-110 transition-all duration-300"
+      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-110 transition-all duration-300 touch-manipulation active:scale-95 animate-glow"
       aria-label="Toggle theme"
     >
       {isDark ? (

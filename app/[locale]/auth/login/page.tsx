@@ -41,11 +41,11 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
   const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-indigo-50 to-purple-50 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
               {isVietnamese ? "Đăng nhập" : "Sign In"}
             </h1>
             <p className="text-sm sm:text-base text-slate-600">
