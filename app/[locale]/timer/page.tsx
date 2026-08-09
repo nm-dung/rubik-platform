@@ -307,11 +307,53 @@ export default function TimerPage() {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || statsModal?.show) return;
+      e.preventDefault();
+
+      if (timerState === 'idle') {
+        setTimerState('ready');
+      } else if (timerState === 'inspecting') {
+        setIsHoldingForSolve(true);
+        setTimerState('ready');
+      } else if (timerState === 'solving') {
+        const finalTime = Date.now() - startTimeRef.current;
+        setTime(finalTime);
+        let autoPenalty: '+2' | 'DNF' | undefined = undefined;
+        if (useInspection) {
+          if (inspectionTime < 0 && inspectionTime >= -2) autoPenalty = '+2';
+          if (inspectionTime < -2) autoPenalty = 'DNF';
+        }
+        addSolve({ time: finalTime, scramble: currentScramble, penalty: autoPenalty });
+        updateStreak();
+        setTimerState('idle');
+        setInspectionTime(15);
+        setIsHoldingForSolve(false);
+        setCurrentScramble(generateScramble());
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      if (timerState === 'ready') {
+        if (useInspection && !isHoldingForSolve) {
+          setTimerState('inspecting');
+        } else {
+          startTimeRef.current = Date.now();
+          setTimerState('solving');
+        }
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: false });
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [timerState, currentScramble, addSolve, useInspection, inspectionTime, isHoldingForSolve, statsModal]);
 

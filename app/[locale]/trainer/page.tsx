@@ -167,11 +167,62 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (state === 'training' && !isRunning) {
+        e.preventDefault();
+        
+        // Clear any existing timeouts
+        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+        
+        // Set ready state after holding for 100ms
+        readyTimeoutRef.current = setTimeout(() => {
+          setIsReady(true);
+        }, 100);
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (state === 'training') {
+        e.preventDefault();
+        
+        // Clear timeout
+        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+        
+        if (isReady && !isRunning) {
+          // Start timer when releasing touch after being ready
+          setIsRunning(true);
+          setStartTime(Date.now());
+          setCurrentTime(0);
+          setLastCompletedTime(0);
+          setIsReady(false);
+        } else if (isRunning) {
+          // Stop timer when touching while running
+          setIsRunning(false);
+          const finalTime = startTime === null ? currentTime : Date.now() - startTime;
+          setLastCompletedTime(finalTime);
+          setCurrentTime(finalTime);
+          setStartTime(null);
+          
+          if (currentAlgorithm) {
+            setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
+            setCurrentAlgorithm(getRandomAlgorithm());
+          }
+        } else {
+          // Reset ready state if released before ready
+          setIsReady(false);
+        }
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
       if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
     };
   }, [state, isRunning, isReady, startTime, currentTime, currentAlgorithm, getRandomAlgorithm]);
@@ -320,12 +371,39 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                       if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
                       setIsReady(false);
                     }}
-                    className={`flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-white font-bold rounded-xl transition-all shadow-lg text-sm sm:text-base ${
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      // Clear any existing timeouts
+                      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+                      
+                      // Set ready state after holding for 100ms
+                      readyTimeoutRef.current = setTimeout(() => {
+                        setIsReady(true);
+                      }, 100);
+                    }}
+                    onTouchEnd={(e) => {
+                      e.preventDefault();
+                      // Clear timeout
+                      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+                      
+                      if (isReady) {
+                        // Start timer when releasing after being ready
+                        setIsRunning(true);
+                        setStartTime(Date.now());
+                        setCurrentTime(0);
+                        setLastCompletedTime(0);
+                        setIsReady(false);
+                      } else {
+                        // Reset ready state if released before ready
+                        setIsReady(false);
+                      }
+                    }}
+                    className={`flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-white font-bold rounded-xl transition-all shadow-lg text-sm sm:text-base touch-manipulation active:scale-95 ${
                       isReady ? 'bg-emerald-500' : 'bg-emerald-600 hover:bg-emerald-700'
                     }`}
                   >
                     <Play className="w-4 h-4 sm:w-6 sm:h-6" />
-                    {isReady ? 'Release to Start' : 'Hold Space (100ms)'}
+                    {isReady ? 'Release to Start' : 'Touch or Hold Space (100ms)'}
                   </button>
                 ) : (
                   <button
@@ -341,10 +419,10 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                         setCurrentAlgorithm(getRandomAlgorithm());
                       }
                     }}
-                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg text-sm sm:text-base"
+                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all shadow-lg text-sm sm:text-base touch-manipulation active:scale-95"
                   >
                     <Square className="w-4 h-4 sm:w-6 sm:h-6" />
-                    Stop (Space)
+                    Stop (Touch or Space)
                   </button>
                 )}
                 <button

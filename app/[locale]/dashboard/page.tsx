@@ -261,83 +261,83 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
       </div>
 
       {/* Stats Grid - Modern Floating Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-12 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12 relative z-10">
         {/* Lessons Completed */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
-              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50 touch-manipulation active:scale-95">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-indigo-100 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-indigo-600" />
             </div>
-            <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 sm:px-3 py-1 rounded-full">
+            <div className="text-[10px] sm:text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 sm:px-3 py-1 rounded-full">
               {dashboardDict?.lessons || "Lessons"}
             </div>
           </div>
-          <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{completedLessonIds.length}</div>
-          <div className="text-xs sm:text-sm text-slate-500">
+          <div className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{completedLessonIds.length}</div>
+          <div className="text-[10px] sm:text-xs sm:text-sm text-slate-500">
             {dashboardDict?.completed || "Completed"}
           </div>
         </div>
 
         {/* Total Reviews */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50 touch-manipulation active:scale-95">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-purple-100 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-600" />
             </div>
-            <div className="text-xs font-semibold text-purple-600 bg-purple-50 px-2 sm:px-3 py-1 rounded-full">
+            <div className="text-[10px] sm:text-xs font-semibold text-purple-600 bg-purple-50 px-2 sm:px-3 py-1 rounded-full">
               {dashboardDict?.reviews || "Reviews"}
             </div>
           </div>
-          <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{totalReviews}</div>
-          <div className="text-xs sm:text-sm text-slate-500">
+          <div className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{totalReviews}</div>
+          <div className="text-[10px] sm:text-xs sm:text-sm text-slate-500">
             {dashboardDict?.total || "Total"}
           </div>
         </div>
 
         {/* Algorithms Learned */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50 touch-manipulation active:scale-95">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-emerald-100 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-emerald-600" />
             </div>
-            <div className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full">
+            <div className="text-[10px] sm:text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full">
               {dashboardDict?.algorithms || "Algorithms"}
             </div>
           </div>
-          <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{mounted ? learnedAlgs.length : 0}</div>
-          <div className="text-xs sm:text-sm text-slate-500">
+          <div className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{mounted ? learnedAlgs.length : 0}</div>
+          <div className="text-[10px] sm:text-xs sm:text-sm text-slate-500">
             {dashboardDict?.learned || "Learned"}
           </div>
         </div>
 
         {/* Timer Solves */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
-              <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-white/50 touch-manipulation active:scale-95">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-600" />
             </div>
-            <div className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 sm:px-3 py-1 rounded-full">
+            <div className="text-[10px] sm:text-xs font-semibold text-orange-600 bg-orange-50 px-2 sm:px-3 py-1 rounded-full">
               {dashboardDict?.solves || "Solves"}
             </div>
           </div>
-          <div className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{timerStats.totalSolves}</div>
-          <div className="text-xs sm:text-sm text-slate-500">
+          <div className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-1">{timerStats.totalSolves}</div>
+          <div className="text-[10px] sm:text-xs sm:text-sm text-slate-500">
             {dashboardDict?.current_session || "Current session"}
           </div>
         </div>
       </div>
 
       {/* Streak Card - Modern Design */}
-      <div className="bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-white shadow-2xl mb-6 sm:mb-12 relative overflow-hidden transform hover:scale-[1.02] transition-all duration-300">
-        <div className="absolute -right-8 -top-8 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute -left-8 -bottom-8 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full blur-2xl" />
+      <div className="bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 text-white shadow-2xl mb-4 sm:mb-6 md:mb-12 relative overflow-hidden transform hover:scale-[1.02] transition-all duration-300 touch-manipulation active:scale-95">
+        <div className="absolute -right-4 -top-4 sm:-right-8 sm:-top-8 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute -left-4 -bottom-4 sm:-left-8 sm:-bottom-8 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-white/10 rounded-full blur-2xl" />
         
         <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
             <div className="relative">
-              <Flame className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 animate-pulse" />
+              <Flame className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 animate-pulse" />
               {streak?.current_streak && streak.current_streak >= 7 && (
-                <div className="absolute -top-2 -right-2 bg-yellow-300 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full animate-bounce">
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full animate-bounce">
                   🔥
                 </div>
               )}

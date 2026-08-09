@@ -13,6 +13,7 @@ export interface Dictionary {
     trainer?: string;
     timer?: string;
     admin?: string;
+    community?: string;
   };
   footer: {
     rights: string;
@@ -57,6 +58,16 @@ export interface Dictionary {
     points: string;
     unlocked: string;
     total_points: string;
+  };
+  community: {
+    title: string;
+    description: string;
+    leaderboards: string;
+    forums: string;
+    challenges: string;
+    user_profiles: string;
+    progress_sharing: string;
+    tournaments: string;
   };
   [key: string]: unknown;
 }

@@ -8,7 +8,8 @@
     "learn": "Learn",
     "algorithms": "Algorithms",
     "trainer": "Trainer",
-    "timer": "Timer"
+    "timer": "Timer",
+    "community": "Community"
   },
   "footer": {
     "rights": "All rights reserved."
@@ -59,6 +60,16 @@
     "points": "points",
     "unlocked": "Unlocked",
     "total_points": "Total Points"
+  },
+  "community": {
+    "title": "Community",
+    "description": "Connect with fellow cubers",
+    "leaderboards": "Leaderboards",
+    "forums": "Forums",
+    "challenges": "Challenges",
+    "user_profiles": "User Profiles",
+    "progress_sharing": "Progress Sharing",
+    "tournaments": "Tournaments"
   }
   
 }

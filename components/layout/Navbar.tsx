@@ -94,6 +94,20 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             }`} />
           </Link>
 
+          <Link 
+            href={`/${locale}/community`} 
+            className={`text-sm font-medium relative py-2 px-1 transition-all duration-300 hover:scale-110 ${
+              isActive(`/${locale}/community`) 
+                ? 'text-indigo-600' 
+                : 'text-gray-600 hover:text-indigo-600'
+            }`}
+          >
+            {dict.community || "Community"}
+            <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transition-all duration-300 ${
+              isActive(`/${locale}/community`) ? 'scale-x-100' : 'scale-x-0 hover:scale-x-100'
+            }`} />
+          </Link>
+
           {!loading && user && (
             <Link 
               href={`/${locale}/dashboard`} 
@@ -137,7 +151,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                   </span>
                   <Link
                     href={`/${locale}/settings`}
-                    className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 hover:scale-110 ${
+                    className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 hover:scale-110 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
                       isActive(`/${locale}/settings`) ? 'text-indigo-600' : 'text-gray-500 hover:text-indigo-600'
                     }`}
                   >
@@ -148,16 +162,16 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                   </Link>
                   <button
                     onClick={signOut}
-                    className="text-sm font-medium text-red-600 hover:text-red-700 hover:scale-110 transition-all duration-300"
+                    className="text-sm font-medium text-red-600 hover:text-red-700 hover:scale-110 transition-all duration-300 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95"
                   >
                     {isVietnamese ? "Đăng xuất" : "Sign out"}
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <Link
                     href={`/${locale}/auth/login`}
-                    className={`text-sm font-medium transition-all duration-300 hover:scale-110 ${
+                    className={`text-sm font-medium transition-all duration-300 hover:scale-110 px-3 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
                       isActive(`/${locale}/auth/login`) ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'
                     }`}
                   >
@@ -165,7 +179,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                   </Link>
                   <Link
                     href={`/${locale}/auth/signup`}
-                    className={`text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 ${
+                    className={`text-sm font-medium bg-indigo-600 text-white px-4 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-indigo-700 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation ${
                       isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700' : ''
                     }`}
                   >
@@ -180,7 +194,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 hover:scale-110 transition-all duration-300"
+          className="md:hidden p-3 sm:p-4 rounded-lg hover:bg-gray-100 hover:scale-110 transition-all duration-300 touch-manipulation active:scale-95"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -190,10 +204,10 @@ export default function Navbar({ dict, locale }: NavbarProps) {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white">
-          <nav className="flex flex-col p-4 space-y-2">
+          <nav className="flex flex-col p-3 sm:p-4 space-y-1 sm:space-y-2">
             <Link
               href={`/${locale}/learn`}
-              className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                 isActive(`/${locale}/learn`) 
                   ? 'text-indigo-600 bg-indigo-50' 
                   : 'text-gray-600'
@@ -207,7 +221,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             </Link>
             <Link
               href={`/${locale}/algorithms`}
-              className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                 isActive(`/${locale}/algorithms`) 
                   ? 'text-indigo-600 bg-indigo-50' 
                   : 'text-gray-600'
@@ -221,7 +235,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             </Link>
             <Link
               href={`/${locale}/trainer`}
-              className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                 isActive(`/${locale}/trainer`) 
                   ? 'text-indigo-600 bg-indigo-50' 
                   : 'text-gray-600'
@@ -235,7 +249,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             </Link>
             <Link
               href={`/${locale}/timer`}
-              className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                 isActive(`/${locale}/timer`) 
                   ? 'text-indigo-600 bg-indigo-50' 
                   : 'text-gray-600'
@@ -247,10 +261,24 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                 isActive(`/${locale}/timer`) ? 'h-8' : 'h-0 hover:h-6'
               }`} />
             </Link>
+            <Link
+              href={`/${locale}/community`}
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
+                isActive(`/${locale}/community`) 
+                  ? 'text-indigo-600 bg-indigo-50' 
+                  : 'text-gray-600'
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {dict.community || "Community"}
+              <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-indigo-600 rounded-r-full transition-all duration-300 ${
+                isActive(`/${locale}/community`) ? 'h-8' : 'h-0 hover:h-6'
+              }`} />
+            </Link>
             {!loading && user && (
               <Link
                 href={`/${locale}/dashboard`}
-                className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+                className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                   isActive(`/${locale}/dashboard`) 
                     ? 'text-indigo-600 bg-indigo-50' 
                     : 'text-gray-600'
@@ -265,7 +293,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             )}
             <Link
               href={`/${locale}/admin`}
-              className={`text-sm font-medium relative py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 ${
+              className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 touch-manipulation active:scale-95 ${
                 isActive(`/${locale}/admin`) 
                   ? 'text-indigo-600 bg-indigo-50' 
                   : 'text-gray-600'
@@ -278,7 +306,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
               }`} />
             </Link>
 
-            <div className="border-t border-gray-200 pt-4 flex items-center gap-4">
+            <div className="border-t border-gray-200 pt-3 sm:pt-4 flex items-center gap-3 sm:gap-4">
               <ThemeToggle />
               <LanguageSwitcher currentLocale={locale} />
             </div>
@@ -286,14 +314,14 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             {!loading && (
               <>
                 {user ? (
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
-                    <span className="text-sm text-gray-600 block">
-                      {profile?.username || user.email}
+                  <div className="border-t border-gray-200 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
+                    <span className="text-sm text-gray-600 block py-2">
+                      {profile?.username || 'User'}
                     </span>
                     <Link
                       href={`/${locale}/settings`}
-                      className={`text-sm font-medium transition-all duration-300 flex items-center gap-2 py-2 hover:scale-105 ${
-                        isActive(`/${locale}/settings`) ? 'text-indigo-600' : 'text-gray-500 hover:text-indigo-600'
+                      className={`text-sm font-medium transition-all duration-300 flex items-center gap-2 py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 ${
+                        isActive(`/${locale}/settings`) ? 'text-indigo-600 bg-indigo-50' : 'text-gray-500 hover:text-indigo-600'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -305,17 +333,17 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                         signOut();
                         setMobileMenuOpen(false);
                       }}
-                      className="text-sm font-medium text-red-600 hover:text-red-700 hover:scale-105 transition-all duration-300 py-2 w-full text-left"
+                      className="text-sm font-medium text-red-600 hover:text-red-700 hover:scale-105 transition-all duration-300 py-3 px-2 touch-manipulation active:scale-95 rounded-lg hover:bg-red-50 w-full text-left"
                     >
                       {isVietnamese ? "Đăng xuất" : "Sign out"}
                     </button>
                   </div>
                 ) : (
-                  <div className="border-t border-gray-200 pt-4 space-y-3">
+                  <div className="border-t border-gray-200 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
                     <Link
                       href={`/${locale}/auth/login`}
-                      className={`text-sm font-medium transition-all duration-300 block py-2 hover:scale-105 ${
-                        isActive(`/${locale}/auth/login`) ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'
+                      className={`text-sm font-medium transition-all duration-300 block py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 ${
+                        isActive(`/${locale}/auth/login`) ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:text-indigo-600'
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -323,7 +351,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                     </Link>
                     <Link
                       href={`/${locale}/auth/signup`}
-                      className={`text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 block text-center ${
+                      className={`text-sm font-medium bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 block text-center touch-manipulation active:scale-95 ${
                         isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700' : ''
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
