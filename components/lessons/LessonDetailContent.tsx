@@ -15,7 +15,7 @@ interface LessonDetailContentProps {
 }
 
 const difficultyMeta: Record<LessonDifficulty, { label: string; labelVi: string; badgeClass: string }> = {
-  beginner: { label: "Beginner", labelVi: "Cơ bản", badgeClass: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800" },
+  beginner: { label: "Beginner", labelVi: "Cơ bản", badgeClass: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800" },
   intermediate: { label: "Intermediate", labelVi: "Trung cấp", badgeClass: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800" },
   advanced: { label: "Advanced", labelVi: "Nâng cao", badgeClass: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800" },
 };

@@ -13,16 +13,16 @@ interface LessonCardProps {
 const difficultyColors: Record<LessonDifficulty, { bg: string; text: string; badge: string; border: string; accent: string; badgeBorder: string }> = {
   beginner: { 
     bg: 'bg-white dark:bg-gray-800', 
-    text: 'text-green-900 dark:text-green-100', 
-    badge: 'bg-green-500 text-white border-green-600 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700',
-    border: 'border-green-200 dark:border-green-800',
-    accent: 'bg-green-500',
-    badgeBorder: 'border-2 border-green-600 dark:border-green-700'
+    text: 'text-emerald-900 dark:text-emerald-100', 
+    badge: 'bg-emerald-500 text-white dark:bg-emerald-600',
+    border: 'border-emerald-200 dark:border-emerald-800',
+    accent: 'bg-emerald-500',
+    badgeBorder: 'border-2 border-emerald-600 dark:border-emerald-700'
   },
   intermediate: { 
     bg: 'bg-white dark:bg-gray-800', 
     text: 'text-blue-900 dark:text-blue-100', 
-    badge: 'bg-blue-500 text-white border-blue-600 dark:bg-blue-900/30 text-blue-400 dark:border-blue-700',
+    badge: 'bg-blue-500 text-white dark:bg-blue-600',
     border: 'border-blue-200 dark:border-blue-800',
     accent: 'bg-blue-500',
     badgeBorder: 'border-2 border-blue-600 dark:border-blue-700'
@@ -30,7 +30,7 @@ const difficultyColors: Record<LessonDifficulty, { bg: string; text: string; bad
   advanced: { 
     bg: 'bg-white dark:bg-gray-800', 
     text: 'text-purple-900 dark:text-purple-100', 
-    badge: 'bg-purple-500 text-white border-purple-600 dark:bg-purple-900/30 text-purple-400 dark:border-purple-700',
+    badge: 'bg-purple-500 text-white dark:bg-purple-600',
     border: 'border-purple-200 dark:border-purple-800',
     accent: 'bg-purple-500',
     badgeBorder: 'border-2 border-purple-600 dark:border-purple-700'
@@ -44,6 +44,8 @@ export default function LessonCard({ lesson, locale }: LessonCardProps) {
   const title = locale === 'vi' ? lesson.title_vi : lesson.title_en;
   const description = locale === 'vi' ? lesson.description_vi : lesson.description_en;
   const colors = difficultyColors[lesson.difficulty];
+  
+
   
   const isCompleted = completedLessonIds.includes(lesson.id);
   const progress = lessonProgress[lesson.id] || { completed: false, reviewCount: 0, lastReviewed: null };

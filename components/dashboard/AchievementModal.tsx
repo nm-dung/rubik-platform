@@ -72,7 +72,7 @@ export function AchievementModal({ achievement, locale, onClose }: AchievementMo
           </div>
 
           {achievement.unlockedAt && (
-            <div className="text-center text-sm text-slate-500 dark:text-slate-400 mb-6 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 py-2 rounded-xl">
+            <div className="text-center text-sm text-slate-500 dark:text-slate-400 mb-6 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 py-2 rounded-xl">
               {isVietnamese ? '🎉 Đã mở khóa:' : '🎉 Unlocked:'} {new Date(achievement.unlockedAt).toLocaleDateString()}
             </div>
           )}

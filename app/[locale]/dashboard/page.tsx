@@ -157,21 +157,21 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
 
       {/* Achievement Slide-in Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white dark:bg-gray-800 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
           showAchievementsPanel ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="p-4 sm:p-6 h-full overflow-y-auto">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
               {dashboardDict?.achievements || "Achievements"}
             </h2>
             <button
               onClick={() => setShowAchievementsPanel(false)}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+              className="p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
-              <span className="text-xl sm:text-2xl text-slate-500">×</span>
+              <span className="text-xl sm:text-2xl text-slate-500 dark:text-slate-400">×</span>
             </button>
           </div>
 
@@ -186,11 +186,11 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
           </div>
 
           <div className="mb-3 sm:mb-4">
-            <div className="flex justify-between text-xs sm:text-sm text-slate-600 mb-2">
+            <div className="flex justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2">
               <span>{dashboardDict?.unlocked || "Unlocked"}</span>
               <span>{unlockedCount}/{achievements.length}</span>
             </div>
-            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-slate-100 dark:bg-gray-700 rounded-full overflow-hidden">
               <div 
                 className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-500" 
                 style={{ width: `${achievements.length ? (unlockedCount / achievements.length) * 100 : 0}%` }}
@@ -208,21 +208,21 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
                 }}
                 className={`w-full p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 text-left transition-all ${
                   achievement.isUnlocked
-                    ? 'border-yellow-400 bg-yellow-50 hover:bg-yellow-100 cursor-pointer'
-                    : 'border-slate-200 bg-slate-50 opacity-50 cursor-not-allowed'
+                    ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 cursor-pointer'
+                    : 'border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 opacity-50 cursor-not-allowed'
                 }`}
               >
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="text-2xl sm:text-3xl">{achievement.icon}</div>
                   <div className="flex-1">
-                    <div className="font-bold text-sm sm:text-base text-slate-900">
+                    <div className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
                       {isVietnamese ? achievement.name_vi : achievement.name_en}
                     </div>
-                    <div className="text-xs text-slate-600 mt-1">
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                       {isVietnamese ? achievement.description_vi : achievement.description_en}
                     </div>
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-orange-600">{achievement.points} pts</div>
+                  <div className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400">{achievement.points} pts</div>
                 </div>
               </button>
             ))}
@@ -426,7 +426,7 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
               <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {dashboardDict?.total_reviews || "Total Reviews"}
               </span>
-              <span className="text-lg sm:text-2xl font-black text-green-600 dark:text-green-400">{totalReviews}</span>
+              <span className="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{totalReviews}</span>
             </div>
             <div className="flex justify-between items-center p-3 sm:p-4 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-xl sm:rounded-2xl">
               <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">

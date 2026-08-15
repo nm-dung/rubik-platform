@@ -124,8 +124,8 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
       {/* Beginner Path - Structured, Linear */}
       <section className="mb-8 sm:mb-16">
         <div className="flex items-center gap-3 mb-4 sm:mb-6">
-          <div className="p-2 sm:p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+          <div className="p-2 sm:p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+            <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Beginner Path</h2>
@@ -133,8 +133,8 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
           </div>
         </div>
 
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
-          <p className="text-xs sm:text-sm text-green-800 dark:text-green-400">
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-400">
             <strong>Linear progression:</strong> Complete lessons in order. Each lesson builds on the previous one.
           </p>
         </div>

@@ -64,15 +64,15 @@ export default function CommunityPage() {
           {/* Challenges */}
           <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2 border border-gray-100 dark:border-gray-700 touch-manipulation active:scale-95 card-hover group">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-              <div className="bg-green-100 dark:bg-green-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
-                <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+              <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
+                <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">Challenges</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Challenges</h3>
             </div>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
               Participate in weekly and monthly challenges
             </p>
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-green-50 dark:group-hover:bg-green-900/20 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               Coming Soon
             </div>
           </div>
