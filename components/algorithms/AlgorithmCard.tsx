@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlgorithmPracticeSession, AlgorithmPracticeStats, Algorithm } from "@/lib/types";
 import { History, Trash2, X } from "lucide-react";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 // Helper function to get user ID
 function getUserId(): string {
@@ -47,8 +48,17 @@ export default function AlgorithmCard({
   const [historyLoading, setHistoryLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
+  const [dict, setDict] = useState<Dictionary | null>(null);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    async function loadDict() {
+      const d = await getDictionary(locale as 'en' | 'vi');
+      setDict(d);
+    }
+    loadDict();
+  }, [locale]);
 
   const isLearned = mounted ? learnedAlgs.includes(alg.id) : false;
 
@@ -159,7 +169,7 @@ export default function AlgorithmCard({
               onClick={() => router.push(`/${locale}/trainer?algorithmId=${alg.id}`)}
               className="interactive flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation"
             >
-              <span>Practice</span>
+              <span>{dict?.algorithms?.practice || 'Practice'}</span>
             </button>
 
             <button

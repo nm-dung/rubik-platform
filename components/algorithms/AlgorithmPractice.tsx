@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle2 } from "lucide-react";
+import type { Dictionary } from "@/lib/dictionary";
 import { parseAlgorithm, Move } from "@/lib/notationParser";
 import { useStreaks } from "@/hooks/useStreaks";
 
@@ -9,9 +10,10 @@ interface AlgorithmPracticeProps {
   notation: string;
   algorithmName: string;
   onComplete?: () => void;
+  dict?: Dictionary | null;
 }
 
-export function AlgorithmPractice({ notation, algorithmName, onComplete }: AlgorithmPracticeProps) {
+export function AlgorithmPractice({ notation, algorithmName, onComplete, dict }: AlgorithmPracticeProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState(false);
   const { updateStreak } = useStreaks();
@@ -44,7 +46,7 @@ export function AlgorithmPractice({ notation, algorithmName, onComplete }: Algor
   if (moves.length === 0) {
     return (
       <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 text-center">
-        <p className="text-slate-600">No algorithm notation provided</p>
+        <p className="text-slate-600">{dict?.trainer?.no_algorithm_notation || 'No algorithm notation provided'}</p>
       </div>
     );
   }
@@ -55,13 +57,13 @@ export function AlgorithmPractice({ notation, algorithmName, onComplete }: Algor
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-lg font-bold text-white">Practice Mode</h3>
+            <h3 className="text-lg font-bold text-white">{dict?.trainer?.practice_mode || 'Practice Mode'}</h3>
             <p className="text-indigo-200 text-sm">{algorithmName}</p>
           </div>
-          {completed && (
+              {completed && (
             <div className="flex items-center gap-2 bg-emerald-500 px-3 py-1 rounded-full">
               <CheckCircle2 className="w-4 h-4 text-white" />
-              <span className="text-white text-sm font-semibold">Completed</span>
+              <span className="text-white text-sm font-semibold">{dict?.trainer?.completed || 'Completed'}</span>
             </div>
           )}
         </div>
@@ -69,8 +71,8 @@ export function AlgorithmPractice({ notation, algorithmName, onComplete }: Algor
 
       {/* Progress Bar */}
       <div className="px-6 py-3 bg-slate-50 border-b border-slate-200">
-        <div className="flex justify-between text-xs text-slate-600 mb-2">
-          <span>Step {currentStep + 1} of {moves.length}</span>
+          <div className="flex justify-between text-xs text-slate-600 mb-2">
+          <span>{dict?.trainer?.step_of ? dict?.trainer?.step_of.replace('{current}', String(currentStep + 1)).replace('{total}', String(moves.length)) : `Step ${currentStep + 1} of ${moves.length}`}</span>
           <span>{Math.round(progress)}%</span>
         </div>
         <div className="w-full bg-slate-200 rounded-full h-2">
@@ -116,28 +118,28 @@ export function AlgorithmPractice({ notation, algorithmName, onComplete }: Algor
 
         {/* Navigation Controls */}
         <div className="flex justify-center gap-4">
-          <button
+            <button
             onClick={handlePrevious}
             disabled={currentStep === 0}
             className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 text-slate-700"
           >
             <ChevronLeft className="w-5 h-5" />
-            Previous
+            {dict?.trainer?.previous || 'Previous'}
           </button>
 
-          <button
+            <button
             onClick={handleReset}
             className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all bg-slate-100 hover:bg-slate-200 text-slate-700"
           >
             <RotateCcw className="w-5 h-5" />
-            Reset
+            {dict?.trainer?.reset || 'Reset'}
           </button>
 
-          <button
+            <button
             onClick={handleNext}
             className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl"
           >
-            {currentStep === moves.length - 1 ? 'Complete' : 'Next'}
+            {currentStep === moves.length - 1 ? (dict?.trainer?.complete || 'Complete') : (dict?.trainer?.next || 'Next')}
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>

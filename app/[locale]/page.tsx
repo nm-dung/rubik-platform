@@ -33,14 +33,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               href={`/${resolvedParams.locale}/dashboard`}
               className="px-6 sm:px-8 py-3 bg-indigo-600 dark:bg-indigo-500 text-white font-bold rounded-full hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all text-center shadow-lg hover:shadow-xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/20 active:scale-95"
             >
-              Go to Dashboard
+              {(dict.home as Dictionary['home']).go_to_dashboard}
             </Link>
           ) : (
             <Link
               href={`/${resolvedParams.locale}/learn`}
               className="px-6 sm:px-8 py-3 bg-indigo-600 dark:bg-indigo-500 text-white font-bold rounded-full hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all text-center shadow-lg hover:shadow-xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-400/20 active:scale-95"
             >
-              Get Started
+              {(dict.home as Dictionary['home']).get_started}
             </Link>
           )}
         </div>

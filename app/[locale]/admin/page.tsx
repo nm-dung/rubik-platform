@@ -1,36 +1,40 @@
-'use client';
-
-import { use } from 'react';
+"use client";
 import Link from 'next/link';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { BookOpen, Boxes, FileText } from 'lucide-react';
+import { use, useEffect, useState } from 'react';
+import { getDictionary } from '@/lib/dictionary';
 
-export default function AdminDashboardPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const resolvedParams = use(params);
-  const locale = resolvedParams.locale as 'en' | 'vi';
+export default function AdminDashboardPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: routeLocale } = use(params);
+  const locale = routeLocale as 'en' | 'vi';
+  const [dict, setDict] = useState<any | null>(null);
+  useEffect(() => {
+    async function loadDict() {
+      const d = await getDictionary(locale);
+      setDict(d);
+    }
+    loadDict();
+  }, [locale]);
 
   const quickActions = [
     {
-      title: 'Manage Algorithms',
-      description: 'Create, edit, and delete cube algorithms',
+      title: dict?.admin?.manage_algorithms || 'Manage Algorithms',
+      description: dict?.admin?.manage_algorithms_description || 'Create, edit, and delete cube algorithms',
       icon: Boxes,
       href: `/${locale}/admin/algorithms`,
       color: 'indigo',
     },
     {
-      title: 'Manage Lessons',
-      description: 'Create, edit, and delete learning lessons',
+      title: dict?.admin?.manage_lessons || 'Manage Lessons',
+      description: dict?.admin?.manage_lessons_description || 'Create, edit, and delete learning lessons',
       icon: BookOpen,
       href: `/${locale}/admin/lessons`,
       color: 'emerald',
     },
     {
-      title: 'Review Submissions',
-      description: 'Review content submissions from coaches',
+      title: dict?.admin?.review_submissions || 'Review Submissions',
+      description: dict?.admin?.review_submissions_description || 'Review content submissions from coaches',
       icon: FileText,
       href: `/${locale}/admin/submissions`,
       color: 'amber',
@@ -41,9 +45,9 @@ export default function AdminDashboardPage({
     <AdminGuard>
       <div className="space-y-8 bg-white dark:bg-gray-900 min-h-screen p-4 sm:p-8">
         <div className="animate-fade-in">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome to Admin Panel</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{dict?.admin?.dashboard_title || 'Welcome to Admin Panel'}</h2>
           <p className="text-slate-600 dark:text-slate-300">
-            Manage content, algorithms, and lessons for the Rubik's Learning Platform
+            {dict?.admin?.manage_content_description || "Manage content, algorithms, and lessons for the Rubik's Learning Platform"}
           </p>
         </div>
 
@@ -82,7 +86,7 @@ export default function AdminDashboardPage({
                   onClick={(e) => e.preventDefault()}
                   className={`text-sm font-semibold text-white px-4 py-2 rounded-full ${buttonColor} transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-${action.color}-500/30`}
                 >
-                  Go
+                  {dict?.admin?.go || 'Go'}
                 </button>
               </Link>
             );
@@ -90,9 +94,9 @@ export default function AdminDashboardPage({
         </div>
 
         <div className="mt-12 rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="font-bold text-slate-900 dark:text-white mb-4">Recent Activity</h3>
+          <h3 className="font-bold text-slate-900 dark:text-white mb-4">{dict?.admin?.recent_activity || 'Recent Activity'}</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Activity logs will be displayed here. Currently, no recent activity.
+            {dict?.admin?.no_recent_activity || 'Activity logs will be displayed here. Currently, no recent activity.'}
           </p>
         </div>
       </div>

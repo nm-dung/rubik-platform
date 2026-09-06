@@ -1,14 +1,14 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import { Lesson, LearningPath } from "@/lib/types";
 import LessonCard from "@/components/lessons/LessonCard";
 import { Lightbulb, Zap } from "lucide-react";
 import { SearchInput } from "@/components/ui/SearchInput";
 
-export default function LearnPage({ params }: { params: Promise<{ locale: string }> }) {
-  const resolvedParams = use(params);
+export default function LearnPage({ params }: { params: { locale: string } }) {
+  const locale = params.locale as 'en' | 'vi';
   const [dict, setDict] = useState<Dictionary | null>(null);
   const [lessons, setLessons] = useState<Record<LearningPath, Lesson[]>>({
     beginner: [],
@@ -22,7 +22,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
   useEffect(() => {
     async function loadData() {
       try {
-        const d = await getDictionary(resolvedParams.locale as 'en' | 'vi');
+        const d = await getDictionary(locale);
         setDict(d);
 
         // Fetch lessons from API
@@ -109,13 +109,13 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
               {dict.learn.title}
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 max-w-2xl">
-              Choose your learning path. Start from zero as a complete beginner, or improve specific skills if you already know the basics.
+              {dict.learn.subtitle}
             </p>
           </div>
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder={(resolvedParams.locale as 'en' | 'vi') === 'vi' ? 'Tìm kiếm bài học...' : 'Search lessons...'}
+            placeholder={dict.learn.search_placeholder}
             className="w-full sm:w-64"
           />
         </div>
@@ -128,14 +128,14 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
             <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Beginner Path</h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Complete beginner? Start here. Step-by-step lessons to your first solve.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{dict.learn.beginner_path}</h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">{dict.learn.beginner_description}</p>
           </div>
         </div>
 
         <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
           <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-400">
-            <strong>Linear progression:</strong> Complete lessons in order. Each lesson builds on the previous one.
+            {dict.learn.linear_progression}
           </p>
         </div>
 
@@ -150,13 +150,13 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
                   </div>
                   <LessonCard
                     lesson={lesson}
-                    locale={resolvedParams.locale as 'en' | 'vi'}
+                    locale={locale}
                   />
                 </div>
               ))
           ) : (
             <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 dark:border-gray-700 rounded-xl text-slate-400 dark:text-slate-500">
-              {searchQuery ? 'No lessons found matching your search.' : 'Beginner lessons coming soon...'}
+              {searchQuery ? dict.learn.no_lessons_found : dict.learn.no_beginner_lessons}
             </div>
           )}
         </div>
@@ -169,14 +169,14 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
             <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Advanced Path</h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Already know the basics? Choose lessons to improve specific skills.</p>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{dict.learn.advanced_path}</h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">{dict.learn.advanced_description}</p>
           </div>
         </div>
 
         <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
           <p className="text-xs sm:text-sm text-purple-800 dark:text-purple-400">
-            <strong>Self-directed:</strong> Choose any lesson. Focus on CFOP, F2L, OLL, PLL, or advanced techniques.
+            {dict.learn.self_directed}
           </p>
         </div>
 
@@ -193,7 +193,7 @@ export default function LearnPage({ params }: { params: Promise<{ locale: string
               ))
           ) : (
             <div className="col-span-full p-6 sm:p-12 text-center border-2 border-dashed border-slate-200 dark:border-gray-700 rounded-xl text-slate-400 dark:text-slate-500">
-              {searchQuery ? 'No lessons found matching your search.' : 'Advanced lessons coming soon...'}
+              {searchQuery ? dict.learn.no_lessons_found : dict.learn.no_advanced_lessons}
             </div>
           )}
         </div>

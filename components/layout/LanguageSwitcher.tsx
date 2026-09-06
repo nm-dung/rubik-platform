@@ -8,10 +8,10 @@ export default function LanguageSwitcher({ currentLocale }: { currentLocale: str
   const targetLocale = currentLocale === "en" ? "vi" : "en";
   const targetLabel = currentLocale === "en" ? "VI" : "EN";
 
- 
   const redirectedPathname = (locale: string) => {
-    if (!pathname) return "/";
+    if (!pathname) return `/${locale}`;
     const segments = pathname.split("/");
+    // Replace the locale segment (segment[1]) with the target locale
     segments[1] = locale;
     return segments.join("/");
   };

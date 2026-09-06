@@ -7,6 +7,7 @@ import { Algorithm, AlgorithmPracticeStats } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
 import { Play, ArrowRight, BarChart3, Clock, Trophy, RotateCcw, Square } from "lucide-react";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 type TrainerState = 'selection' | 'training' | 'summary';
 
@@ -46,6 +47,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const [loading, setLoading] = useState(true);
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [loadSucceeded, setLoadSucceeded] = useState(false);
+  const [dict, setDict] = useState<Dictionary | null>(null);
   
   const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -147,6 +149,16 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
       }
     }
   }, [algorithmId, algorithms, state]);
+
+  // Load dictionary
+  useEffect(() => {
+    async function loadDict() {
+      const locale = resolvedParams.locale as 'en' | 'vi';
+      const d = await getDictionary(locale);
+      setDict(d);
+    }
+    loadDict();
+  }, [resolvedParams.locale]);
 
   // Timer logic
   useEffect(() => {
@@ -385,8 +397,8 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   return (
     <main className="max-w-4xl mx-auto p-4 sm:p-8 bg-white dark:bg-gray-900 min-h-screen">
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2">Algorithm Trainer</h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Practice algorithms with timed sessions and track your progress</p>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2">{dict?.trainer?.title || 'Algorithm Trainer'}</h1>
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">{dict?.trainer?.description || 'Practice algorithms with timed sessions and track your progress'}</p>
       </div>
 
       {state === 'selection' && (
@@ -395,6 +407,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
             algorithms={algorithms}
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
+            dict={dict}
           />
           <div className="mt-6 flex justify-center">
             <button
@@ -403,7 +416,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
               className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-indigo-600 dark:bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all disabled:bg-slate-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed shadow-lg text-sm sm:text-base"
             >
               <Play className="w-4 h-4 sm:w-5 sm:h-5" />
-              Start Training ({selectedIds.length} algorithms)
+              {dict?.trainer?.start_training || 'Start Training'} ({selectedIds.length} {dict?.trainer?.select_algorithms || 'algorithms'})
             </button>
           </div>
         </>
@@ -415,10 +428,10 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           <div className="bg-slate-50 dark:bg-gray-800 rounded-xl p-3 sm:p-4 border border-slate-200 dark:border-gray-700">
             <div className="flex justify-between items-center gap-2">
               <span className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
-                Algorithms practiced: {sessionResults.length}
+                {dict?.trainer?.session_results || 'Session Results'}: {sessionResults.length}
               </span>
               <span className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
-                Avg: {sessionResults.length > 0 ? formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0) / sessionResults.length) : '--'}
+                {dict?.trainer?.avg || 'Avg'}: {sessionResults.length > 0 ? formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0) / sessionResults.length) : '--'}
               </span>
             </div>
           </div>
@@ -431,9 +444,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">{currentAlgorithm.name_en}</h2>
                   {stats[currentAlgorithm.id]?.practice_count > 0 && (
                     <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
-                      Best: {formatTime(stats[currentAlgorithm.id].best_time_ms || 0)} ·
-                      Avg: {formatTime(stats[currentAlgorithm.id].avg_time_ms || 0)} ·
-                      {stats[currentAlgorithm.id].practice_count} practices
+                      {dict?.trainer?.best || 'Best'}: {formatTime(stats[currentAlgorithm.id].best_time_ms || 0)} ·
+                      {dict?.trainer?.avg || 'Avg'}: {formatTime(stats[currentAlgorithm.id].avg_time_ms || 0)} ·
+                      {stats[currentAlgorithm.id].practice_count} {dict?.trainer?.practices || 'practices'}
                     </p>
                   )}
                   <div className="inline-block bg-slate-900 dark:bg-gray-950 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
@@ -444,8 +457,8 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                 </>
               ) : (
                 <div className="text-center text-slate-500 dark:text-slate-400">
-                  <p className="text-lg font-semibold mb-2">No algorithm selected</p>
-                  <p className="text-sm">Please select algorithms to practice</p>
+                  <p className="text-lg font-semibold mb-2">{dict?.trainer?.no_algorithm_selected || 'No algorithm selected'}</p>
+                  <p className="text-sm">{dict?.trainer?.select_algorithms_message || 'Please select algorithms to practice'}</p>
                 </div>
               )}
             </div>
@@ -522,7 +535,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                     }`}
                   >
                     <Play className="w-4 h-4 sm:w-6 sm:h-6" />
-                    {isReady ? 'Release to Start' : 'Touch or Hold Space (100ms)'}
+                    {isReady ? (dict?.trainer?.release_to_start || 'Release to Start') : (dict?.trainer?.hold_space || 'Touch or Hold Space (100ms)')}
                   </button>
                 ) : (
                   <button
@@ -549,7 +562,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                     className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 dark:bg-red-700 text-white font-bold rounded-xl hover:bg-red-700 dark:hover:bg-red-800 transition-all shadow-lg text-sm sm:text-base touch-manipulation active:scale-95"
                   >
                     <Square className="w-4 h-4 sm:w-6 sm:h-6" />
-                    Stop (Touch or Space)
+                    {dict?.trainer?.stop || 'Stop'} ({dict?.trainer?.touch_or_space || 'Touch or Space'})
                   </button>
                 )}
                 <button
@@ -557,7 +570,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                   className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-slate-200 dark:bg-gray-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-gray-600 transition-all text-sm sm:text-base"
                 >
                   <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Reset
+                  {dict?.trainer?.reset || 'Reset'}
                 </button>
               </div>
             </div>
@@ -568,13 +581,13 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
               onClick={handleBackToSelection}
               className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium transition-colors text-center"
             >
-              ← Back to Selection
+              ← {dict?.trainer?.back_to_selection || 'Back to Selection'}
             </button>
             <button
               onClick={handleEndSession}
               className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium transition-colors text-center"
             >
-              End Session →
+              {dict?.trainer?.end_session || 'End Session'} →
             </button>
           </div>
         </div>
@@ -587,8 +600,8 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
               <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-4">
                 <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">Training Complete!</h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">Great job practicing {sessionResults.length} algorithms</p>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">{dict?.trainer?.training_complete || 'Training Complete!'}</h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300">{dict?.trainer?.training_complete_message ? dict?.trainer?.training_complete_message.replace('{count}', String(sessionResults.length)) : `Great job practicing ${sessionResults.length} algorithms`}</p>
             </div>
 
             {/* Session Stats */}
@@ -597,25 +610,25 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                 <div className="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-1">
                   {sessionResults.length}
                 </div>
-                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Algorithms</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{dict?.trainer?.algorithms_label || 'Algorithms'}</div>
               </div>
               <div className="bg-slate-50 dark:bg-gray-700 rounded-xl p-3 sm:p-4 text-center">
                 <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mb-1">
                   {formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0))}
                 </div>
-                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Total Time</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{dict?.trainer?.total_time_label || 'Total Time'}</div>
               </div>
               <div className="bg-slate-50 dark:bg-gray-700 rounded-xl p-3 sm:p-4 text-center">
                 <div className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400 mb-1">
                   {formatTime(sessionResults.reduce((sum, r) => sum + r.time, 0) / sessionResults.length)}
                 </div>
-                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Average</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{dict?.trainer?.average_label || 'Average'}</div>
               </div>
             </div>
 
             {/* Individual Results */}
             <div className="space-y-2 sm:space-y-3">
-              <h3 className="font-bold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">Individual Results</h3>
+              <h3 className="font-bold text-slate-900 dark:text-white mb-4 text-sm sm:text-base">{dict?.trainer?.individual_results || 'Individual Results'}</h3>
               {sessionResults.map((result, index) => {
                 const alg = algorithms.find(a => a.id === result.algorithmId);
                 return (
@@ -644,7 +657,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
               className="flex items-center gap-2 px-4 sm:px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition-all text-sm sm:text-base"
             >
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
-              New Session
+              {dict?.trainer?.new_session || 'New Session'}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { Solve } from "@/hooks/useTimerStore";
 import { SolvesTable } from "./SolvesTable";
+import type { Dictionary } from "@/lib/dictionary";
 
 interface TimerSidebarProps {
   sessions: { id: string; name: string }[];
@@ -20,6 +21,7 @@ interface TimerSidebarProps {
   calculateAverageFromSlice: (solvesSlice: Solve[], count: number) => string;
   getDisplayTime: (solve: Solve) => string;
   expandedId: string | null;
+  dict?: Dictionary | null;
 }
 
 export function TimerSidebar({
@@ -39,17 +41,18 @@ export function TimerSidebar({
   calculateAverageFromSlice,
   getDisplayTime,
   expandedId,
+  dict,
 }: TimerSidebarProps) {
   return (
     <aside className="w-80 border-r border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 hidden md:flex flex-col shadow-sm z-10 relative">
       <div className="p-4 border-b border-slate-100 dark:border-gray-700">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Sessions</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">{dict?.timer?.session_history || 'Sessions'}</h2>
           <button 
-            onClick={() => onAddSession(`Session ${sessions.length + 1}`)} 
+            onClick={() => onAddSession(dict?.timer?.new_session ? `${dict?.timer?.new_session} ${sessions.length + 1}` : `Session ${sessions.length + 1}`)} 
             className="interactive text-indigo-600 dark:text-indigo-400 text-[10px] font-bold hover:underline"
           >
-            + NEW
+            + {dict?.timer?.new_session || 'NEW'}
           </button>
         </div>
         <select 
@@ -67,22 +70,22 @@ export function TimerSidebar({
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 5)} 
             className="interactive flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao5</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{dict?.timer?.ao5 || 'Ao5'}</span>
             <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo5}</span>
           </button>
           <button 
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 12)} 
             className="interactive flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao12</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{dict?.timer?.ao12 || 'Ao12'}</span>
             <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo12}</span>
           </button>
           <div className="flex flex-col p-2">
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Solves</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{dict?.timer?.solves || 'Solves'}</span>
             <span className="text-base font-mono font-bold text-slate-700 dark:text-slate-300">{displaySolves.length}</span>
           </div>
           <div className="flex flex-col p-2">
-            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Mean</span>
+            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{dict?.timer?.mean || 'Mean'}</span>
             <span className="text-base font-mono font-bold text-slate-700 dark:text-slate-300">{sessionMean}</span>
           </div>
         </div>
@@ -107,7 +110,7 @@ export function TimerSidebar({
             onClick={onClearSession} 
             className="interactive w-full py-2.5 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors shadow-sm"
           >
-            Clear Session
+            {dict?.timer?.clear_session || 'Clear Session'}
           </button>
         </div>
       )}

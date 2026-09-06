@@ -1,6 +1,7 @@
 "use client";
 
 import { Solve } from "@/hooks/useTimerStore";
+import type { Dictionary } from "@/lib/dictionary";
 
 interface StatsModalProps {
   show: boolean;
@@ -8,6 +9,7 @@ interface StatsModalProps {
   average: string;
   solves: Solve[];
   sessionName: string;
+  dict?: Dictionary | null;
   onClose: () => void;
 }
 
@@ -17,6 +19,7 @@ export function StatsModal({
   average,
   solves,
   sessionName,
+  dict,
   onClose,
 }: StatsModalProps) {
   if (!show) return null;
@@ -31,10 +34,10 @@ export function StatsModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/60 backdrop-blur-sm">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b border-slate-100 dark:border-gray-700 flex justify-between items-center bg-slate-50 dark:bg-gray-700">
+          <div className="p-6 border-b border-slate-100 dark:border-gray-700 flex justify-between items-center bg-slate-50 dark:bg-gray-700">
           <div>
-            <h3 className="text-lg font-black uppercase text-slate-800 dark:text-white tracking-tight">Record Details</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-300 font-medium">Session: {sessionName}</p>
+            <h3 className="text-lg font-black uppercase text-slate-800 dark:text-white tracking-tight">{dict?.timer?.record_details || 'Record Details'}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-300 font-medium">{(dict?.timer?.session || 'Session') + ': ' + sessionName}</p>
           </div>
           <div className="text-right">
             <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block leading-none">{type}</span>
@@ -44,7 +47,7 @@ export function StatsModal({
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           <table className="w-full text-sm font-mono">
             <thead className="text-left text-slate-400 dark:text-slate-500 uppercase text-[10px] border-b border-slate-100 dark:border-gray-700">
-              <tr><th className="pb-2 font-black">#</th><th className="pb-2 font-black">Time</th><th className="pb-2 font-black">Scramble</th></tr>
+              <tr><th className="pb-2 font-black">#</th><th className="pb-2 font-black">{dict?.timer?.time_label || 'Time'}</th><th className="pb-2 font-black">{dict?.timer?.scramble_label || 'Scramble'}</th></tr>
             </thead>
             <tbody className="divide-y divide-slate-50 dark:divide-gray-700">
               {solves.map((s, i) => (
@@ -57,12 +60,12 @@ export function StatsModal({
             </tbody>
           </table>
         </div>
-        <div className="p-4 bg-slate-50 dark:bg-gray-700 border-t border-slate-100 dark:border-gray-700 flex justify-end">
+          <div className="p-4 bg-slate-50 dark:bg-gray-700 border-t border-slate-100 dark:border-gray-700 flex justify-end">
           <button 
             onClick={onClose} 
             className="interactive px-6 py-2 bg-slate-800 dark:bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-lg active:scale-95"
           >
-            Close
+            {dict?.timer?.close || 'Close'}
           </button>
         </div>
       </div>

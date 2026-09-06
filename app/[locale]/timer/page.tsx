@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, use } from "react";
 import { useTimerStore, Solve } from "@/hooks/useTimerStore";
 import { getTimerAnalytics, formatTimerDuration } from "@/lib/timerAnalytics";
 import { TimerDisplay } from "@/components/timer/TimerDisplay";
@@ -11,6 +11,7 @@ import { AnalyticsCards } from "@/components/timer/AnalyticsCards";
 import { StatsModal } from "@/components/timer/StatsModal";
 import { RecordBar } from "@/components/timer/RecordBar";
 import { useStreaks } from "@/hooks/useStreaks";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 // --- Helper Functions ---
 const formatTime = (time: number) => (time / 1000).toFixed(2);
@@ -100,7 +101,10 @@ const getDisplayTime = (solve: Solve) => {
 };
 
 // --- Main Component ---
-export default function TimerPage() {
+export default function TimerPage({ params }: { params: Promise<{ locale: string }> }) {
+  const resolvedParams = use(params);
+  const locale = resolvedParams.locale as 'en' | 'vi';
+  
   const [time, setTime] = useState(0);
   const [currentScramble, setCurrentScramble] = useState("");
   const [timerState, setTimerState] = useState<'idle' | 'ready' | 'inspecting' | 'solving'>('idle');
@@ -111,6 +115,7 @@ export default function TimerPage() {
   const [isHoldingForSolve, setIsHoldingForSolve] = useState(false);
   const [statsModal, setStatsModal] = useState<{ show: boolean; type: string; average: string; solves: Solve[]; } | null>(null);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [dict, setDict] = useState<Dictionary | null>(null);
   
   // Dashboard states
   const [isAnalyticsFullscreen, setIsAnalyticsFullscreen] = useState(false);
@@ -215,6 +220,14 @@ export default function TimerPage() {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = originalOverflow; };
   }, []);
+
+  useEffect(() => {
+    async function loadDict() {
+      const d = await getDictionary(locale);
+      setDict(d);
+    }
+    loadDict();
+  }, [locale]);
 
   useEffect(() => {
     setMounted(true);
@@ -506,6 +519,7 @@ export default function TimerPage() {
         calculateAverageFromSlice={calculateAverageFromSlice}
         getDisplayTime={getDisplayTime}
         expandedId={expandedId}
+        dict={dict}
       />
 
       {/* Main Timer View */}
@@ -515,6 +529,7 @@ export default function TimerPage() {
           useInspection={useInspection}
           onToggleAnalytics={handleToggleAnalytics}
           onToggleInspection={() => setUseInspection(!useInspection)}
+          dict={dict}
         />
 
         <TimerDisplay
@@ -524,6 +539,7 @@ export default function TimerPage() {
           inspectionTime={inspectionTime}
           isHoldingForSolve={isHoldingForSolve}
           formatTime={formatTime}
+          dict={dict}
         />
 
         {/* Analytics Widget */}
@@ -548,6 +564,7 @@ export default function TimerPage() {
           bestAo5={bestAo5}
           bestAo12={bestAo12}
           onOpenPBModal={openPBModal}
+          dict={dict}
         />
       </main>
 
@@ -558,6 +575,7 @@ export default function TimerPage() {
         average={statsModal?.average || ''}
         solves={statsModal?.solves || []}
         sessionName={sessions.find(s => s.id === activeSessionId)?.name || ''}
+        dict={dict}
         onClose={() => setStatsModal(null)}
       />
     </div>

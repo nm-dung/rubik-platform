@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 export default function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
@@ -15,6 +16,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dict, setDict] = useState<Dictionary | null>(null);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -22,6 +24,15 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
       router.push(`/${resolvedParams.locale as 'en' | 'vi'}`);
     }
   }, [user, router, resolvedParams.locale as 'en' | 'vi']);
+
+  // Load dictionary
+  useEffect(() => {
+    async function loadDict() {
+      const d = await getDictionary(resolvedParams.locale as 'en' | 'vi');
+      setDict(d);
+    }
+    loadDict();
+  }, [resolvedParams.locale]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,21 +49,16 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
     }
   };
 
-  const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8">
       <div className="max-w-md w-full">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">
-              {isVietnamese ? "Đăng nhập" : "Sign In"}
+              {dict?.auth?.login_title || 'Sign In'}
             </h1>
             <p className="text-sm sm:text-base text-slate-600">
-              {isVietnamese 
-                ? "Chào mừng trở lại với Rubik's Learning Platform"
-                : "Welcome back to Rubik's Learning Platform"
-              }
+              {dict?.auth?.login_subtitle || 'Welcome back to Rubik\'s Learning Platform'}
             </p>
           </div>
 
@@ -65,7 +71,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                {isVietnamese ? "Email" : "Email"}
+                {dict?.auth?.email || 'Email'}
               </label>
               <input
                 id="email"
@@ -74,13 +80,13 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
-                placeholder={isVietnamese ? "email@example.com" : "email@example.com"}
+                placeholder="email@example.com"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                {isVietnamese ? "Mật khẩu" : "Password"}
+                {dict?.auth?.password || 'Password'}
               </label>
               <input
                 id="password"
@@ -89,7 +95,7 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
-                placeholder={isVietnamese ? "••••••••" : "••••••••"}
+                placeholder="••••••••"
               />
             </div>
 
@@ -101,22 +107,22 @@ export default function LoginPage({ params }: { params: Promise<{ locale: string
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                  {isVietnamese ? "Đang đăng nhập..." : "Signing in..."}
+                  {dict?.auth?.login_button || 'Sign In'}...
                 </>
               ) : (
-                isVietnamese ? "Đăng nhập" : "Sign In"
+                dict?.auth?.login_button || 'Sign In'
               )}
             </button>
           </form>
 
           <div className="mt-4 sm:mt-6 text-center">
             <p className="text-sm text-slate-600">
-              {isVietnamese ? "Chưa có tài khoản?" : "Don't have an account?"}{" "}
+              {dict?.auth?.no_account || "Don't have an account?"}{" "}
               <Link
                 href={`/${resolvedParams.locale as 'en' | 'vi'}/auth/signup`}
                 className="text-indigo-600 font-semibold hover:text-indigo-700"
               >
-                {isVietnamese ? "Đăng ký" : "Sign up"}
+                {dict?.auth?.sign_up || 'Sign up'}
               </Link>
             </p>
           </div>

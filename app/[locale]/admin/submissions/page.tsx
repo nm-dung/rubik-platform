@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Submissions Review Page
@@ -24,17 +24,14 @@ interface ContributionRequest {
   created_at: string;
 }
 
-export default function SubmissionsReviewPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const resolvedParams = use(params);
-  const locale = resolvedParams.locale as 'en' | 'vi';
+export default function SubmissionsReviewPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: routeLocale } = use(params);
+  const locale = routeLocale as 'en' | 'vi';
   const [submissions, setSubmissions] = useState<ContributionRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
   const [selectedSubmission, setSelectedSubmission] = useState<ContributionRequest | null>(null);
+
 
   useEffect(() => {
     loadSubmissions();

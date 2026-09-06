@@ -2,9 +2,22 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, MessageSquare, Trophy, Share2, Calendar, TrendingUp } from "lucide-react";
+import { use, useEffect, useState } from "react";
+import { getDictionary } from "@/lib/dictionary";
 
-export default function CommunityPage() {
+export default function CommunityPage({ params }: { params: Promise<{ locale: string }> }) {
   const { user, loading } = useAuth();
+  const { locale: routeLocale } = use(params);
+  const locale = routeLocale as 'en' | 'vi';
+  const [dict, setDict] = useState<any | null>(null);
+
+  useEffect(() => {
+    async function loadDict() {
+      const d = await getDictionary(locale);
+      setDict(d);
+    }
+    loadDict();
+  }, [locale]);
 
   if (loading) {
     return (
@@ -20,10 +33,10 @@ export default function CommunityPage() {
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-4 animate-pulse">
-            Community Hub
+            {dict?.community?.title || 'Community Hub'}
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 px-2">
-            Connect with fellow cubers, share your progress, and compete in challenges
+            {dict?.community?.description || 'Connect with fellow cubers, share your progress, and compete in challenges'}
           </p>
         </div>
 
@@ -35,13 +48,13 @@ export default function CommunityPage() {
               <div className="bg-yellow-100 dark:bg-yellow-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">Leaderboards</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">{dict?.community?.leaderboards || 'Leaderboards'}</h3>
             </div>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              See how you rank against other cubers in various categories
+              {dict?.community?.leaderboards_description || 'See how you rank against other cubers in various categories'}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-yellow-50 dark:group-hover:bg-yellow-900/20 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
 
@@ -51,13 +64,13 @@ export default function CommunityPage() {
               <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Forums</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{dict?.community?.forums || 'Forums'}</h3>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              Discuss techniques, share tips, and ask questions
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
+              {dict?.community?.forums_description || 'Discuss techniques, share tips, and ask questions'}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
 
@@ -67,13 +80,13 @@ export default function CommunityPage() {
               <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Challenges</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{dict?.community?.challenges || 'Challenges'}</h3>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              Participate in weekly and monthly challenges
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
+              {dict?.community?.challenges_description || 'Participate in weekly and monthly challenges'}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
 
@@ -83,13 +96,13 @@ export default function CommunityPage() {
               <div className="bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">User Profiles</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{dict?.community?.user_profiles || 'User Profiles'}</h3>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              View other cubers' profiles and achievements
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
+              {dict?.community?.user_profiles_description || "View other cubers' profiles and achievements"}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-purple-50 dark:group-hover:bg-purple-900/20 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
 
@@ -99,13 +112,13 @@ export default function CommunityPage() {
               <div className="bg-pink-100 dark:bg-pink-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600 dark:text-pink-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Progress Sharing</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">{dict?.community?.progress_sharing || 'Progress Sharing'}</h3>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              Share your learning journey with the community
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
+              {dict?.community?.progress_sharing_description || 'Share your learning journey with the community'}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-pink-50 dark:group-hover:bg-pink-900/20 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
 
@@ -115,13 +128,13 @@ export default function CommunityPage() {
               <div className="bg-orange-100 dark:bg-orange-900/30 p-2 sm:p-3 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
                 <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 dark:text-orange-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">Tournaments</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{dict?.community?.tournaments || 'Tournaments'}</h3>
             </div>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
-              Compete in organized speedcubing tournaments
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4">
+              {dict?.community?.tournaments_description || 'Compete in organized speedcubing tournaments'}
             </p>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4 text-center text-gray-400 dark:text-gray-500 text-sm group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-              Coming Soon
+              {dict?.community?.coming_soon || 'Coming Soon'}
             </div>
           </div>
         </div>

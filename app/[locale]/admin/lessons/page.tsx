@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Lessons Management List Page
@@ -11,16 +11,13 @@ import { Plus, Pencil, Trash2, ChevronLeft } from 'lucide-react';
 import { Lesson } from '@/lib/types';
 import { showSuccess, showError } from '@/lib/toast';
 
-export default function LessonsListPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const resolvedParams = use(params);
-  const locale = resolvedParams.locale as 'en' | 'vi';
+export default function LessonsListPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: routeLocale } = use(params);
+  const locale = routeLocale as 'en' | 'vi';
   const [lessons, setLessons] = useState<(Lesson & { status?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'draft' | 'published' | 'beginner' | 'intermediate' | 'advanced'>('all');
+
 
   useEffect(() => {
     loadLessons();

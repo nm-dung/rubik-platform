@@ -128,7 +128,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
                   : "border-b-4 border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               }`}
             >
-              {cat}
+              {dict.algorithms[cat.toLowerCase() as keyof typeof dict.algorithms] as string || cat}
             </button>
           ))}
         </div>
@@ -137,13 +137,13 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder={locale === 'vi' ? 'Tìm kiếm thuật toán...' : 'Search algorithms...'}
+            placeholder={dict.algorithms.search_placeholder}
             className="w-full"
           />
 
           <div className="flex flex-col w-full sm:w-auto">
             <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-              {activeTab} Mastery: <span className="text-indigo-600 dark:text-indigo-400">{learnedInTab} / {totalInTab}</span> ({progressPercentage}%)
+              {dict.algorithms.mastery}: <span className="text-indigo-600 dark:text-indigo-400">{learnedInTab} / {totalInTab}</span> ({progressPercentage}%)
             </div>
             <div className="w-full h-2.5 bg-slate-100 dark:bg-gray-700 rounded-full overflow-hidden border border-slate-200/60 dark:border-gray-600 shadow-inner">
               <div 
@@ -177,7 +177,7 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
         ))}
         {filteredAlgs.length === 0 && (
           <div className="p-6 sm:p-12 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
-            No algorithms found for {activeTab} yet.
+            {dict.algorithms.no_algorithms}
           </div>
         )}
       </div>

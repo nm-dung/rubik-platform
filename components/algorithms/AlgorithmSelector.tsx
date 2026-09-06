@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { Algorithm, Category } from "@/lib/types";
+import type { Dictionary } from "@/lib/dictionary";
 import { Check, X } from "lucide-react";
 
 interface AlgorithmSelectorProps {
   algorithms: Algorithm[];
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  dict?: Dictionary | null;
 }
 
 const CATEGORIES: Category[] = ['F2L', 'OLL', 'PLL'];
 
-export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange }: AlgorithmSelectorProps) {
+export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, dict }: AlgorithmSelectorProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
 
   const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
@@ -51,11 +53,11 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange }
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-700 dark:to-indigo-800 px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex justify-between items-center gap-4">
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-white">Select Algorithms</h3>
-            <p className="text-indigo-200 dark:text-indigo-300 text-xs sm:text-sm">Choose algorithms to practice</p>
+            <h3 className="text-base sm:text-lg font-bold text-white">{dict?.trainer?.select_algorithms_title || dict?.algorithms?.title || 'Select Algorithms'}</h3>
+            <p className="text-indigo-200 dark:text-indigo-300 text-xs sm:text-sm">{dict?.trainer?.choose_algorithms || dict?.algorithms?.description || 'Choose algorithms to practice'}</p>
           </div>
           <div className="bg-white/20 dark:bg-white/10 px-3 sm:px-4 py-2 rounded-lg">
-            <span className="text-white font-bold text-sm">{selectedIds.length} selected</span>
+            <span className="text-white font-bold text-sm">{selectedIds.length} {dict?.algorithms?.selected_count || 'selected'}</span>
           </div>
         </div>
       </div>
@@ -89,19 +91,19 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange }
             onClick={() => selectCategory(activeCategory)}
             className="text-xs font-semibold px-2 sm:px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 rounded hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-colors"
           >
-            Select All {activeCategory}
+            {(dict?.algorithms?.select_all || 'Select All') + ' ' + (dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory)}
           </button>
           <button
             onClick={() => deselectCategory(activeCategory)}
             className="text-xs font-semibold px-2 sm:px-3 py-1 bg-slate-100 dark:bg-gray-600 text-slate-700 dark:text-slate-300 rounded hover:bg-slate-200 dark:hover:bg-gray-500 transition-colors"
           >
-            Deselect All {activeCategory}
+            {(dict?.algorithms?.clear_selection || 'Deselect All') + ' ' + (dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory)}
           </button>
           <button
             onClick={clearAll}
             className="text-xs font-semibold px-2 sm:px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors ml-auto"
           >
-            Clear All
+            {dict?.algorithms?.clear_selection || 'Clear All'}
           </button>
         </div>
       </div>
@@ -110,7 +112,7 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange }
       <div className="max-h-80 sm:max-h-96 overflow-y-auto p-3 sm:p-4 space-y-2">
         {filteredAlgs.length === 0 ? (
           <div className="text-center text-slate-400 dark:text-slate-500 py-6 sm:py-8">
-            No algorithms in {activeCategory}
+            {dict?.algorithms?.no_algorithms_in_category ? `${dict?.algorithms?.no_algorithms_in_category} ${dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory}` : `No algorithms in ${activeCategory}`}
           </div>
         ) : (
           filteredAlgs.map((alg) => {

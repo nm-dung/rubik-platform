@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { LessonForm } from '@/components/admin/LessonForm';
@@ -9,14 +9,9 @@ import { ChevronLeft } from 'lucide-react';
 import { Lesson } from '@/lib/types';
 import { showError } from '@/lib/toast';
 
-export default function EditLessonPage({
-  params,
-}: {
-  params: Promise<{ locale: string; id: string }>;
-}) {
-  const resolvedParams = use(params);
-  const locale = resolvedParams.locale as 'en' | 'vi';
-  const lessonId = resolvedParams.id;
+export default function EditLessonPage({ params }: { params: { locale: string; id: string } }) {
+  const locale = params.locale as 'en' | 'vi';
+  const lessonId = params.id;
   const router = useRouter();
   const [lesson, setLesson] = useState<(Lesson & { status?: string }) | null>(null);
   const [loading, setLoading] = useState(true);
