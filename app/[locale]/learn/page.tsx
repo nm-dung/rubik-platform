@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import { Lesson, LearningPath } from "@/lib/types";
 import LessonCard from "@/components/lessons/LessonCard";
 import { Lightbulb, Zap } from "lucide-react";
 import { SearchInput } from "@/components/ui/SearchInput";
 
-export default function LearnPage({ params }: { params: { locale: string } }) {
-  const locale = params.locale as 'en' | 'vi';
+export default function LearnPage({ params }: { params: Promise<{ locale: string }> }) {
+  const resolvedParams = use(params);
+  const locale = resolvedParams.locale as 'en' | 'vi';
   const [dict, setDict] = useState<Dictionary | null>(null);
   const [lessons, setLessons] = useState<Record<LearningPath, Lesson[]>>({
     beginner: [],
@@ -49,7 +50,7 @@ export default function LearnPage({ params }: { params: { locale: string } }) {
     }
 
     loadData();
-  }, [resolvedParams.locale as 'en' | 'vi']);
+  }, [locale]);
 
   // Filter lessons based on search query
   const filteredLessons = {
@@ -188,7 +189,7 @@ export default function LearnPage({ params }: { params: { locale: string } }) {
                 <LessonCard
                   key={lesson.id}
                   lesson={lesson}
-                  locale={resolvedParams.locale as 'en' | 'vi'}
+                  locale={locale}
                 />
               ))
           ) : (
