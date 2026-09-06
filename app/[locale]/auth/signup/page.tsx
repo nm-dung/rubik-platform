@@ -10,6 +10,7 @@ import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 export default function SignupPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
+  const isVietnamese = resolvedParams.locale === 'vi';
   const { signUp, user } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
