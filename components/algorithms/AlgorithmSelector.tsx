@@ -18,6 +18,11 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, 
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
 
   const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
+  const activeCategoryLabel = activeCategory === 'F2L'
+    ? dict?.algorithms?.f2l || activeCategory
+    : activeCategory === 'OLL'
+      ? dict?.algorithms?.oll || activeCategory
+      : dict?.algorithms?.pll || activeCategory;
 
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -91,13 +96,13 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, 
             onClick={() => selectCategory(activeCategory)}
             className="text-xs font-semibold px-2 sm:px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 rounded hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-colors"
           >
-            {(dict?.algorithms?.select_all || 'Select All') + ' ' + (dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory)}
+            {(dict?.algorithms?.select_all || 'Select All') + ' ' + activeCategoryLabel}
           </button>
           <button
             onClick={() => deselectCategory(activeCategory)}
             className="text-xs font-semibold px-2 sm:px-3 py-1 bg-slate-100 dark:bg-gray-600 text-slate-700 dark:text-slate-300 rounded hover:bg-slate-200 dark:hover:bg-gray-500 transition-colors"
           >
-            {(dict?.algorithms?.clear_selection || 'Deselect All') + ' ' + (dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory)}
+            {(dict?.algorithms?.clear_selection || 'Deselect All') + ' ' + activeCategoryLabel}
           </button>
           <button
             onClick={clearAll}
@@ -112,7 +117,7 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, 
       <div className="max-h-80 sm:max-h-96 overflow-y-auto p-3 sm:p-4 space-y-2">
         {filteredAlgs.length === 0 ? (
           <div className="text-center text-slate-400 dark:text-slate-500 py-6 sm:py-8">
-            {dict?.algorithms?.no_algorithms_in_category ? `${dict?.algorithms?.no_algorithms_in_category} ${dict?.algorithms?.[activeCategory.toLowerCase()] || activeCategory}` : `No algorithms in ${activeCategory}`}
+            {dict?.algorithms?.no_algorithms ? `${dict.algorithms.no_algorithms} ${activeCategoryLabel}` : `No algorithms in ${activeCategory}`}
           </div>
         ) : (
           filteredAlgs.map((alg) => {

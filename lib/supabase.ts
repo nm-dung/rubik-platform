@@ -14,12 +14,6 @@ export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         ...authOptions,
-        // Handle refresh token errors gracefully
-        onAuthStateChange: (event, session) => {
-          if (event === 'TOKEN_REFRESHED' && !session) {
-            console.log('Token refresh failed - user may need to re-login');
-          }
-        },
       },
     })
   : null;
