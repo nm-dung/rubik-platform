@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { UserProfile } from '@/lib/types';
 
@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const loadingRef = useRef(true);
 
   const loadProfile = async (userId: string) => {
     if (!supabase) return;
@@ -57,8 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    
     if (!supabase) {
-      setLoading(false);
+      console.log('Supabase not configured, skipping auth initialization');
+      if (isMounted) {
+        setLoading(false);
+        loadingRef.current = false;
+      }
       return;
     }
 
@@ -70,18 +77,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: { session } } = await supabaseClient.auth.getSession();
         console.log('Initial session check:', session ? 'Session found' : 'No session');
         const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
-        setUser(currentUser);
-        if (currentUser) {
-          await loadProfile(currentUser.id);
+        if (isMounted) {
+          setUser(currentUser);
+          if (currentUser) {
+            await loadProfile(currentUser.id);
+          }
+          setLoading(false);
+          loadingRef.current = false;
         }
-        setLoading(false);
       } catch (error) {
         console.error('Error initializing auth:', error);
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+          loadingRef.current = false;
+        }
       }
     };
 
     initializeAuth();
+
+    // Safety timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (isMounted && loadingRef.current) {
+        console.log('Auth loading timeout reached, forcing load complete');
+        setLoading(false);
+        loadingRef.current = false;
+      }
+    }, 10000); // 10 second timeout
 
     // Listen for auth changes
     let subscription: { unsubscribe: () => void } | null = null;
@@ -97,18 +119,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         
         const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
-        setUser(currentUser);
-        if (currentUser) {
-          await loadProfile(currentUser.id);
-        } else {
-          setProfile(null);
+        if (isMounted) {
+          setUser(currentUser);
+          if (currentUser) {
+            await loadProfile(currentUser.id);
+          } else {
+            setProfile(null);
+          }
+          setLoading(false);
+          loadingRef.current = false;
         }
-        setLoading(false);
       });
       subscription = sub;
     }
 
     return () => {
+      isMounted = false;
+      clearTimeout(timeout);
       if (subscription) {
         subscription.unsubscribe();
       }

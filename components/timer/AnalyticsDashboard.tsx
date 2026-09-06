@@ -75,13 +75,13 @@ export function AnalyticsDashboard({
         <div className="flex items-center gap-1.5" onMouseDown={(e) => e.stopPropagation()}>
           <button 
             onClick={onToggleFullscreen} 
-            className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-gray-700/50 rounded transition-colors"
+            className="interactive p-1 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-gray-700/50 rounded transition-colors"
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
           <button 
             onClick={onClose} 
-            className="p-1 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+            className="interactive p-1 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
           >
             <X size={14} />
           </button>

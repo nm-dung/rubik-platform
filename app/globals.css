@@ -391,6 +391,14 @@
   }
 }
 
+/* Timer touch area - specific area for timer controls on mobile */
+.timer-touch-area {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @keyframes bounce-subtle {
   0%, 100% {
     transform: translateY(0);

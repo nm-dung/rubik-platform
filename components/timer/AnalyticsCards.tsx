@@ -67,7 +67,7 @@ export function AnalyticsCards({
           <GripVertical size={14} className="text-slate-300 dark:text-slate-500 flex-shrink-0" />
           <div className="flex flex-wrap items-center justify-between w-full gap-2">
             <div className="flex items-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
-              <label className="flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+              <label className="interactive flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                 <input 
                   type="checkbox" 
                   checked={showTimeLine} 
@@ -76,7 +76,7 @@ export function AnalyticsCards({
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 inline-block" /> Time
               </label>
-              <label className="flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+              <label className="interactive flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                 <input 
                   type="checkbox" 
                   checked={showAo5Line} 
@@ -85,7 +85,7 @@ export function AnalyticsCards({
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500 dark:bg-red-400 inline-block" /> Ao5
               </label>
-              <label className="flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+              <label className="interactive flex items-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                 <input 
                   type="checkbox" 
                   checked={showAo12Line} 
@@ -99,7 +99,7 @@ export function AnalyticsCards({
             <select
               value={analyticsRange}
               onChange={(e) => onAnalyticsRangeChange(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-              className="rounded-lg border border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 outline-none cursor-pointer"
+              className="interactive rounded-lg border border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 outline-none cursor-pointer"
             >
               <option value={50}>Last 50</option>
               <option value={100}>Last 100</option>

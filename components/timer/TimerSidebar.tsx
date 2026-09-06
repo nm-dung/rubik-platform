@@ -47,7 +47,7 @@ export function TimerSidebar({
           <h2 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Sessions</h2>
           <button 
             onClick={() => onAddSession(`Session ${sessions.length + 1}`)} 
-            className="text-indigo-600 dark:text-indigo-400 text-[10px] font-bold hover:underline"
+            className="interactive text-indigo-600 dark:text-indigo-400 text-[10px] font-bold hover:underline"
           >
             + NEW
           </button>
@@ -55,7 +55,7 @@ export function TimerSidebar({
         <select 
           value={activeSessionId} 
           onChange={(e) => onSetActiveSession(e.target.value)} 
-          className="w-full p-2 bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded text-sm font-medium outline-none cursor-pointer text-slate-900 dark:text-white"
+          className="interactive w-full p-2 bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded text-sm font-medium outline-none cursor-pointer text-slate-900 dark:text-white"
         >
           {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
@@ -65,14 +65,14 @@ export function TimerSidebar({
         <div className="grid grid-cols-2 gap-4">
           <button 
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 5)} 
-            className="flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
+            className="interactive flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
             <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao5</span>
             <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo5}</span>
           </button>
           <button 
             onClick={() => onOpenAverageDetails(displaySolves.length - 1, 12)} 
-            className="flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
+            className="interactive flex flex-col items-start hover:bg-white dark:hover:bg-gray-600 p-2 rounded-lg transition-all border border-transparent hover:border-slate-200 dark:hover:border-gray-600"
           >
             <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Ao12</span>
             <span className="text-xl font-mono font-black text-indigo-600 dark:text-indigo-400 leading-tight">{currentAo12}</span>
@@ -105,7 +105,7 @@ export function TimerSidebar({
         <div className="p-4 border-t border-slate-100 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-700/50">
           <button 
             onClick={onClearSession} 
-            className="w-full py-2.5 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors shadow-sm"
+            className="interactive w-full py-2.5 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-lg hover:text-red-500 dark:hover:text-red-400 transition-colors shadow-sm"
           >
             Clear Session
           </button>

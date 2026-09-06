@@ -60,7 +60,7 @@ export function StatsModal({
         <div className="p-4 bg-slate-50 dark:bg-gray-700 border-t border-slate-100 dark:border-gray-700 flex justify-end">
           <button 
             onClick={onClose} 
-            className="px-6 py-2 bg-slate-800 dark:bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-lg active:scale-95"
+            className="interactive px-6 py-2 bg-slate-800 dark:bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 dark:hover:bg-indigo-700 transition-all shadow-lg active:scale-95"
           >
             Close
           </button>

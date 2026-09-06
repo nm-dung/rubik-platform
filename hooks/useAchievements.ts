@@ -27,6 +27,7 @@ export function useAchievements() {
 
   const fetchAchievements = useCallback(async () => {
     if (!user || !supabase) {
+      console.log('No user or supabase, skipping achievements fetch');
       setAchievements(emptyAchievements);
       setError(null);
       setLoading(false);
@@ -35,14 +36,19 @@ export function useAchievements() {
 
     try {
       setLoading(true);
+      console.log('Fetching achievements for user:', user.id);
+      
       const { data, error } = await supabase
         .from('achievements')
         .select(`*, user_achievements (id, unlocked_at)`)
         .order('points', { ascending: false });
 
       if (error) {
+        console.error('Error fetching achievements:', error);
         throw error;
       }
+
+      console.log('Achievements data received:', data?.length || 0);
 
       const transformed = (data || []).map((achievement: {
         user_achievements?: Array<{ unlocked_at?: string | null }> | null;
@@ -53,9 +59,11 @@ export function useAchievements() {
         unlockedAt: achievement.user_achievements?.[0]?.unlocked_at || null
       }));
 
+      console.log('Transformed achievements:', transformed.length, 'unlocked:', transformed.filter(a => a.isUnlocked).length);
       setAchievements(transformed as AchievementWithStatus[]);
       setError(null);
     } catch (err) {
+      console.error('Error in fetchAchievements:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch achievements');
       setAchievements(emptyAchievements);
     } finally {

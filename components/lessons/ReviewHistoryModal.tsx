@@ -113,32 +113,32 @@ export function ReviewHistoryModal({ show, lessonId, locale, onClose, onReviewDe
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/60 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 border-b border-slate-100 dark:border-gray-700 flex justify-between items-center bg-slate-50 dark:bg-gray-700">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               {locale === 'vi' ? 'Lịch sử ôn tập' : 'Review History'}
             </h3>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {locale === 'vi' ? `${reviews.length} lần ôn tập` : `${reviews.length} review attempts`}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-200 rounded-full transition-colors"
+            className="interactive p-2 hover:bg-slate-200 dark:hover:bg-gray-600 rounded-full transition-colors"
           >
-            <X className="h-5 w-5 text-slate-400" />
+            <X className="h-5 w-5 text-slate-400 dark:text-slate-500" />
           </button>
         </div>
 
         <div className="p-6 max-h-96 overflow-y-auto">
           {loading ? (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400" />
             </div>
           ) : reviews.length === 0 ? (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8 text-slate-400 dark:text-slate-500">
               <Clock className="w-12 h-12 mx-auto mb-3 opacity-50" />
               <p>{locale === 'vi' ? 'Chưa có lịch sử ôn tập' : 'No review history yet'}</p>
             </div>
@@ -147,14 +147,14 @@ export function ReviewHistoryModal({ show, lessonId, locale, onClose, onReviewDe
               {reviews.map((review, index) => (
                 <div
                   key={review.id}
-                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg group"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-sm">
+                    <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-sm">
                       {reviews.length - index}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-700">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         {formatDate(review.reviewed_at)}
                       </p>
                     </div>
@@ -162,7 +162,7 @@ export function ReviewHistoryModal({ show, lessonId, locale, onClose, onReviewDe
                   <button
                     onClick={() => deleteReview(review.id)}
                     disabled={deleting === review.id}
-                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                    className="interactive p-2 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
                     title={locale === 'vi' ? 'Xóa' : 'Delete'}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -174,11 +174,11 @@ export function ReviewHistoryModal({ show, lessonId, locale, onClose, onReviewDe
         </div>
 
         {reviews.length > 0 && (
-          <div className="p-4 bg-slate-50 border-t border-slate-100">
+          <div className="p-4 bg-slate-50 dark:bg-gray-700 border-t border-slate-100 dark:border-gray-700">
             <button
               onClick={deleteAllReviews}
               disabled={deleting === 'all'}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm disabled:opacity-50"
+              className="interactive w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors font-medium text-sm disabled:opacity-50"
             >
               <AlertTriangle className="w-4 h-4" />
               {deleting === 'all'

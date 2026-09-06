@@ -268,6 +268,12 @@ export default function TimerPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || statsModal?.show) return;
+      
+      // Check if focus is on an interactive element
+      const target = e.target as HTMLElement;
+      const interactiveElement = target.closest('button, a, [role="button"], .interactive, select');
+      if (interactiveElement) return;
+      
       if (e.code === "Space") e.preventDefault();
 
       if (e.code === "Space" && !e.repeat) {
@@ -309,6 +315,16 @@ export default function TimerPage() {
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || statsModal?.show) return;
+      
+      // Check if touch is on an interactive element (button, link, etc.)
+      const target = e.target as HTMLElement;
+      const interactiveElement = target.closest('button, a, [role="button"], .interactive, select, input');
+      if (interactiveElement) return;
+      
+      // Only allow timer activation when touching the timer display area
+      const timerArea = target.closest('.timer-touch-area');
+      if (!timerArea) return;
+      
       e.preventDefault();
 
       if (timerState === 'idle') {

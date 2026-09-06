@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { use } from "react";
+import { useSearchParams } from "next/navigation";
 import { Algorithm, AlgorithmPracticeStats } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
@@ -26,7 +28,10 @@ function getUserId(): string {
 }
 
 export default function AlgorithmTrainerPage({ params }: { params: Promise<{ locale: string }> }) {
-  const resolvedParams = params;
+  const resolvedParams = use(params);
+  const searchParams = useSearchParams();
+  const algorithmId = searchParams.get('algorithmId');
+  
   const [state, setState] = useState<TrainerState>('selection');
   const [algorithms, setAlgorithms] = useState<Algorithm[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -39,16 +44,25 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const [lastCompletedTime, setLastCompletedTime] = useState(0);
   const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
   const [loading, setLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [loadSucceeded, setLoadSucceeded] = useState(false);
   
   const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load algorithms
   useEffect(() => {
+    let isMounted = true;
+    
     async function loadAlgorithms() {
       try {
+        console.log('Loading algorithms...');
         if (!supabase) {
-          setAlgorithms([]);
-          setLoading(false);
+          console.log('Supabase not configured');
+          if (isMounted) {
+            setAlgorithms([]);
+            setLoadingError('Supabase not configured');
+            setLoading(false);
+          }
           return;
         }
 
@@ -57,10 +71,19 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setAlgorithms(data || []);
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+        
+        console.log('Algorithms loaded:', data?.length || 0);
+        if (isMounted) {
+          setAlgorithms(data || []);
+          setLoadSucceeded(true);
+        }
 
         const userId = getUserId();
+        console.log('Loading stats for user:', userId);
         const statsResponse = await fetch(`/api/algorithm-stats?userId=${userId}`);
         if (statsResponse.ok) {
           const statsData: AlgorithmPracticeStats[] = await statsResponse.json();
@@ -68,16 +91,62 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           statsData.forEach(stat => {
             statsMap[stat.algorithm_id] = stat;
           });
-          setStats(statsMap);
+          if (isMounted) {
+            setStats(statsMap);
+          }
+          console.log('Stats loaded:', Object.keys(statsMap).length);
+        } else {
+          console.log('Stats API failed:', statsResponse.status);
         }
       } catch (error) {
         console.error('Error loading algorithms:', error);
+        if (isMounted) {
+          setAlgorithms([]);
+          setLoadingError(error instanceof Error ? error.message : 'Failed to load algorithms');
+          setLoading(false);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          console.log('Loading complete');
+          setLoading(false);
+        }
       }
     }
+    
     loadAlgorithms();
+    
+    // Safety timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (isMounted && !loadSucceeded) {
+        console.log('Loading timeout reached, forcing load complete');
+        setLoading(false);
+        setLoadingError('Loading timeout - check your network connection');
+      }
+    }, 30000); // 30 second timeout
+    
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
   }, []);
+
+  // Handle algorithm from URL
+  useEffect(() => {
+    if (algorithmId && algorithms.length > 0 && state === 'selection') {
+      const algorithm = algorithms.find(alg => alg.id === algorithmId);
+      if (algorithm) {
+        setSelectedIds([algorithmId]);
+        setCurrentAlgorithm(algorithm);
+        setState('training');
+        setSessionResults([]);
+        setIsReady(false);
+        setIsRunning(false);
+        setStartTime(null);
+        setCurrentTime(0);
+        setLastCompletedTime(0);
+      }
+    }
+  }, [algorithmId, algorithms, state]);
 
   // Timer logic
   useEffect(() => {
@@ -93,10 +162,18 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const selectedAlgorithms = algorithms.filter(alg => selectedIds.includes(alg.id));
 
   const getRandomAlgorithm = useCallback(() => {
-    if (selectedAlgorithms.length === 0) return null;
+    console.log('getRandomAlgorithm called, selectedIds:', selectedIds, 'algorithms length:', algorithms.length, 'selectedAlgorithms length:', selectedAlgorithms.length);
+    if (selectedAlgorithms.length === 0) {
+      console.warn('No algorithms selected, cannot get random algorithm');
+      return null;
+    }
+    // When practicing with 1 algorithm, return the same one (expected behavior)
+    // When practicing with multiple, return a random one
     const randomIndex = Math.floor(Math.random() * selectedAlgorithms.length);
-    return selectedAlgorithms[randomIndex];
-  }, [selectedAlgorithms]);
+    const algorithm = selectedAlgorithms[randomIndex];
+    console.log('Returning algorithm:', algorithm?.name_en);
+    return algorithm;
+  }, [selectedAlgorithms, selectedIds, algorithms]);
 
   const handleStartTraining = () => {
     if (selectedIds.length === 0) return;
@@ -157,8 +234,16 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           setStartTime(null);
           
           if (currentAlgorithm) {
+            console.log('Completed solve for:', currentAlgorithm.name_en, 'time:', finalTime);
             setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
-            setCurrentAlgorithm(getRandomAlgorithm());
+            const nextAlgorithm = getRandomAlgorithm();
+            console.log('Next algorithm:', nextAlgorithm?.name_en);
+            if (nextAlgorithm) {
+              setCurrentAlgorithm(nextAlgorithm);
+            } else {
+              console.error('Failed to get next algorithm, stopping training');
+              setState('selection');
+            }
           }
         } else {
           // Reset ready state if released before ready
@@ -204,8 +289,16 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           setStartTime(null);
           
           if (currentAlgorithm) {
+            console.log('Completed solve for:', currentAlgorithm.name_en, 'time:', finalTime);
             setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
-            setCurrentAlgorithm(getRandomAlgorithm());
+            const nextAlgorithm = getRandomAlgorithm();
+            console.log('Next algorithm:', nextAlgorithm?.name_en);
+            if (nextAlgorithm) {
+              setCurrentAlgorithm(nextAlgorithm);
+            } else {
+              console.error('Failed to get next algorithm, stopping training');
+              setState('selection');
+            }
           }
         } else {
           // Reset ready state if released before ready
@@ -268,8 +361,25 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
     return `${seconds}.${centiseconds.toString().padStart(2, '0')}`;
   };
 
+  // Show loading state with a safety fallback
   if (loading) {
     return <div className="p-20 text-center font-bold text-slate-400">Loading...</div>;
+  }
+
+  // Show error state if loading failed AND we have no algorithms
+  if (loadingError && algorithms.length === 0) {
+    return (
+      <div className="p-20 text-center">
+        <div className="text-red-500 font-bold mb-4">Error loading algorithms</div>
+        <div className="text-slate-600 dark:text-slate-400 mb-4">{loadingError}</div>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -316,19 +426,28 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           {/* Current Algorithm */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-lg p-4 sm:p-8">
             <div className="text-center mb-4 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">{currentAlgorithm.name_en}</h2>
-              {stats[currentAlgorithm.id]?.practice_count > 0 && (
-                <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
-                  Best: {formatTime(stats[currentAlgorithm.id].best_time_ms || 0)} ·
-                  Avg: {formatTime(stats[currentAlgorithm.id].avg_time_ms || 0)} ·
-                  {stats[currentAlgorithm.id].practice_count} practices
-                </p>
-              )}
-              <div className="inline-block bg-slate-900 dark:bg-gray-950 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
-                <div className="text-2xl sm:text-4xl font-black text-indigo-400 dark:text-indigo-300 tracking-wider break-all">
-                  {currentAlgorithm.notation}
+              {currentAlgorithm ? (
+                <>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">{currentAlgorithm.name_en}</h2>
+                  {stats[currentAlgorithm.id]?.practice_count > 0 && (
+                    <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+                      Best: {formatTime(stats[currentAlgorithm.id].best_time_ms || 0)} ·
+                      Avg: {formatTime(stats[currentAlgorithm.id].avg_time_ms || 0)} ·
+                      {stats[currentAlgorithm.id].practice_count} practices
+                    </p>
+                  )}
+                  <div className="inline-block bg-slate-900 dark:bg-gray-950 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
+                    <div className="text-2xl sm:text-4xl font-black text-indigo-400 dark:text-indigo-300 tracking-wider break-all">
+                      {currentAlgorithm.notation}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-slate-500 dark:text-slate-400">
+                  <p className="text-lg font-semibold mb-2">No algorithm selected</p>
+                  <p className="text-sm">Please select algorithms to practice</p>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Timer */}
@@ -415,8 +534,16 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                       setStartTime(null);
                       
                       if (currentAlgorithm) {
+                        console.log('Completed solve for:', currentAlgorithm.name_en, 'time:', finalTime);
                         setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
-                        setCurrentAlgorithm(getRandomAlgorithm());
+                        const nextAlgorithm = getRandomAlgorithm();
+                        console.log('Next algorithm:', nextAlgorithm?.name_en);
+                        if (nextAlgorithm) {
+                          setCurrentAlgorithm(nextAlgorithm);
+                        } else {
+                          console.error('Failed to get next algorithm, stopping training');
+                          setState('selection');
+                        }
                       }
                     }}
                     className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-red-600 dark:bg-red-700 text-white font-bold rounded-xl hover:bg-red-700 dark:hover:bg-red-800 transition-all shadow-lg text-sm sm:text-base touch-manipulation active:scale-95"

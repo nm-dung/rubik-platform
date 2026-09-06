@@ -81,14 +81,14 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
           </div>
 
           {error && (
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs sm:text-sm">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-xs sm:text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="username" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 {isVietnamese ? "Tên người dùng" : "Username"}
               </label>
               <input
@@ -97,13 +97,13 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
                 placeholder={isVietnamese ? "rubikmaster" : "rubikmaster"}
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 {isVietnamese ? "Email" : "Email"}
               </label>
               <input
@@ -112,13 +112,13 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
                 placeholder={isVietnamese ? "email@example.com" : "email@example.com"}
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 {isVietnamese ? "Mật khẩu" : "Password"}
               </label>
               <input
@@ -128,13 +128,13 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
                 placeholder={isVietnamese ? "••••••••" : "••••••••"}
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 {isVietnamese ? "Xác nhận mật khẩu" : "Confirm Password"}
               </label>
               <input
@@ -144,7 +144,7 @@ export default function SignupPage({ params }: { params: Promise<{ locale: strin
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-sm text-slate-900 dark:text-white"
                 placeholder={isVietnamese ? "••••••••" : "••••••••"}
               />
             </div>

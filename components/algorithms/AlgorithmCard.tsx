@@ -2,7 +2,7 @@
 
 import { useCubeStore } from "@/hooks/useCubeStore";
 import { useEffect, useState } from "react";
-import { AlgorithmPractice } from "./AlgorithmPractice";
+import { useRouter } from "next/navigation";
 import { AlgorithmPracticeSession, AlgorithmPracticeStats, Algorithm } from "@/lib/types";
 import { History, Trash2, X } from "lucide-react";
 
@@ -34,13 +34,13 @@ export default function AlgorithmCard({
   stats?: AlgorithmPracticeStats;
   onStatsChange?: (algorithmId: string, stats: AlgorithmPracticeStats | null) => void;
 }) {
+  const router = useRouter();
   const setAlgorithm = useCubeStore((state) => state.setAlgorithm);
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
   const toggleLearned = useCubeStore((state) => state.toggleLearned);
 
   const [mounted, setMounted] = useState(false);
-  const [showPractice, setShowPractice] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<AlgorithmPracticeSession[]>([]);
   const [selectedSessionIds, setSelectedSessionIds] = useState<string[]>([]);
@@ -113,28 +113,6 @@ export default function AlgorithmCard({
     }
   };
 
-  // Show practice mode overlay
-  if (showPractice) {
-    return (
-      <div className="relative">
-        <AlgorithmPractice
-          notation={alg.notation}
-          algorithmName={locale === 'vi' ? alg.name_vi : alg.name_en}
-          onComplete={() => {
-            setShowPractice(false);
-            toggleLearned(alg.id);
-          }}
-        />
-        <button
-          onClick={() => setShowPractice(false)}
-          className="mt-4 w-full py-2 text-slate-600 hover:text-slate-900 font-medium transition-colors"
-        >
-          ← Back to Algorithm
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className={`group relative flex flex-col gap-3 sm:gap-4 md:gap-6 p-3 sm:p-4 md:p-6 border rounded-lg sm:rounded-xl md:rounded-2xl bg-white dark:bg-gray-800 hover:shadow-2xl hover:shadow-indigo-500/20 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 overflow-hidden touch-manipulation active:scale-95 ${
       isLearned ? 'border-emerald-400 bg-emerald-50/10 dark:bg-emerald-900/10' : 'border-slate-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600'
@@ -147,7 +125,7 @@ export default function AlgorithmCard({
         {alg.image_url ? (
           <img src={alg.image_url} alt={alg.name_en} className="w-full h-full object-contain p-1 sm:p-2 mix-blend-multiply dark:mix-blend-normal" />
         ) : (
-          <div className="text-[8px] sm:text-[10px] font-bold text-slate-300 dark:text-gray-500 uppercase text-center p-1 sm:p-2">Pattern Image</div>
+          <div className="text-[10px] sm:text-[10px] font-bold text-slate-300 dark:text-gray-500 uppercase text-center p-1 sm:p-2">Pattern Image</div>
         )}
       </div>
 
@@ -165,11 +143,11 @@ export default function AlgorithmCard({
               )}
             </div>
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1">
-              <span className="text-[8px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded uppercase tracking-tighter border border-indigo-100 dark:border-indigo-800 group-hover:scale-110 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-all duration-300">
+              <span className="text-[10px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded uppercase tracking-tighter border border-indigo-100 dark:border-indigo-800 group-hover:scale-110 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-all duration-300">
                 {alg.difficulty || alg.category}
               </span>
               {stats && stats.practice_count > 0 && (
-                <span className="text-[8px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded uppercase tracking-tighter border border-emerald-100 dark:border-emerald-800 group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-all duration-300">
+                <span className="text-[10px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded uppercase tracking-tighter border border-emerald-100 dark:border-emerald-800 group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-all duration-300">
                   Avg: {formatTime(stats.avg_time_ms || 0)}s ({stats.practice_count}×)
                 </span>
               )}
@@ -178,8 +156,8 @@ export default function AlgorithmCard({
 
           <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
             <button
-              onClick={() => setShowPractice(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation"
+              onClick={() => router.push(`/${locale}/trainer?algorithmId=${alg.id}`)}
+              className="interactive flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-indigo-700 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation"
             >
               <span>Practice</span>
             </button>

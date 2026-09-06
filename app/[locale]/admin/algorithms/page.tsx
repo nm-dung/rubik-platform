@@ -109,37 +109,37 @@ export default function AlgorithmsListPage({
             <p className="text-slate-600">No algorithms found</p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+          <div className="rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="border-b border-slate-200 bg-slate-50">
+                <thead className="border-b border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Name</th>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Category</th>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Difficulty</th>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Notation</th>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Status</th>
-                    <th className="px-6 py-3 text-left font-semibold text-slate-900">Actions</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Name</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Category</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Difficulty</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Notation</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Status</th>
+                    <th className="px-6 py-3 text-left font-semibold text-slate-900 dark:text-white">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((algo) => (
-                    <tr key={algo.id} className="border-b border-slate-200 hover:bg-slate-50">
+                    <tr key={algo.id} className="border-b border-slate-200 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-3">
                         <div>
-                          <p className="font-medium text-slate-900">{algo.name_en}</p>
-                          <p className="text-slate-500 text-xs">{algo.name_vi}</p>
+                          <p className="font-medium text-slate-900 dark:text-white">{algo.name_en}</p>
+                          <p className="text-slate-500 dark:text-slate-400 text-xs">{algo.name_vi}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-3 text-slate-600">{algo.category}</td>
-                      <td className="px-6 py-3 text-slate-600">{algo.difficulty}/10</td>
-                      <td className="px-6 py-3 font-mono text-slate-600 text-xs">{algo.notation}</td>
+                      <td className="px-6 py-3 text-slate-600 dark:text-slate-300">{algo.category}</td>
+                      <td className="px-6 py-3 text-slate-600 dark:text-slate-300">{algo.difficulty}/10</td>
+                      <td className="px-6 py-3 font-mono text-slate-600 dark:text-slate-300 text-xs">{algo.notation}</td>
                       <td className="px-6 py-3">
                         <span
                           className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
                             algo.status === 'published'
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-amber-100 text-amber-700'
+                              ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+                              : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
                           }`}
                         >
                           {algo.status === 'published' ? 'Published' : 'Draft'}
@@ -149,13 +149,13 @@ export default function AlgorithmsListPage({
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/${locale}/admin/algorithms/${algo.id}/edit`}
-                            className="rounded-full border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+                            className="rounded-full border border-slate-200 dark:border-gray-600 p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors"
                           >
                             <Pencil className="h-4 w-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(algo.id)}
-                            className="rounded-full border border-red-200 p-2 text-red-600 hover:bg-red-50 transition-colors"
+                            className="rounded-full border border-red-200 dark:border-red-800 p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

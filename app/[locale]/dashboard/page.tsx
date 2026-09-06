@@ -28,7 +28,7 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
   const activeSessionId = useTimerStore((state) => state.activeSessionId);
 
   const { streak, updateStreak } = useStreaks();
-  const { achievements, checkAchievements, unlockedCount, totalPoints } = useAchievements();
+  const { achievements, checkAchievements, unlockedCount, totalPoints, loading: achievementsLoading } = useAchievements();
 
   const [mounted, setMounted] = useState(false);
   const [newAchievement, setNewAchievement] = useState<any>(null);
@@ -47,8 +47,10 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
   // Update streak and check achievements on mount
   useEffect(() => {
     if (mounted && user) {
+      console.log('Dashboard mounted, updating streak and checking achievements');
       updateStreak();
       checkAchievements().then((newlyUnlocked) => {
+        console.log('Newly unlocked achievements:', newlyUnlocked);
         if (newlyUnlocked && newlyUnlocked.length > 0) {
           setNewAchievement(newlyUnlocked[0]);
           setTimeout(() => setNewAchievement(null), 5000);
@@ -199,33 +201,45 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
           </div>
 
           <div className="space-y-2 sm:space-y-3">
-            {achievements.map((achievement) => (
-              <button
-                key={achievement.id}
-                onClick={() => {
-                  setSelectedAchievement(achievement);
-                  setShowAchievementsPanel(false);
-                }}
-                className={`w-full p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 text-left transition-all ${
-                  achievement.isUnlocked
-                    ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 cursor-pointer'
-                    : 'border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 opacity-50 cursor-not-allowed'
-                }`}
-              >
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="text-2xl sm:text-3xl">{achievement.icon}</div>
-                  <div className="flex-1">
-                    <div className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                      {isVietnamese ? achievement.name_vi : achievement.name_en}
+            {achievementsLoading ? (
+              <div className="text-center text-slate-500 dark:text-slate-400 py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-2"></div>
+                <p>Loading achievements...</p>
+              </div>
+            ) : achievements.length === 0 ? (
+              <div className="text-center text-slate-500 dark:text-slate-400 py-8">
+                <Trophy className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>No achievements available</p>
+              </div>
+            ) : (
+              achievements.map((achievement) => (
+                <button
+                  key={achievement.id}
+                  onClick={() => {
+                    setSelectedAchievement(achievement);
+                    setShowAchievementsPanel(false);
+                  }}
+                  className={`w-full p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 text-left transition-all ${
+                    achievement.isUnlocked
+                      ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 cursor-pointer'
+                      : 'border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="text-2xl sm:text-3xl">{achievement.icon}</div>
+                    <div className="flex-1">
+                      <div className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                        {isVietnamese ? achievement.name_vi : achievement.name_en}
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        {isVietnamese ? achievement.description_vi : achievement.description_en}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                      {isVietnamese ? achievement.description_vi : achievement.description_en}
-                    </div>
+                    <div className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400">{achievement.points} pts</div>
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400">{achievement.points} pts</div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))
+            )}
           </div>
         </div>
       </div>
