@@ -118,6 +118,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         
+        // Handle token refresh errors gracefully
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          console.log('Token refresh failed, clearing user session');
+          if (isMounted) {
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+            loadingRef.current = false;
+          }
+          return;
+        }
+        
         const currentUser = session?.user ? { id: session.user.id, email: session.user.email || '' } : null;
         if (isMounted) {
           setUser(currentUser);
