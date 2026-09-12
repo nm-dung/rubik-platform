@@ -21,13 +21,13 @@ export default function NewLessonPage({
       <div className="space-y-6">
         <Link
           href={`/${locale}/admin/lessons`}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
         >
           <ChevronLeft className="h-4 w-4" />
           Back to Lessons
         </Link>
 
-        <div className="max-w-2xl mx-auto rounded-2xl border border-slate-200 bg-white p-8">
+        <div className="max-w-2xl mx-auto rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8">
           <LessonForm
             onSuccess={() => {
               router.push(`/${locale}/admin/lessons`);

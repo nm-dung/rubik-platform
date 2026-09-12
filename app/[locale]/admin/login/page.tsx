@@ -107,7 +107,7 @@ export default function AdminLoginPage({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 dark:border-gray-600 px-4 py-3 text-slate-900 dark:text-white outline-none transition-colors focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/30 bg-white dark:bg-gray-700"
+              className="w-full rounded-xl border border-slate-200 dark:border-gray-600 px-4 py-3 text-slate-900 dark:text-white outline-none transition-colors focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/30 bg-white dark:bg-gray-700 placeholder-slate-400 dark:placeholder-slate-500"
               placeholder="coach@rubik.com"
             />
           </div>
@@ -123,7 +123,7 @@ export default function AdminLoginPage({
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 dark:border-gray-600 px-4 py-3 text-slate-900 dark:text-white outline-none transition-colors focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/30 bg-white dark:bg-gray-700"
+              className="w-full rounded-xl border border-slate-200 dark:border-gray-600 px-4 py-3 text-slate-900 dark:text-white outline-none transition-colors focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900/30 bg-white dark:bg-gray-700 placeholder-slate-400 dark:placeholder-slate-500"
               placeholder="Enter your password"
             />
           </div>

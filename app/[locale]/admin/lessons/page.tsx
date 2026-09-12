@@ -62,19 +62,19 @@ export default function LessonsListPage({ params }: { params: Promise<{ locale: 
           <div className="flex items-center gap-4">
             <Link
               href={`/${locale}/admin`}
-              className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
+              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             >
               <ChevronLeft className="h-4 w-4" />
               Back
             </Link>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Manage Lessons</h1>
-              <p className="text-slate-600 text-sm mt-1">{filtered.length} lessons total</p>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Manage Lessons</h1>
+              <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">{filtered.length} lessons total</p>
             </div>
           </div>
           <Link
             href={`/${locale}/admin/lessons/new`}
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-6 py-2 text-sm font-semibold text-white transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600 px-6 py-2 text-sm font-semibold text-white transition-colors"
           >
             <Plus className="h-4 w-4" />
             New Lesson
@@ -86,8 +86,8 @@ export default function LessonsListPage({ params }: { params: Promise<{ locale: 
             onClick={() => setFilter('all')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'all'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                : 'bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-gray-600'
             }`}
           >
             All
@@ -98,8 +98,8 @@ export default function LessonsListPage({ params }: { params: Promise<{ locale: 
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === f
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                  : 'bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-gray-600'
               }`}
             >
               {f === 'draft' ? 'Drafts' : 'Published'}
@@ -111,8 +111,8 @@ export default function LessonsListPage({ params }: { params: Promise<{ locale: 
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === f
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                  : 'bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-gray-600'
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -125,8 +125,8 @@ export default function LessonsListPage({ params }: { params: Promise<{ locale: 
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 rounded-2xl border border-slate-200 bg-white">
-            <p className="text-slate-600">No lessons found</p>
+          <div className="text-center py-12 rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <p className="text-slate-600 dark:text-slate-400">No lessons found</p>
           </div>
         ) : (
           <div className="rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">

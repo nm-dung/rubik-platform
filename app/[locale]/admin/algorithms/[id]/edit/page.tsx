@@ -42,7 +42,7 @@ export default function EditAlgorithmPage({ params }: { params: { locale: string
     return (
       <AdminGuard>
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400" />
         </div>
       </AdminGuard>
     );
@@ -52,7 +52,7 @@ export default function EditAlgorithmPage({ params }: { params: { locale: string
     return (
       <AdminGuard>
         <div className="text-center py-12">
-          <p className="text-slate-600">Algorithm not found</p>
+          <p className="text-slate-600 dark:text-slate-400">Algorithm not found</p>
         </div>
       </AdminGuard>
     );
@@ -63,13 +63,13 @@ export default function EditAlgorithmPage({ params }: { params: { locale: string
       <div className="space-y-6">
         <Link
           href={`/${locale}/admin/algorithms`}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
         >
           <ChevronLeft className="h-4 w-4" />
           Back to Algorithms
         </Link>
 
-        <div className="max-w-2xl mx-auto rounded-2xl border border-slate-200 bg-white p-8">
+        <div className="max-w-2xl mx-auto rounded-2xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8">
           <AlgorithmForm
             initialData={algorithm}
             onSuccess={() => {
