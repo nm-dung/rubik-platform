@@ -49,7 +49,12 @@
     "selected_count": "đã chọn",
     "no_algorithms": "Không tìm thấy thuật toán",
     "loading": "Đang tải thuật toán...",
-    "mastery": "Thành thạo"
+    "mastery": "Thành thạo",
+    "show_alternatives": "Hiện thuật toán khác",
+    "hide_alternatives": "Ẩn thuật toán khác",
+    "selected": "Đã chọn",
+    "mark_as_learning": "Đánh dấu đang học",
+    "mark_as_learned": "Đánh dấu đã học"
   },
   "dashboard": {
     "welcome": "Xin chào",

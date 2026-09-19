@@ -40,6 +40,10 @@ export default function AlgorithmCard({
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
   const toggleLearned = useCubeStore((state) => state.toggleLearned);
+  const learningAlgs = useCubeStore((state) => state.learningAlgs);
+  const toggleLearning = useCubeStore((state) => state.toggleLearning);
+  const preferredNotations = useCubeStore((state) => state.preferredNotations);
+  const setPreferredNotation = useCubeStore((state) => state.setPreferredNotation);
 
   const [mounted, setMounted] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -49,6 +53,7 @@ export default function AlgorithmCard({
   const [deleting, setDeleting] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [dict, setDict] = useState<Dictionary | null>(null);
+  const [showAlternatives, setShowAlternatives] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -61,6 +66,18 @@ export default function AlgorithmCard({
   }, [locale]);
 
   const isLearned = mounted ? learnedAlgs.includes(alg.id) : false;
+  const isLearning = mounted ? learningAlgs.includes(alg.id) : false;
+
+  // Use preferred notation from store, or default to main notation
+  const selectedNotation = preferredNotations[alg.id] || alg.notation;
+
+  // Parse alternative notations if they exist
+  const alternativeNotations = alg.alternate_notations
+    ? alg.alternate_notations.split('\n').filter(n => n.trim())
+    : [];
+
+  // Include main notation in the list
+  const allNotations = [alg.notation, ...alternativeNotations];
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);
@@ -146,8 +163,13 @@ export default function AlgorithmCard({
               <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all duration-300">
                 {locale === 'vi' ? alg.name_vi : alg.name_en}
               </h3>
+              {isLearning && (
+                <span className="text-amber-500 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 p-1 rounded-full animate-pulse" title={dict?.algorithms?.mark_as_learning || 'Currently learning'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+                </span>
+              )}
               {isLearned && (
-                <span className="text-emerald-500 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 p-1 rounded-full animate-pulse">
+                <span className="text-emerald-500 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 p-1 rounded-full animate-pulse" title={dict?.algorithms?.mark_as_learned || 'Learned'}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
               )}
@@ -173,21 +195,65 @@ export default function AlgorithmCard({
             </button>
 
             <button
+              onClick={() => toggleLearning(alg.id)}
+              className={`p-1.5 sm:p-2 rounded-lg transition-all border hover:scale-110 active:scale-95 touch-manipulation ${
+                isLearning
+                  ? 'bg-amber-500 text-white border-amber-600 hover:bg-amber-600 hover:shadow-lg hover:shadow-amber-500/30'
+                  : 'text-slate-400 bg-white border-slate-200 hover:border-amber-400 hover:text-amber-500 hover:shadow-md'
+              }`}
+              title={dict?.algorithms?.mark_as_learning || 'Mark as learning'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+            </button>
+
+            <button
               onClick={() => toggleLearned(alg.id)}
               className={`p-1.5 sm:p-2 rounded-lg transition-all border hover:scale-110 active:scale-95 touch-manipulation ${
                 isLearned
                   ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30'
                   : 'text-slate-400 bg-white border-slate-200 hover:border-emerald-400 hover:text-emerald-500 hover:shadow-md'
               }`}
-              title="Mark as learned"
+              title={dict?.algorithms?.mark_as_learned || 'Mark as learned'}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
         </div>
 
-        <div className="mt-auto p-2 sm:p-3 md:p-4 bg-slate-900 dark:bg-gray-950 rounded-lg sm:rounded-xl shadow-inner font-mono text-xs sm:text-sm md:text-lg text-indigo-300 dark:text-indigo-400 tracking-widest overflow-x-auto whitespace-nowrap group-hover:bg-slate-800 dark:group-hover:bg-gray-900 group-hover:shadow-inner-lg transition-all duration-300 relative z-10">
-          {alg.notation}
+        <div className="mt-auto relative z-10">
+          <div className="p-2 sm:p-3 md:p-4 bg-slate-900 dark:bg-gray-950 rounded-lg sm:rounded-xl shadow-inner font-mono text-xs sm:text-sm md:text-lg text-indigo-300 dark:text-indigo-400 tracking-widest overflow-x-auto whitespace-nowrap group-hover:bg-slate-800 dark:group-hover:bg-gray-900 group-hover:shadow-inner-lg transition-all duration-300">
+            {selectedNotation}
+          </div>
+
+          {alternativeNotations.length > 0 && (
+            <div className="mt-2">
+              <button
+                onClick={() => setShowAlternatives(!showAlternatives)}
+                className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors active:scale-95 touch-manipulation"
+              >
+                <span>{showAlternatives ? (dict?.algorithms?.hide_alternatives || 'Hide alternatives') : (dict?.algorithms?.show_alternatives || 'Show alternatives')} ({alternativeNotations.length})</span>
+              </button>
+
+              {showAlternatives && (
+                <div className="mt-2 space-y-1">
+                  {allNotations.map((notation, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setPreferredNotation(alg.id, notation)}
+                      className={`w-full text-left p-2 rounded-lg font-mono text-xs transition-all ${
+                        selectedNotation === notation
+                          ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 border border-indigo-300 dark:border-indigo-700'
+                          : 'bg-slate-50 dark:bg-gray-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {notation}
+                      {selectedNotation === notation && <span className="ml-2 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold">({dict?.algorithms?.selected || 'Selected'})</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {stats && stats.practice_count > 0 && (

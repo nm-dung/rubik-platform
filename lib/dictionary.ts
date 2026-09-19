@@ -54,6 +54,11 @@ export interface Dictionary {
     no_algorithms: string;
     loading: string;
     mastery: string;
+    show_alternatives: string;
+    hide_alternatives: string;
+    selected: string;
+    mark_as_learning: string;
+    mark_as_learned: string;
   };
   dashboard: {
     welcome: string;
@@ -108,6 +113,19 @@ export interface Dictionary {
     invalid_credentials: string;
     login_success: string;
     login_error: string;
+    dashboard_title?: string;
+    manage_content_description?: string;
+    logout?: string;
+    loading?: string;
+    manage_algorithms?: string;
+    manage_algorithms_description?: string;
+    manage_lessons?: string;
+    manage_lessons_description?: string;
+    review_submissions?: string;
+    review_submissions_description?: string;
+    go?: string;
+    recent_activity?: string;
+    no_recent_activity?: string;
   };
   trainer: {
     title: string;

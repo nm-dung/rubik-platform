@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
 import { Play, ArrowRight, BarChart3, Clock, Trophy, RotateCcw, Square } from "lucide-react";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
+import { useCubeStore } from "@/hooks/useCubeStore";
 
 type TrainerState = 'selection' | 'training' | 'summary';
 
@@ -48,7 +49,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [loadSucceeded, setLoadSucceeded] = useState(false);
   const [dict, setDict] = useState<Dictionary | null>(null);
-  
+
+  const preferredNotations = useCubeStore((state) => state.preferredNotations);
+
   const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load algorithms
@@ -451,7 +454,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
                   )}
                   <div className="inline-block bg-slate-900 dark:bg-gray-950 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
                     <div className="text-2xl sm:text-4xl font-black text-indigo-400 dark:text-indigo-300 tracking-wider break-all">
-                      {currentAlgorithm.notation}
+                      {preferredNotations[currentAlgorithm.id] || currentAlgorithm.notation}
                     </div>
                   </div>
                 </>

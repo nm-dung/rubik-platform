@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Algorithm, Category } from "@/lib/types";
 import type { Dictionary } from "@/lib/dictionary";
 import { Check, X } from "lucide-react";
+import { useCubeStore } from "@/hooks/useCubeStore";
 
 interface AlgorithmSelectorProps {
   algorithms: Algorithm[];
@@ -16,6 +17,8 @@ const CATEGORIES: Category[] = ['F2L', 'OLL', 'PLL'];
 
 export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, dict }: AlgorithmSelectorProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
+
+  const preferredNotations = useCubeStore((state) => state.preferredNotations);
 
   const filteredAlgs = algorithms.filter(alg => alg.category === activeCategory);
   const activeCategoryLabel = activeCategory === 'F2L'
@@ -144,7 +147,7 @@ export function AlgorithmSelector({ algorithms, selectedIds, onSelectionChange, 
                   </div>
                   <div className="text-left flex-grow">
                     <div className="font-bold text-slate-900 dark:text-white text-sm">{alg.name_en}</div>
-                    <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">{alg.notation}</div>
+                    <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">{preferredNotations[alg.id] || alg.notation}</div>
                   </div>
                 </div>
                 <div className="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-300 rounded flex-shrink-0">

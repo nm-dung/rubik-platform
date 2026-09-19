@@ -49,7 +49,12 @@
     "selected_count": "selected",
     "no_algorithms": "No algorithms found",
     "loading": "Loading algorithms...",
-    "mastery": "Mastery"
+    "mastery": "Mastery",
+    "show_alternatives": "Show alternatives",
+    "hide_alternatives": "Hide alternatives",
+    "selected": "Selected",
+    "mark_as_learning": "Mark as learning",
+    "mark_as_learned": "Mark as learned"
   },
   "dashboard": {
     "welcome": "Welcome",
