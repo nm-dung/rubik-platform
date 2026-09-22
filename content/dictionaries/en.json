@@ -54,7 +54,10 @@
     "hide_alternatives": "Hide alternatives",
     "selected": "Selected",
     "mark_as_learning": "Mark as learning",
-    "mark_as_learned": "Mark as learned"
+    "mark_as_learned": "Mark as learned",
+    "drag_mode": "Drag Mode",
+    "grid_view": "Grid View",
+    "reset_order": "Reset Order"
   },
   "dashboard": {
     "welcome": "Welcome",

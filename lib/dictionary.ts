@@ -59,6 +59,9 @@ export interface Dictionary {
     selected: string;
     mark_as_learning: string;
     mark_as_learned: string;
+    drag_mode: string;
+    grid_view: string;
+    reset_order: string;
   };
   dashboard: {
     welcome: string;

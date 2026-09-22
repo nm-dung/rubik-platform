@@ -54,7 +54,10 @@
     "hide_alternatives": "Ẩn thuật toán khác",
     "selected": "Đã chọn",
     "mark_as_learning": "Đánh dấu đang học",
-    "mark_as_learned": "Đánh dấu đã học"
+    "mark_as_learned": "Đánh dấu đã học",
+    "drag_mode": "Chế độ kéo",
+    "grid_view": "Lưới",
+    "reset_order": "Đặt lại thứ tự"
   },
   "dashboard": {
     "welcome": "Xin chào",

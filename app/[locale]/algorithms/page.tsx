@@ -9,6 +9,8 @@ import AlgorithmCard from "@/components/algorithms/AlgorithmCard";
 import { useCubeStore } from "@/hooks/useCubeStore";
 import { AlgorithmPracticeStats } from "@/lib/types";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { DraggableAlgorithmList } from "@/components/algorithms/DraggableAlgorithmList";
+import { List, Grid, GripVertical } from "lucide-react";
 
 // Helper function to get user ID
 function getUserId(): string {
@@ -39,8 +41,11 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState<Record<string, AlgorithmPracticeStats>>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDragMode, setIsDragMode] = useState(false);
 
   const learnedAlgs = useCubeStore((state) => state.learnedAlgs);
+  const algorithmOrder = useCubeStore((state) => state.algorithmOrder);
+  const setAlgorithmOrder = useCubeStore((state) => state.setAlgorithmOrder);
 
   useEffect(() => {
     setMounted(true); 
@@ -80,17 +85,50 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
   if (loading || !dict) return <div className="p-20 text-center font-bold text-slate-400 dark:text-slate-500 bg-white dark:bg-gray-900 min-h-screen">Loading Dictionary...</div>;
 
   const categories: Category[] = ['F2L', 'OLL', 'PLL'];
-  const filteredAlgs = algorithms
-    .filter(alg => alg.category === activeTab)
-    .filter(alg => {
-      if (!searchQuery) return true;
-      const query = searchQuery.toLowerCase();
-      return (
-        alg.name_en.toLowerCase().includes(query) ||
-        alg.name_vi.toLowerCase().includes(query) ||
-        alg.notation.toLowerCase().includes(query)
-      );
-    });
+  
+  // Filter algorithms by category first
+  const categoryAlgorithms = algorithms.filter(alg => alg.category === activeTab);
+  
+  // Get the custom order for the current category
+  const orderedIds = algorithmOrder[activeTab];
+  
+  // Sort algorithms based on custom order or default
+  let sortedAlgorithms: Algorithm[];
+  if (orderedIds && orderedIds.length > 0) {
+    // Use custom order
+    const idToAlg = new Map(categoryAlgorithms.map(alg => [alg.id, alg]));
+    sortedAlgorithms = orderedIds
+      .map(id => idToAlg.get(id))
+      .filter((alg): alg is Algorithm => alg !== undefined);
+    
+    // Add any algorithms not in custom order at the end
+    const customIds = new Set(orderedIds);
+    const remainingAlgs = categoryAlgorithms.filter(alg => !customIds.has(alg.id));
+    sortedAlgorithms = [...sortedAlgorithms, ...remainingAlgs];
+  } else {
+    // Use default order - for OLL, sort by number in name
+    if (activeTab === 'OLL') {
+      sortedAlgorithms = [...categoryAlgorithms].sort((a, b) => {
+        const aNum = parseInt(a.name_en.replace(/\D/g, ''), 10);
+        const bNum = parseInt(b.name_en.replace(/\D/g, ''), 10);
+        return aNum - bNum;
+      });
+    } else {
+      // For other categories, use default order
+      sortedAlgorithms = [...categoryAlgorithms];
+    }
+  }
+  
+  // Filter by search query
+  const filteredAlgs = sortedAlgorithms.filter(alg => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      alg.name_en.toLowerCase().includes(query) ||
+      alg.name_vi.toLowerCase().includes(query) ||
+      alg.notation.toLowerCase().includes(query)
+    );
+  });
 
   const totalInTab = filteredAlgs.length;
   const learnedInTab = mounted 
@@ -141,6 +179,29 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
             className="w-full"
           />
 
+          <button
+            onClick={() => setIsDragMode(!isDragMode)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+              isDragMode
+                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                : 'bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-gray-600'
+            }`}
+          >
+            {isDragMode ? <Grid className="w-4 h-4" /> : <GripVertical className="w-4 h-4" />}
+            {isDragMode ? dict.algorithms.grid_view : dict.algorithms.drag_mode}
+          </button>
+
+          {isDragMode && (
+            <button
+              onClick={() => {
+                setAlgorithmOrder(activeTab, []);
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30 transition-all"
+            >
+              {dict.algorithms.reset_order}
+            </button>
+          )}
+
           <div className="flex flex-col w-full sm:w-auto">
             <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
               {dict.algorithms.mastery}: <span className="text-indigo-600 dark:text-indigo-400">{learnedInTab} / {totalInTab}</span> ({progressPercentage}%)
@@ -156,25 +217,35 @@ export default function AlgorithmsPage({ params }: { params: Promise<{ locale: s
       </div>
 
       <div className="grid gap-4 sm:gap-6">
-        {filteredAlgs.map((alg) => (
-          <AlgorithmCard
-            key={alg.id}
-            alg={alg}
-            locale={locale as 'en' | 'vi'}
-            stats={stats[alg.id]}
-            onStatsChange={(algorithmId, updatedStats) => {
-              setStats((currentStats) => {
-                const nextStats = { ...currentStats };
-                if (updatedStats) {
-                  nextStats[algorithmId] = updatedStats;
-                } else {
-                  delete nextStats[algorithmId];
-                }
-                return nextStats;
-              });
+        {isDragMode ? (
+          <DraggableAlgorithmList
+            algorithms={filteredAlgs}
+            category={activeTab}
+            onAlgorithmOrderChange={(category, orderedIds) => {
+              setAlgorithmOrder(category, orderedIds);
             }}
           />
-        ))}
+        ) : (
+          filteredAlgs.map((alg) => (
+            <AlgorithmCard
+              key={alg.id}
+              alg={alg}
+              locale={locale as 'en' | 'vi'}
+              stats={stats[alg.id]}
+              onStatsChange={(algorithmId, updatedStats) => {
+                setStats((currentStats) => {
+                  const nextStats = { ...currentStats };
+                  if (updatedStats) {
+                    nextStats[algorithmId] = updatedStats;
+                  } else {
+                    delete nextStats[algorithmId];
+                  }
+                  return nextStats;
+                });
+              }}
+            />
+          ))
+        )}
         {filteredAlgs.length === 0 && (
           <div className="p-6 sm:p-12 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
             {dict.algorithms.no_algorithms}

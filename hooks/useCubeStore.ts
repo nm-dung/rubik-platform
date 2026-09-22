@@ -7,6 +7,7 @@ interface CubeState {
   learnedAlgs: string[]; // 2.
   learningAlgs: string[]; // New: algorithms currently being learned
   preferredNotations: Record<string, string>; // New: user's preferred notation for each algorithm ID
+  algorithmOrder: Record<string, string[]>; // New: custom order of algorithms by category
 
   setAlgorithm: (notation: string) => void;
   clearQueue: () => void;
@@ -14,6 +15,7 @@ interface CubeState {
   toggleLearned: (id: string) => void;
   toggleLearning: (id: string) => void; // New: toggle learning status
   setPreferredNotation: (algorithmId: string, notation: string) => void; // New: set preferred notation
+  setAlgorithmOrder: (category: string, orderedIds: string[]) => void; // New: set custom algorithm order
 }
 
 export const useCubeStore = create<CubeState>()(
@@ -24,6 +26,7 @@ export const useCubeStore = create<CubeState>()(
       learnedAlgs: [],
       learningAlgs: [], // New: algorithms currently being learned
       preferredNotations: {}, // New: user's preferred notation for each algorithm ID
+      algorithmOrder: {}, // New: custom order of algorithms by category
 
       setAlgorithm: (notation: string) => {
         const moves = notation.trim().split(/\s+/);
@@ -55,6 +58,13 @@ export const useCubeStore = create<CubeState>()(
         preferredNotations: {
           ...state.preferredNotations,
           [algorithmId]: notation
+        }
+      })),
+
+      setAlgorithmOrder: (category: string, orderedIds: string[]) => set((state) => ({
+        algorithmOrder: {
+          ...state.algorithmOrder,
+          [category]: orderedIds
         }
       })),
     }),
