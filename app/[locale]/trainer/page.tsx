@@ -244,13 +244,20 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           // Stop timer when pressing space while running
           setIsRunning(false);
           const finalTime = startTime === null ? currentTime : Date.now() - startTime;
+          console.log('Final time calculated:', finalTime, 'startTime:', startTime, 'currentTime:', currentTime);
           setLastCompletedTime(finalTime);
           setCurrentTime(finalTime);
           setStartTime(null);
           
           if (currentAlgorithm) {
             console.log('Completed solve for:', currentAlgorithm.name_en, 'time:', finalTime);
-            setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
+            const solveResult = { algorithmId: currentAlgorithm.id, time: finalTime };
+            console.log('Adding to sessionResults:', solveResult);
+            setSessionResults(results => {
+              const newResults = [...results, solveResult];
+              console.log('Updated sessionResults:', newResults);
+              return newResults;
+            });
             const nextAlgorithm = getRandomAlgorithm();
             console.log('Next algorithm:', nextAlgorithm?.name_en);
             if (nextAlgorithm) {
@@ -299,15 +306,22 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           // Stop timer when touching while running
           setIsRunning(false);
           const finalTime = startTime === null ? currentTime : Date.now() - startTime;
+          console.log('Final time calculated (touch):', finalTime, 'startTime:', startTime, 'currentTime:', currentTime);
           setLastCompletedTime(finalTime);
           setCurrentTime(finalTime);
           setStartTime(null);
           
           if (currentAlgorithm) {
-            console.log('Completed solve for:', currentAlgorithm.name_en, 'time:', finalTime);
-            setSessionResults(results => [...results, { algorithmId: currentAlgorithm.id, time: finalTime }]);
+            console.log('Completed solve for (touch):', currentAlgorithm.name_en, 'time:', finalTime);
+            const solveResult = { algorithmId: currentAlgorithm.id, time: finalTime };
+            console.log('Adding to sessionResults (touch):', solveResult);
+            setSessionResults(results => {
+              const newResults = [...results, solveResult];
+              console.log('Updated sessionResults (touch):', newResults);
+              return newResults;
+            });
             const nextAlgorithm = getRandomAlgorithm();
-            console.log('Next algorithm:', nextAlgorithm?.name_en);
+            console.log('Next algorithm (touch):', nextAlgorithm?.name_en);
             if (nextAlgorithm) {
               setCurrentAlgorithm(nextAlgorithm);
             } else {
@@ -346,11 +360,19 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
 
   const handleEndSession = async () => {
     // Save session results to database
+    console.log('Ending session with results:', sessionResults);
     try {
       if (sessionResults.length > 0) {
         const userId = getUserId();
+        console.log('Sending to API:', {
+          userId,
+          results: sessionResults.map(r => ({
+            algorithm_id: r.algorithmId,
+            time_ms: r.time
+          }))
+        });
 
-        await fetch('/api/algorithm-stats', {
+        const response = await fetch('/api/algorithm-stats', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -361,6 +383,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
             }))
           })
         });
+        
+        const responseData = await response.json();
+        console.log('API response:', responseData);
       }
     } catch (error) {
       console.error('Error saving session:', error);

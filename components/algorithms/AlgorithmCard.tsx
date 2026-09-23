@@ -102,7 +102,7 @@ export default function AlgorithmCard({
       setSelectedSessionIds([]);
     } catch (error) {
       console.error('Error loading practice history:', error);
-      setHistoryError('Unable to load practice history.');
+      setHistoryError(dict?.algorithms?.loading_history_error || 'Unable to load practice history.');
     } finally {
       setHistoryLoading(false);
     }
@@ -111,7 +111,7 @@ export default function AlgorithmCard({
   const handleDeleteHistory = async (deleteAll: boolean) => {
     const idsToDelete = deleteAll ? [] : selectedSessionIds;
     if (!deleteAll && idsToDelete.length === 0) return;
-    if (deleteAll && !window.confirm('Delete all practice times for this algorithm?')) return;
+    if (deleteAll && !window.confirm(dict?.algorithms?.delete_all_confirm || 'Delete all practice times for this algorithm?')) return;
 
     setDeleting(true);
     setHistoryError(null);
@@ -134,7 +134,7 @@ export default function AlgorithmCard({
       await loadHistory();
     } catch (error) {
       console.error('Error deleting practice history:', error);
-      setHistoryError('Unable to delete practice history.');
+      setHistoryError(dict?.algorithms?.delete_history_error || 'Unable to delete practice history.');
     } finally {
       setDeleting(false);
     }
@@ -263,14 +263,14 @@ export default function AlgorithmCard({
               className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors active:scale-95 touch-manipulation"
             >
               {showHistory ? <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <History className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-              {showHistory ? 'Hide history' : `View history (${stats.practice_count})`}
+              {showHistory ? (dict?.algorithms?.hide_history || 'Hide history') : `${dict?.algorithms?.view_history || 'View history'} (${stats.practice_count})`}
             </button>
 
             {showHistory && (
               <div className="mt-2 sm:mt-3 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 p-3 sm:p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
                   <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Select times to delete
+                    {dict?.algorithms?.select_times_to_delete || 'Select times to delete'}
                   </span>
                   <div className="flex gap-1.5 sm:gap-2">
                     <button
@@ -279,7 +279,7 @@ export default function AlgorithmCard({
                       className="flex items-center gap-1 rounded-lg bg-amber-100 dark:bg-amber-900/30 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95 touch-manipulation"
                     >
                       <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                      Delete selected
+                      {dict?.algorithms?.delete_selected || 'Delete selected'}
                     </button>
                     <button
                       onClick={() => handleDeleteHistory(true)}
@@ -287,16 +287,16 @@ export default function AlgorithmCard({
                       className="flex items-center gap-1 rounded-lg bg-red-100 dark:bg-red-900/30 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95 touch-manipulation"
                     >
                       <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                      Delete all
+                      {dict?.algorithms?.delete_all || 'Delete all'}
                     </button>
                   </div>
                 </div>
 
                 {historyError && <p className="mb-2 sm:mb-3 text-xs sm:text-sm font-medium text-red-600 dark:text-red-400">{historyError}</p>}
                 {historyLoading ? (
-                  <p className="py-2 sm:py-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">Loading history...</p>
+                  <p className="py-2 sm:py-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">{dict?.algorithms?.loading_history || 'Loading history...'}</p>
                 ) : history.length === 0 ? (
-                  <p className="py-3 text-sm text-slate-500">No practice history.</p>
+                  <p className="py-3 text-sm text-slate-500">{dict?.algorithms?.no_practice_history || 'No practice history.'}</p>
                 ) : (
                   <div className="max-h-56 space-y-2 overflow-y-auto">
                     {history.map((session) => (
@@ -316,7 +316,7 @@ export default function AlgorithmCard({
                           <span className="font-mono font-bold text-slate-800">{formatTime(session.time_ms)}</span>
                         </span>
                         <span className="text-xs text-slate-400">
-                          {session.timestamp ? new Date(session.timestamp).toLocaleString() : 'Unknown date'}
+                          {session.timestamp ? new Date(session.timestamp).toLocaleString() : (dict?.algorithms?.unknown_date || 'Unknown date')}
                         </span>
                       </label>
                     ))}

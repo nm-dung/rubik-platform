@@ -108,7 +108,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
             }`} />
           </Link>
 
-          {!loading && user && (
+          {user && (
             <Link 
               href={`/${locale}/dashboard`} 
               className={`text-sm font-medium relative py-2 px-1 transition-all duration-300 hover:scale-110 ${
@@ -142,52 +142,49 @@ export default function Navbar({ dict, locale }: NavbarProps) {
           <ThemeToggle />
           <LanguageSwitcher currentLocale={locale} />
 
-          {!loading && (
-            <>
-              {user ? (
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
-                    {profile?.username || 'User'}
-                  </span>
-                  <Link
-                    href={`/${locale}/settings`}
-                    className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 hover:scale-110 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
-                      isActive(`/${locale}/settings`) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400'
-                    }`}
-                  >
-                    <Settings className="w-4 h-4" />
-                    <span className="hidden sm:inline">
-                      {isVietnamese ? "Cài đặt" : "Settings"}
-                    </span>
-                  </Link>
-                  <button
-                    onClick={signOut}
-                    className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:scale-110 transition-all duration-300 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95"
-                  >
-                    {isVietnamese ? "Đăng xuất" : "Sign out"}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <Link
-                    href={`/${locale}/auth/login`}
-                    className={`text-sm font-medium transition-all duration-300 hover:scale-110 px-3 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
-                      isActive(`/${locale}/auth/login`) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'
-                    }`}
-                  >
-                    {isVietnamese ? "Đăng nhập" : "Sign in"}
-                  </Link>
-                  <Link
-                    href={`/${locale}/auth/signup`}
-                    className={`text-sm font-medium bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation ${
-                      isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700 dark:bg-indigo-600' : ''
-                    }`}
-                  >
-                    {isVietnamese ? "Đăng ký" : "Sign up"}
-                  </Link>
-                </div>
-              )}
-            </>
+          {/* Always show sign in/sign up by default, only show user info when definitely logged in */}
+          {!loading && user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
+                {profile?.username || 'User'}
+              </span>
+              <Link
+                href={`/${locale}/settings`}
+                className={`text-sm font-medium transition-all duration-300 flex items-center gap-1 hover:scale-110 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
+                  isActive(`/${locale}/settings`) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {isVietnamese ? "Cài đặt" : "Settings"}
+                </span>
+              </Link>
+              <button
+                onClick={signOut}
+                className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:scale-110 transition-all duration-300 px-2 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95"
+              >
+                {isVietnamese ? "Đăng xuất" : "Sign out"}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Link
+                href={`/${locale}/auth/login`}
+                className={`text-sm font-medium transition-all duration-300 hover:scale-110 px-3 py-2 sm:px-0 sm:py-0 touch-manipulation active:scale-95 ${
+                  isActive(`/${locale}/auth/login`) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'
+                }`}
+              >
+                {isVietnamese ? "Đăng nhập" : "Sign in"}
+              </Link>
+              <Link
+                href={`/${locale}/auth/signup`}
+                className={`text-sm font-medium bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 active:scale-95 touch-manipulation ${
+                  isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700 dark:bg-indigo-600' : ''
+                }`}
+              >
+                {isVietnamese ? "Đăng ký" : "Sign up"}
+              </Link>
+            </div>
           )}
         </nav>
 
@@ -275,7 +272,7 @@ export default function Navbar({ dict, locale }: NavbarProps) {
                 isActive(`/${locale}/community`) ? 'h-8' : 'h-0 hover:h-6'
               }`} />
             </Link>
-            {!loading && user && (
+            {user && (
               <Link
                 href={`/${locale}/dashboard`}
                 className={`text-sm font-medium relative py-3 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 touch-manipulation active:scale-95 ${
@@ -311,56 +308,53 @@ export default function Navbar({ dict, locale }: NavbarProps) {
               <LanguageSwitcher currentLocale={locale} />
             </div>
 
-            {!loading && (
-              <>
-                {user ? (
-                  <div className="border-t border-gray-200 dark:border-gray-800 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
-                    <span className="text-sm text-gray-600 dark:text-gray-300 block py-2">
-                      {profile?.username || 'User'}
-                    </span>
-                    <Link
-                      href={`/${locale}/settings`}
-                      className={`text-sm font-medium transition-all duration-300 flex items-center gap-2 py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 ${
-                        isActive(`/${locale}/settings`) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Settings className="w-4 h-4" />
-                      {isVietnamese ? "Cài đặt" : "Settings"}
-                    </Link>
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:scale-105 transition-all duration-300 py-3 px-2 touch-manipulation active:scale-95 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 w-full text-left"
-                    >
-                      {isVietnamese ? "Đăng xuất" : "Sign out"}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="border-t border-gray-200 dark:border-gray-800 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
-                    <Link
-                      href={`/${locale}/auth/login`}
-                      className={`text-sm font-medium transition-all duration-300 block py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 ${
-                        isActive(`/${locale}/auth/login`) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {isVietnamese ? "Đăng nhập" : "Sign in"}
-                    </Link>
-                    <Link
-                      href={`/${locale}/auth/signup`}
-                      className={`text-sm font-medium bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 block text-center touch-manipulation active:scale-95 ${
-                        isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700 dark:bg-indigo-600' : ''
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {isVietnamese ? "Đăng ký" : "Sign up"}
-                    </Link>
-                  </div>
-                )}
-              </>
+            {/* Always show sign in/sign up by default, only show user info when definitely logged in */}
+            {!loading && user ? (
+              <div className="border-t border-gray-200 dark:border-gray-800 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
+                <span className="text-sm text-gray-600 dark:text-gray-300 block py-2">
+                  {profile?.username || 'User'}
+                </span>
+                <Link
+                  href={`/${locale}/settings`}
+                  className={`text-sm font-medium transition-all duration-300 flex items-center gap-2 py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 ${
+                    isActive(`/${locale}/settings`) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Settings className="w-4 h-4" />
+                  {isVietnamese ? "Cài đặt" : "Settings"}
+                </Link>
+                <button
+                  onClick={() => {
+                    signOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:scale-105 transition-all duration-300 py-3 px-2 touch-manipulation active:scale-95 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 w-full text-left"
+                >
+                  {isVietnamese ? "Đăng xuất" : "Sign out"}
+                </button>
+              </div>
+            ) : (
+              <div className="border-t border-gray-200 dark:border-gray-800 pt-3 sm:pt-4 space-y-2 sm:space-y-3">
+                <Link
+                  href={`/${locale}/auth/login`}
+                  className={`text-sm font-medium transition-all duration-300 block py-3 px-2 hover:scale-105 touch-manipulation active:scale-95 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 ${
+                    isActive(`/${locale}/auth/login`) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {isVietnamese ? "Đăng nhập" : "Sign in"}
+                </Link>
+                <Link
+                  href={`/${locale}/auth/signup`}
+                  className={`text-sm font-medium bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 block text-center touch-manipulation active:scale-95 ${
+                    isActive(`/${locale}/auth/signup`) ? 'bg-indigo-700 dark:bg-indigo-600' : ''
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {isVietnamese ? "Đăng ký" : "Sign up"}
+                </Link>
+              </div>
             )}
           </nav>
         </div>

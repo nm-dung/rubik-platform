@@ -57,7 +57,18 @@
     "mark_as_learned": "Đánh dấu đã học",
     "drag_mode": "Chế độ kéo",
     "grid_view": "Lưới",
-    "reset_order": "Đặt lại thứ tự"
+    "reset_order": "Đặt lại thứ tự",
+    "view_history": "Xem lịch sử",
+    "hide_history": "Ẩn lịch sử",
+    "select_times_to_delete": "Chọn thời gian để xóa",
+    "delete_selected": "Xóa đã chọn",
+    "delete_all": "Xóa tất cả",
+    "delete_all_confirm": "Xóa tất cả thời gian luyện tập cho thuật toán này?",
+    "loading_history": "Đang tải lịch sử...",
+    "loading_history_error": "Không thể tải lịch sử luyện tập.",
+    "delete_history_error": "Không thể xóa lịch sử luyện tập.",
+    "no_practice_history": "Không có lịch sử luyện tập.",
+    "unknown_date": "Ngày không xác định"
   },
   "dashboard": {
     "welcome": "Xin chào",

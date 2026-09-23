@@ -66,10 +66,18 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
     }
   }, [user, loading, router, locale]);
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-slate-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-slate-600">Please sign in to access the dashboard</div>
       </div>
     );
   }

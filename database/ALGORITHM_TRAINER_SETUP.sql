@@ -44,15 +44,31 @@ CREATE OR REPLACE FUNCTION update_algorithm_practice_stats(
   p_time_ms INTEGER
 )
 RETURNS VOID AS $$
+DECLARE
+  v_new_count INTEGER;
+  v_new_total_time INTEGER;
+  v_new_avg NUMERIC;
 BEGIN
+  -- Get current stats or initialize
+  SELECT 
+    COALESCE(practice_count, 0) + 1,
+    COALESCE(total_time_ms, 0) + p_time_ms
+  INTO v_new_count, v_new_total_time
+  FROM algorithm_practice_stats
+  WHERE user_id = p_user_id AND algorithm_id = p_algorithm_id;
+  
+  -- Calculate new average
+  v_new_avg := v_new_total_time::NUMERIC / v_new_count;
+  
+  -- Insert or update stats
   INSERT INTO algorithm_practice_stats (user_id, algorithm_id, practice_count, total_time_ms, best_time_ms, avg_time_ms, last_practiced)
-  VALUES (p_user_id, p_algorithm_id, 1, p_time_ms, p_time_ms, p_time_ms, CURRENT_TIMESTAMP)
+  VALUES (p_user_id, p_algorithm_id, 1, p_time_ms, p_time_ms, p_time_ms::NUMERIC, CURRENT_TIMESTAMP)
   ON CONFLICT (user_id, algorithm_id)
   DO UPDATE SET
-    practice_count = algorithm_practice_stats.practice_count + 1,
-    total_time_ms = algorithm_practice_stats.total_time_ms + p_time_ms,
+    practice_count = v_new_count,
+    total_time_ms = v_new_total_time,
     best_time_ms = LEAST(algorithm_practice_stats.best_time_ms, p_time_ms),
-    avg_time_ms = (algorithm_practice_stats.total_time_ms + p_time_ms)::NUMERIC / (algorithm_practice_stats.practice_count + 1),
+    avg_time_ms = v_new_avg,
     last_practiced = CURRENT_TIMESTAMP,
     updated_at = CURRENT_TIMESTAMP;
 

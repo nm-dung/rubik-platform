@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { userId, results } = body;
 
+    console.log('POST /api/algorithm-stats received:', { userId, results });
+
     if (!userId || !Array.isArray(results)) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
@@ -21,8 +23,9 @@ export async function POST(request: NextRequest) {
     // Save each result using the database function
     for (const result of results) {
       const { algorithm_id, time_ms } = result;
+      console.log('Processing result:', { algorithm_id, time_ms });
 
-      const { error } = await supabase.rpc('update_algorithm_practice_stats', {
+      const { error } = await supabase.rpc('update_algorithm_practice_stats_simple', {
         p_user_id: userId,
         p_algorithm_id: algorithm_id,
         p_time_ms: time_ms
@@ -32,8 +35,11 @@ export async function POST(request: NextRequest) {
         console.error('Error updating algorithm stats:', error);
         return NextResponse.json({ error: 'Failed to save practice stats' }, { status: 500 });
       }
+      
+      console.log('Successfully saved result for algorithm:', algorithm_id);
     }
 
+    console.log('All results saved successfully');
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error('Error in algorithm stats API:', error);

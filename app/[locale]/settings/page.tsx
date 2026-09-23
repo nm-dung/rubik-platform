@@ -139,7 +139,11 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
   }
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-slate-600 dark:text-slate-400">Please sign in to access settings</div>
+      </div>
+    );
   }
 
   return (

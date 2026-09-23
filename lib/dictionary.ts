@@ -62,6 +62,17 @@ export interface Dictionary {
     drag_mode: string;
     grid_view: string;
     reset_order: string;
+    view_history: string;
+    hide_history: string;
+    select_times_to_delete: string;
+    delete_selected: string;
+    delete_all: string;
+    delete_all_confirm: string;
+    loading_history: string;
+    loading_history_error: string;
+    delete_history_error: string;
+    no_practice_history: string;
+    unknown_date: string;
   };
   dashboard: {
     welcome: string;

@@ -57,7 +57,18 @@
     "mark_as_learned": "Mark as learned",
     "drag_mode": "Drag Mode",
     "grid_view": "Grid View",
-    "reset_order": "Reset Order"
+    "reset_order": "Reset Order",
+    "view_history": "View history",
+    "hide_history": "Hide history",
+    "select_times_to_delete": "Select times to delete",
+    "delete_selected": "Delete selected",
+    "delete_all": "Delete all",
+    "delete_all_confirm": "Delete all practice times for this algorithm?",
+    "loading_history": "Loading history...",
+    "loading_history_error": "Unable to load practice history.",
+    "delete_history_error": "Unable to delete practice history.",
+    "no_practice_history": "No practice history.",
+    "unknown_date": "Unknown date"
   },
   "dashboard": {
     "welcome": "Welcome",
