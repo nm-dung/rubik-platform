@@ -166,12 +166,6 @@
 @variant dark (&:where(.dark, .dark *));
 
 /* Base dark mode styles */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-  }
-}
-
 .dark {
   color-scheme: dark;
   /* Dark mode background gradient */

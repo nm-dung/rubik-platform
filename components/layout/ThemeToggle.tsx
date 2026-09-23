@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  // Initialize with localStorage value if available (SSR-safe)
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem("theme");
+      return savedTheme === "dark";
+    }
+    return false;
+  });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Check localStorage or system preference
+    // Check localStorage only (ignore system preference)
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    if (savedTheme === "dark") {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     } else {
@@ -42,7 +48,7 @@ export function ThemeToggle() {
         className="p-2 rounded-lg hover:bg-slate-100 hover:scale-110 transition-all duration-300"
         aria-label="Toggle theme"
       >
-        <Moon className="w-5 h-5 text-slate-600" />
+        <Sun className="w-5 h-5 text-slate-600" />
       </button>
     );
   }
