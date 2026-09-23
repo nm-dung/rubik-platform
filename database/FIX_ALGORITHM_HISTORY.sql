@@ -1,6 +1,14 @@
 -- Fix aggregate algorithm stats using the individual solve history.
 -- Run this in Supabase SQL Editor after ALGORITHM_TRAINER_SETUP.sql.
 
+-- Remove the old shared anonymous identity. New visitors receive a unique
+-- browser-local UUID instead.
+DELETE FROM algorithm_practice_sessions
+WHERE user_id = '00000000-0000-0000-0000-000000000001';
+
+DELETE FROM algorithm_practice_stats
+WHERE user_id = '00000000-0000-0000-0000-000000000001';
+
 UPDATE algorithm_practice_stats AS stats
 SET
   practice_count = aggregates.practice_count,

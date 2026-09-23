@@ -9,25 +9,9 @@ import { AlgorithmSelector } from "@/components/algorithms/AlgorithmSelector";
 import { Play, ArrowRight, BarChart3, Clock, Trophy, RotateCcw, Square } from "lucide-react";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
 import { useCubeStore } from "@/hooks/useCubeStore";
+import { getPracticeUserId } from "@/lib/practiceUser";
 
 type TrainerState = 'selection' | 'training' | 'summary';
-
-// Helper function to get user ID
-function getUserId(): string {
-  if (typeof window === 'undefined') return '00000000-0000-0000-0000-000000000001';
-  
-  const session = localStorage.getItem('sb-rubik-platform-auth-token');
-  if (session) {
-    try {
-      const parsed = JSON.parse(session);
-      return parsed.user?.id || '00000000-0000-0000-0000-000000000001';
-    } catch {
-      return '00000000-0000-0000-0000-000000000001';
-    }
-  }
-  
-  return '00000000-0000-0000-0000-000000000001';
-}
 
 export default function AlgorithmTrainerPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
@@ -88,7 +72,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
           setLoadSucceeded(true);
         }
 
-        const userId = getUserId();
+        const userId = await getPracticeUserId();
         console.log('Loading stats for user:', userId);
         const statsResponse = await fetch(`/api/algorithm-stats?userId=${userId}`);
         if (statsResponse.ok) {
@@ -302,7 +286,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
     console.log('Ending session with results:', sessionResults);
     try {
       if (sessionResults.length > 0) {
-        const userId = getUserId();
+        const userId = await getPracticeUserId();
         console.log('Sending to API:', {
           userId,
           results: sessionResults.map(r => ({

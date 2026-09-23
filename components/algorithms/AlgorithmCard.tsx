@@ -6,23 +6,7 @@ import { useRouter } from "next/navigation";
 import { AlgorithmPracticeSession, AlgorithmPracticeStats, Algorithm } from "@/lib/types";
 import { History, Trash2, X } from "lucide-react";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
-
-// Helper function to get user ID
-function getUserId(): string {
-  if (typeof window === 'undefined') return '00000000-0000-0000-0000-000000000001';
-  
-  const session = localStorage.getItem('sb-rubik-platform-auth-token');
-  if (session) {
-    try {
-      const parsed = JSON.parse(session);
-      return parsed.user?.id || '00000000-0000-0000-0000-000000000001';
-    } catch {
-      return '00000000-0000-0000-0000-000000000001';
-    }
-  }
-  
-  return '00000000-0000-0000-0000-000000000001';
-}
+import { getPracticeUserId } from "@/lib/practiceUser";
 
 export default function AlgorithmCard({
   alg,
@@ -91,7 +75,7 @@ export default function AlgorithmCard({
     setHistoryError(null);
 
     try {
-      const userId = getUserId();
+      const userId = await getPracticeUserId();
       const response = await fetch(
         `/api/algorithm-stats?userId=${userId}&algorithmId=${encodeURIComponent(alg.id)}`
       );
@@ -116,7 +100,7 @@ export default function AlgorithmCard({
     setDeleting(true);
     setHistoryError(null);
     try {
-      const userId = getUserId();
+      const userId = await getPracticeUserId();
       const response = await fetch('/api/algorithm-stats', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },

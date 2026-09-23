@@ -4,25 +4,9 @@ import { useState, useEffect } from "react";
 import { Category, Algorithm, AlgorithmPracticeStats } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import AlgorithmCard from "./AlgorithmCard";
+import { getPracticeUserId } from "@/lib/practiceUser";
 
 const CATEGORIES: Category[] = ['F2L', 'OLL', 'PLL'];
-
-// Helper function to get user ID
-function getUserId(): string {
-  if (typeof window === 'undefined') return '00000000-0000-0000-0000-000000000001';
-  
-  const session = localStorage.getItem('sb-rubik-platform-auth-token');
-  if (session) {
-    try {
-      const parsed = JSON.parse(session);
-      return parsed.user?.id || '00000000-0000-0000-0000-000000000001';
-    } catch {
-      return '00000000-0000-0000-0000-000000000001';
-    }
-  }
-  
-  return '00000000-0000-0000-0000-000000000001';
-}
 
 export default function AlgorithmLibrary() {
   const [activeCategory, setActiveCategory] = useState<Category>('PLL');
@@ -56,7 +40,7 @@ export default function AlgorithmLibrary() {
         }
 
         // Fetch practice stats using authenticated user ID
-        const userId = getUserId();
+        const userId = await getPracticeUserId();
         const { data: statsData, error: statsError } = await supabase
           .from('algorithm_practice_stats')
           .select('*')
