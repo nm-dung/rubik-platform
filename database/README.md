@@ -18,6 +18,7 @@ This folder contains all SQL files for setting up the Rubik's Learning Platform 
 ### Algorithm System
 - **ALGORITHMS_SETUP.sql** - Algorithms table and algorithm data
 - **ALGORITHM_TRAINER_SETUP.sql** - Algorithm practice and trainer functionality
+- **REPAIR_ALGORITHM_PRACTICE_STATS.sql** - Rebuild aggregate stats from solve history
 
 ### Gamification
 - **streaks_achievements.sql** - User streaks, achievements, and gamification features
@@ -37,6 +38,7 @@ This folder contains all SQL files for setting up the Rubik's Learning Platform 
    - LEARNING_PATHS_SETUP.sql
    - ALGORITHMS_SETUP.sql
    - ALGORITHM_TRAINER_SETUP.sql
+   - REPAIR_ALGORITHM_PRACTICE_STATS.sql (only when repairing existing stats)
    - CONTRIBUTIONS_SETUP.sql
    - streaks_achievements.sql
 

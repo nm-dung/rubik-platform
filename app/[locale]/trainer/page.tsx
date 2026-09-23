@@ -53,6 +53,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   const preferredNotations = useCubeStore((state) => state.preferredNotations);
 
   const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const sessionSaveStartedRef = useRef(false);
 
   // Load algorithms
   useEffect(() => {
@@ -192,6 +193,7 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
 
   const handleStartTraining = () => {
     if (selectedIds.length === 0) return;
+    sessionSaveStartedRef.current = false;
     setState('training');
     setCurrentAlgorithm(getRandomAlgorithm());
     setSessionResults([]);
@@ -274,77 +276,11 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
       }
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      if (state === 'training' && !isRunning) {
-        e.preventDefault();
-        
-        // Clear any existing timeouts
-        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
-        
-        // Set ready state after holding for 100ms
-        readyTimeoutRef.current = setTimeout(() => {
-          setIsReady(true);
-        }, 100);
-      }
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (state === 'training') {
-        e.preventDefault();
-        
-        // Clear timeout
-        if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
-        
-        if (isReady && !isRunning) {
-          // Start timer when releasing touch after being ready
-          setIsRunning(true);
-          setStartTime(Date.now());
-          setCurrentTime(0);
-          setLastCompletedTime(0);
-          setIsReady(false);
-        } else if (isRunning) {
-          // Stop timer when touching while running
-          setIsRunning(false);
-          const finalTime = startTime === null ? currentTime : Date.now() - startTime;
-          console.log('Final time calculated (touch):', finalTime, 'startTime:', startTime, 'currentTime:', currentTime);
-          setLastCompletedTime(finalTime);
-          setCurrentTime(finalTime);
-          setStartTime(null);
-          
-          if (currentAlgorithm) {
-            console.log('Completed solve for (touch):', currentAlgorithm.name_en, 'time:', finalTime);
-            const solveResult = { algorithmId: currentAlgorithm.id, time: finalTime };
-            console.log('Adding to sessionResults (touch):', solveResult);
-            setSessionResults(results => {
-              const newResults = [...results, solveResult];
-              console.log('Updated sessionResults (touch):', newResults);
-              return newResults;
-            });
-            const nextAlgorithm = getRandomAlgorithm();
-            console.log('Next algorithm (touch):', nextAlgorithm?.name_en);
-            if (nextAlgorithm) {
-              setCurrentAlgorithm(nextAlgorithm);
-            } else {
-              console.error('Failed to get next algorithm, stopping training');
-              setState('selection');
-            }
-          }
-        } else {
-          // Reset ready state if released before ready
-          setIsReady(false);
-        }
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
       if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
     };
   }, [state, isRunning, isReady, startTime, currentTime, currentAlgorithm, getRandomAlgorithm]);
@@ -359,6 +295,9 @@ export default function AlgorithmTrainerPage({ params }: { params: Promise<{ loc
   };
 
   const handleEndSession = async () => {
+    if (sessionSaveStartedRef.current) return;
+    sessionSaveStartedRef.current = true;
+
     // Save session results to database
     console.log('Ending session with results:', sessionResults);
     try {
