@@ -266,6 +266,20 @@
     "delete_account_confirm": "Xóa Tài khoản",
     "changes_saved": "Thay đổi đã được lưu thành công",
     "password_updated": "Mật khẩu đã được cập nhật thành công",
-    "account_deleted": "Tài khoản đã được xóa thành công"
+    "account_deleted": "Tài khoản đã được xóa thành công",
+    "username_updated": "Tên người dùng đã được cập nhật thành công",
+    "profile_created": "Hồ sơ đã được tạo thành công",
+    "deleting": "Đang xóa...",
+    "creating": "Đang tạo...",
+    "saving": "Đang lưu...",
+    "updating": "Đang cập nhật...",
+    "username_required": "Tên người dùng là bắt buộc",
+    "username_min_length": "Tên người dùng phải có ít nhất 3 ký tự",
+    "username_invalid": "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới",
+    "password_min_length": "Mật khẩu phải có ít nhất 6 ký tự",
+    "password_mismatch": "Mật khẩu không khớp",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "create_profile": "Tạo hồ sơ"
   }
 }

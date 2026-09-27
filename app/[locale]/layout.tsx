@@ -7,6 +7,7 @@ import Footer from "../../components/layout/Footer";
 import { ToastContainer } from "../../components/layout/ToastContainer";
 import { AuthProvider } from "../../contexts/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default async function RootLayout({
          
           <Footer dict={dict.footer as Dictionary['footer']} />
           <Analytics />
+          <SpeedInsights />
         </AuthProvider>
       </body>
     </html>

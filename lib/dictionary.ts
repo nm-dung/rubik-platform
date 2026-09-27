@@ -264,6 +264,20 @@ export interface Dictionary {
     changes_saved: string;
     password_updated: string;
     account_deleted: string;
+    username_updated: string;
+    profile_created: string;
+    deleting: string;
+    creating: string;
+    saving: string;
+    updating: string;
+    username_required: string;
+    username_min_length: string;
+    username_invalid: string;
+    password_min_length: string;
+    password_mismatch: string;
+    cancel: string;
+    save: string;
+    create_profile: string;
   };
   [key: string]: unknown;
 }

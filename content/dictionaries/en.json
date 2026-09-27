@@ -266,7 +266,21 @@
     "delete_account_confirm": "Delete Account",
     "changes_saved": "Changes saved successfully",
     "password_updated": "Password updated successfully",
-    "account_deleted": "Account deleted successfully"
+    "account_deleted": "Account deleted successfully",
+    "username_updated": "Username updated successfully",
+    "profile_created": "Profile created successfully",
+    "deleting": "Deleting...",
+    "creating": "Creating...",
+    "saving": "Saving...",
+    "updating": "Updating...",
+    "username_required": "Username is required",
+    "username_min_length": "Username must be at least 3 characters",
+    "username_invalid": "Username can only contain letters, numbers, and underscores",
+    "password_min_length": "Password must be at least 6 characters",
+    "password_mismatch": "Passwords do not match",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create_profile": "Create Profile"
   }
   
 }

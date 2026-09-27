@@ -207,8 +207,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
+    try {
+      if (!supabase) {
+        console.error('Supabase not configured, cannot sign out');
+        return;
+      }
+      console.log('Signing out user...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Supabase signOut error:', error);
+        throw error;
+      }
+      console.log('Sign out successful');
+      // Clear user state manually to ensure immediate UI update
+      setUser(null);
+      setProfile(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Even if Supabase fails, clear local state
+      setUser(null);
+      setProfile(null);
+    }
   };
 
   const deleteAccount = async () => {

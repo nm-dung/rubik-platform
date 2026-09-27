@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { use } from "react";
+import { useState, useEffect, use } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { User, Lock, Trash2, Shield, ChevronRight, X } from "lucide-react";
+import { getDictionary, type Dictionary } from "@/lib/dictionary";
 
 export default function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolvedParams = use(params);
   const { user, profile, deleteAccount, updatePassword, updateProfile, loading } = useAuth();
   const router = useRouter();
+  const [dict, setDict] = useState<Dictionary | null>(null);
   const isVietnamese = (resolvedParams.locale as 'en' | 'vi') === 'vi';
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -20,11 +21,14 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
   
   const [editingUsername, setEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState("");
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [updatingUsername, setUpdatingUsername] = useState(false);
+  const [usernameSuccess, setUsernameSuccess] = useState(false);
+  const [profileCreated, setProfileCreated] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -39,6 +43,10 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
     }
   }, [profile]);
 
+  useEffect(() => {
+    getDictionary(resolvedParams.locale as 'en' | 'vi').then(setDict);
+  }, [resolvedParams.locale]);
+
   const handleDeleteAccount = async () => {
     setDeleting(true);
     const { error } = await deleteAccount();
@@ -46,20 +54,23 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
     setShowDeleteConfirm(false);
     
     if (error) {
-      alert(error);
+      setPasswordError(error);
+    } else {
+      // Success - the AuthContext will handle redirect
     }
   };
 
   const handleUpdatePassword = async () => {
     setPasswordError(null);
+    setPasswordSuccess(false);
 
     if (newPassword.length < 6) {
-      setPasswordError(isVietnamese ? "Mật khẩu phải có ít nhất 6 ký tự" : "Password must be at least 6 characters");
+      setPasswordError(dict?.settings?.password_min_length || "Password must be at least 6 characters");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError(isVietnamese ? "Mật khẩu không khớp" : "Passwords do not match");
+      setPasswordError(dict?.settings?.password_mismatch || "Passwords do not match");
       return;
     }
 
@@ -74,20 +85,22 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      alert(isVietnamese ? "Đổi mật khẩu thành công!" : "Password updated successfully!");
+      setPasswordSuccess(true);
+      setTimeout(() => setPasswordSuccess(false), 3000);
     }
   };
 
   const handleUpdateUsername = async () => {
     setUsernameError(null);
+    setUsernameSuccess(false);
 
     if (usernameInput.length < 3) {
-      setUsernameError(isVietnamese ? "Tên người dùng phải có ít nhất 3 ký tự" : "Username must be at least 3 characters");
+      setUsernameError(dict?.settings?.username_min_length || "Username must be at least 3 characters");
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(usernameInput)) {
-      setUsernameError(isVietnamese ? "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới" : "Username can only contain letters, numbers, and underscores");
+      setUsernameError(dict?.settings?.username_invalid || "Username can only contain letters, numbers, and underscores");
       return;
     }
 
@@ -99,23 +112,28 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
       setUsernameError(error);
     } else {
       setEditingUsername(false);
-      alert(isVietnamese ? "Cập nhật tên người dùng thành công!" : "Username updated successfully!");
+      setUsernameSuccess(true);
+      setTimeout(() => setUsernameSuccess(false), 3000);
     }
   };
 
   const handleCreateProfile = async () => {
+    setUsernameError(null);
+    setUsernameSuccess(false);
+    setProfileCreated(false);
+
     if (!usernameInput) {
-      setUsernameError(isVietnamese ? "Tên người dùng là bắt buộc" : "Username is required");
+      setUsernameError(dict?.settings?.username_required || "Username is required");
       return;
     }
 
     if (usernameInput.length < 3) {
-      setUsernameError(isVietnamese ? "Tên người dùng phải có ít nhất 3 ký tự" : "Username must be at least 3 characters");
+      setUsernameError(dict?.settings?.username_min_length || "Username must be at least 3 characters");
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(usernameInput)) {
-      setUsernameError(isVietnamese ? "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới" : "Username can only contain letters, numbers, and underscores");
+      setUsernameError(dict?.settings?.username_invalid || "Username can only contain letters, numbers, and underscores");
       return;
     }
 
@@ -126,7 +144,8 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
     if (error) {
       setUsernameError(error);
     } else {
-      alert(isVietnamese ? "Tạo hồ sơ thành công!" : "Profile created successfully!");
+      setProfileCreated(true);
+      setTimeout(() => setProfileCreated(false), 3000);
     }
   };
 
@@ -197,38 +216,49 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                       disabled={updatingUsername}
                       className="px-3 sm:px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50 text-sm"
                     >
-                      {updatingUsername ? (isVietnamese ? "Đang tạo..." : "Creating...") : (isVietnamese ? "Tạo hồ sơ" : "Create Profile")}
+                      {updatingUsername ? (dict?.settings?.creating || "Creating...") : (dict?.settings?.create_profile || "Create Profile")}
                     </button>
                   </div>
                   {usernameError && (
                     <p className="text-sm text-red-600 dark:text-red-400 mt-2">{usernameError}</p>
                   )}
+                  {profileCreated && (
+                    <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">{dict?.settings?.profile_created || "Profile created successfully!"}</p>
+                  )}
                 </div>
               ) : editingUsername ? (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={usernameInput}
-                    onChange={(e) => setUsernameInput(e.target.value)}
-                    className="flex-1 px-3 sm:px-4 py-2 border border-slate-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm bg-white dark:bg-gray-700 text-slate-900 dark:text-white"
-                  />
-                  <button
-                    onClick={handleUpdateUsername}
-                    disabled={updatingUsername}
-                    className="px-3 sm:px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50 text-sm"
-                  >
-                    {updatingUsername ? (isVietnamese ? "Đang lưu..." : "Saving...") : (isVietnamese ? "Lưu" : "Save")}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingUsername(false);
-                      setUsernameInput(profile?.username || "");
-                      setUsernameError(null);
-                    }}
-                    className="px-3 sm:px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors text-sm"
-                  >
-                    {isVietnamese ? "Hủy" : "Cancel"}
-                  </button>
+                <div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={usernameInput}
+                      onChange={(e) => setUsernameInput(e.target.value)}
+                      className="flex-1 px-3 sm:px-4 py-2 border border-slate-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm bg-white dark:bg-gray-700 text-slate-900 dark:text-white"
+                    />
+                    <button
+                      onClick={handleUpdateUsername}
+                      disabled={updatingUsername}
+                      className="px-3 sm:px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50 text-sm"
+                    >
+                      {updatingUsername ? (dict?.settings?.updating || "Saving...") : (dict?.settings?.save || "Save")}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingUsername(false);
+                        setUsernameInput(profile?.username || "");
+                        setUsernameError(null);
+                      }}
+                      className="px-3 sm:px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors text-sm"
+                    >
+                      {dict?.settings?.cancel || "Cancel"}
+                    </button>
+                  </div>
+                  {usernameError && (
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-2">{usernameError}</p>
+                  )}
+                  {usernameSuccess && (
+                    <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">{dict?.settings?.username_updated || "Updated successfully!"}</p>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-gray-700 rounded-lg">
@@ -317,7 +347,7 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                   disabled={deleting}
                   className="flex-1 px-3 sm:px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm"
                 >
-                  {isVietnamese ? "Hủy" : "Cancel"}
+                  {dict?.settings?.cancel || "Cancel"}
                 </button>
                 <button
                   onClick={handleDeleteAccount}
@@ -325,8 +355,8 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                   className="flex-1 px-3 sm:px-4 py-2 bg-red-600 dark:bg-red-700 text-white rounded-lg font-medium hover:bg-red-700 dark:hover:bg-red-800 transition-colors disabled:opacity-50 text-sm"
                 >
                   {deleting 
-                    ? (isVietnamese ? "Đang xóa..." : "Deleting...")
-                    : (isVietnamese ? "Xóa tài khoản" : "Delete account")
+                    ? (dict?.settings?.deleting || "Deleting...")
+                    : (dict?.settings?.delete_account_confirm || "Delete account")
                   }
                 </button>
               </div>
@@ -384,13 +414,19 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                   </div>
                 )}
 
+                {passwordSuccess && (
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm">
+                    {dict?.settings?.password_updated || "Password updated successfully!"}
+                  </div>
+                )}
+
                 <div className="flex gap-2 sm:gap-3">
                   <button
                     onClick={() => setShowPasswordModal(false)}
                     disabled={updatingPassword}
                     className="flex-1 px-3 sm:px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm"
                   >
-                    {isVietnamese ? "Hủy" : "Cancel"}
+                    {dict?.settings?.cancel || "Cancel"}
                   </button>
                   <button
                     onClick={handleUpdatePassword}
@@ -398,8 +434,8 @@ export default function SettingsPage({ params }: { params: Promise<{ locale: str
                     className="flex-1 px-3 sm:px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors disabled:opacity-50 text-sm"
                   >
                     {updatingPassword 
-                      ? (isVietnamese ? "Đang cập nhật..." : "Updating...")
-                      : (isVietnamese ? "Cập nhật" : "Update")
+                      ? (dict?.settings?.updating || "Updating...")
+                      : (dict?.settings?.update_password || "Update")
                     }
                   </button>
                 </div>
