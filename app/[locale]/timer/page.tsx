@@ -12,6 +12,7 @@ import { StatsModal } from "@/components/timer/StatsModal";
 import { RecordBar } from "@/components/timer/RecordBar";
 import { useStreaks } from "@/hooks/useStreaks";
 import { getDictionary, type Dictionary } from "@/lib/dictionary";
+import { generateScramble } from "@/lib/scrambleGenerator";
 
 // --- Helper Functions ---
 const formatTime = (time: number) => (time / 1000).toFixed(2);
@@ -70,27 +71,6 @@ const calculateAverageFromSlice = (solvesSlice: Solve[], count: number) => {
   const sorted = [...lastN].sort((a, b) => a - b);
   const middle = sorted.slice(1, -1);
   return formatTime(middle.reduce((a, b) => a + b, 0) / middle.length);
-};
-
-const generateScramble = () => {
-  const faces = ["U", "D", "R", "L", "F", "B"];
-  const modifiers = ["", "'", "2"];
-  let scramble = [];
-  let lastFace = -1;
-  let secondLastFace = -1;
-  for (let i = 0; i < 21; i++) {
-    let faceIndex;
-    while (true) {
-      faceIndex = Math.floor(Math.random() * 6);
-      if (faceIndex === lastFace) continue;
-      if (Math.floor(faceIndex / 2) === Math.floor(lastFace / 2) && faceIndex === secondLastFace) continue;
-      break;
-    }
-    secondLastFace = lastFace;
-    lastFace = faceIndex;
-    scramble.push(faces[faceIndex] + modifiers[Math.floor(Math.random() * modifiers.length)]);
-  }
-  return scramble.join(" ");
 };
 
 const getDisplayTime = (solve: Solve) => {

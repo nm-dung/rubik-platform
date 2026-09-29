@@ -121,3 +121,41 @@ export interface UserAchievement {
   unlocked_at: string;
   achievement?: Achievement;
 }
+
+export interface DailyChallenge {
+  id: string;
+  scramble: string;
+  date: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ChallengeSubmission {
+  id: string;
+  challenge_id: string;
+  user_id: string;
+  time_ms: number;
+  solution?: string;
+  video_url?: string;
+  video_platform?: string;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+  user_profiles?: {
+    username: string;
+    full_name?: string;
+    avatar_url?: string;
+  };
+}
+
+export interface ChallengeStreak {
+  id: string;
+  user_id: string;
+  current_streak: number;
+  longest_streak: number;
+  last_participation_date?: string;
+  total_challenges_completed: number;
+  created_at?: string;
+  updated_at?: string;
+}
