@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, CalendarDays, MessageSquareText, Share2, Sparkles, Trophy, Users, type LucideIcon } from "lucide-react";
 import DailyChallengeComponent from "@/components/community/DailyChallengeComponent";
 import LeaderboardsComponent from "@/components/community/LeaderboardsComponent";
-import { COMMUNITY_FEATURES, type CommunityFeature } from "@/components/community/CommunityHub";
+import { COMMUNITY_FEATURES, type CommunityFeature } from "@/components/community/communityFeatures";
 import type { Dictionary } from "@/lib/dictionary";
 
 const ICONS: Record<string, LucideIcon> = {

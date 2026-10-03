@@ -106,6 +106,10 @@
   "community": {
     "title": "Cộng đồng",
     "description": "Chọn nơi để thi đấu, so sánh tiến độ và kết nối với cộng đồng Rubik.",
+    "hub_count_label": "không gian để kết nối và thi đấu",
+    "feature_live": "Đang hoạt động",
+    "feature_building": "Đang phát triển",
+    "open_feature": "Khám phá",
     "leaderboards": "Bảng xếp hạng",
     "leaderboards_description": "Xem xếp hạng của bạn với những người chơi khác trong các danh mục khác nhau",
     "forums": "Diễn đàn",
@@ -156,11 +160,7 @@
     "no_results": "Chưa có kết quả nào cho thử thách này.",
     "rank": "Thứ hạng",
     "you": "Bạn",
-    "open_feature": "Khám phá",
-    "feature_live": "Đang hoạt động",
-    "feature_building": "Đang phát triển",
     "back_to_community": "Tất cả không gian cộng đồng",
-    "hub_count_label": "không gian để kết nối và thi đấu",
     "feature_preview_title": "Không gian này đang được hoàn thiện",
     "feature_preview_description": "Chúng tôi đang xây dựng khu vực này cho cộng đồng. Trong lúc chờ, hãy ghé qua một tính năng khác để tiếp tục hành trình Rubik của bạn.",
     "feature_suggestion": "Bạn có thể thử"

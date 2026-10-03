@@ -157,14 +157,14 @@ export interface Dictionary {
     archive_empty: string;
     view_results: string;
     hide_results: string;
+    hub_count_label: string;
+    feature_live: string;
+    feature_building: string;
+    open_feature: string;
     no_results: string;
     rank: string;
     you: string;
-    open_feature: string;
-    feature_live: string;
-    feature_building: string;
     back_to_community: string;
-    hub_count_label: string;
     feature_preview_title: string;
     feature_preview_description: string;
     feature_suggestion: string;

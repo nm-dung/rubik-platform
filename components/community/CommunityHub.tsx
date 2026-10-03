@@ -1,98 +1,13 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, MessageSquareText, Share2, Sparkles, Trophy, Users, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Sparkles, Zap, Flame, Target, Award, TrendingUp } from "lucide-react";
 import type { Dictionary } from "@/lib/dictionary";
+import { COMMUNITY_FEATURES, type CommunityFeature, type FeatureTitleKey, type FeatureDescriptionKey, type CommunityFeatureSlug } from "./communityFeatures";
 
-export type CommunityFeatureSlug = 'leaderboards' | 'forums' | 'challenges' | 'profiles' | 'progress-sharing' | 'tournaments';
-type FeatureTitleKey = 'leaderboards' | 'forums' | 'challenges' | 'user_profiles' | 'progress_sharing' | 'tournaments';
-type FeatureDescriptionKey = 'leaderboards_description' | 'forums_description' | 'challenges_description' | 'user_profiles_description' | 'progress_sharing_description' | 'tournaments_description';
-
-export interface CommunityFeature {
-  slug: CommunityFeatureSlug;
-  titleKey: FeatureTitleKey;
-  descriptionKey: FeatureDescriptionKey;
-  icon: LucideIcon;
-  status: 'live' | 'building';
-  accent: string;
-  iconTone: string;
-  number: string;
-  relatedHref: string;
-  relatedTitleKey: 'learn' | 'algorithms' | 'timer' | 'dashboard' | 'challenges';
-}
-
-export const COMMUNITY_FEATURES: CommunityFeature[] = [
-  {
-    slug: 'challenges',
-    titleKey: 'challenges',
-    descriptionKey: 'challenges_description',
-    icon: CalendarDays,
-    status: 'live',
-    accent: 'border-emerald-300 dark:border-emerald-800',
-    iconTone: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200',
-    number: '01',
-    relatedHref: '/timer',
-    relatedTitleKey: 'timer',
-  },
-  {
-    slug: 'leaderboards',
-    titleKey: 'leaderboards',
-    descriptionKey: 'leaderboards_description',
-    icon: Trophy,
-    status: 'live',
-    accent: 'border-amber-300 dark:border-amber-800',
-    iconTone: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200',
-    number: '02',
-    relatedHref: '/algorithms',
-    relatedTitleKey: 'algorithms',
-  },
-  {
-    slug: 'forums',
-    titleKey: 'forums',
-    descriptionKey: 'forums_description',
-    icon: MessageSquareText,
-    status: 'building',
-    accent: 'border-sky-300 dark:border-sky-800',
-    iconTone: 'bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200',
-    number: '03',
-    relatedHref: '/learn',
-    relatedTitleKey: 'learn',
-  },
-  {
-    slug: 'profiles',
-    titleKey: 'user_profiles',
-    descriptionKey: 'user_profiles_description',
-    icon: Users,
-    status: 'building',
-    accent: 'border-rose-300 dark:border-rose-800',
-    iconTone: 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-200',
-    number: '04',
-    relatedHref: '/dashboard',
-    relatedTitleKey: 'dashboard',
-  },
-  {
-    slug: 'progress-sharing',
-    titleKey: 'progress_sharing',
-    descriptionKey: 'progress_sharing_description',
-    icon: Share2,
-    status: 'building',
-    accent: 'border-cyan-300 dark:border-cyan-800',
-    iconTone: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/50 dark:text-cyan-200',
-    number: '05',
-    relatedHref: '/dashboard',
-    relatedTitleKey: 'dashboard',
-  },
-  {
-    slug: 'tournaments',
-    titleKey: 'tournaments',
-    descriptionKey: 'tournaments_description',
-    icon: Sparkles,
-    status: 'building',
-    accent: 'border-orange-300 dark:border-orange-800',
-    iconTone: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200',
-    number: '06',
-    relatedHref: '/community/challenges',
-    relatedTitleKey: 'challenges',
-  },
-];
+// Re-export types for backward compatibility
+export type { CommunityFeature, FeatureTitleKey, FeatureDescriptionKey, CommunityFeatureSlug };
+export { COMMUNITY_FEATURES };
 
 interface CommunityHubProps {
   locale: 'en' | 'vi';
@@ -100,65 +15,158 @@ interface CommunityHubProps {
 }
 
 export default function CommunityHub({ locale, dict }: CommunityHubProps) {
+  const getFeatureTitle = (titleKey: FeatureTitleKey): string => {
+    const keyMap: Record<FeatureTitleKey, string> = {
+      leaderboards: dict.community?.leaderboards || 'Leaderboards',
+      forums: dict.community?.forums || 'Forums',
+      challenges: dict.community?.challenges || 'Challenges',
+      user_profiles: dict.community?.user_profiles || 'User Profiles',
+      progress_sharing: dict.community?.progress_sharing || 'Progress Sharing',
+      tournaments: dict.community?.tournaments || 'Tournaments',
+    };
+    return keyMap[titleKey];
+  };
+
+  const getFeatureDescription = (descriptionKey: FeatureDescriptionKey): string => {
+    const keyMap: Record<FeatureDescriptionKey, string> = {
+      leaderboards_description: dict.community?.leaderboards_description || 'See how you rank against other cubers in various categories',
+      forums_description: dict.community?.forums_description || 'Discuss techniques, share tips, and ask questions',
+      challenges_description: dict.community?.challenges_description || 'Take on the shared daily scramble, submit your solve, and climb the community board.',
+      user_profiles_description: dict.community?.user_profiles_description || "View other cubers' profiles and achievements",
+      progress_sharing_description: dict.community?.progress_sharing_description || 'Share your learning journey with the community',
+      tournaments_description: dict.community?.tournaments_description || 'Compete in organized speedcubing tournaments',
+    };
+    return keyMap[descriptionKey];
+  };
+
   return (
-    <main className="min-h-screen bg-[#f3f6f3] text-slate-950 dark:bg-[#101714] dark:text-white">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-        <header className="mb-8 flex flex-col gap-5 border-b border-emerald-950/10 pb-8 dark:border-white/10 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl opacity-20 animate-blob" style={{ animationDelay: '0s' }}></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-300 dark:bg-yellow-900 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl opacity-20 animate-blob" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl opacity-20 animate-blob" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-300 dark:bg-blue-900 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-3xl opacity-20 animate-blob" style={{ animationDelay: '6s' }}></div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 relative z-10">
+        {/* Animated Header */}
+        <header className="mb-8 flex flex-col gap-5 border-b border-emerald-950/10 pb-8 dark:border-white/10 sm:mb-10 sm:flex-row sm:items-end sm:justify-between animate-fade-in">
           <div className="max-w-2xl">
-            <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-emerald-800 dark:text-emerald-300">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              {dict.community.title}
+            <div className="mb-3 flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span className="text-xs font-bold uppercase text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                {dict.community.title}
+              </span>
             </div>
-            <h1 className="text-3xl font-bold sm:text-4xl">{dict.community.title}</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+              {dict.community.title}
+            </h1>
             <p className="mt-3 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">
               {dict.community.description}
             </p>
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-            <span className="font-mono text-2xl font-bold text-emerald-800 dark:text-emerald-300">06</span>
-            <span className="max-w-36">{dict.community.hub_count_label}</span>
+          <div className="flex items-center gap-3 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl px-6 py-3 border border-emerald-200 dark:border-emerald-800">
+            <div className="relative">
+              <Flame className="w-6 h-6 text-orange-500 animate-pulse" />
+              <div className="absolute inset-0 bg-orange-500 rounded-full blur-md opacity-30"></div>
+            </div>
+            <div>
+              <span className="font-mono text-3xl font-bold text-emerald-800 dark:text-emerald-300">06</span>
+              <span className="max-w-36 text-sm text-slate-600 dark:text-slate-300">{dict.community.hub_count_label}</span>
+            </div>
           </div>
         </header>
 
-        <section aria-label={dict.community.title} className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {COMMUNITY_FEATURES.map((feature) => {
+        {/* Animated Feature Grid */}
+        <section aria-label={dict.community.title} className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {COMMUNITY_FEATURES.map((feature, index) => {
             const Icon = feature.icon;
             const featured = feature.slug === 'challenges';
+            const StatusIcon = feature.status === 'live' ? Zap : Target;
 
             return (
               <Link
                 key={feature.slug}
                 href={`/${locale}/community/${feature.slug}`}
-                className={`group relative flex min-h-64 flex-col justify-between overflow-hidden rounded-lg border bg-white p-5 transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 dark:bg-[#18211d] sm:p-6 ${feature.accent} ${featured ? 'md:col-span-2 xl:col-span-2' : ''}`}
+                className={`group relative flex min-h-72 flex-col justify-between overflow-hidden rounded-2xl border bg-white dark:bg-[#18211d] p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 ${feature.accent} ${featured ? 'md:col-span-2 xl:col-span-2 min-h-80' : ''} animate-fade-in`}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${feature.iconTone}`}>
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                {/* Gradient overlay on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.status === 'live' ? 'from-emerald-500/10 to-teal-500/10' : 'from-slate-500/10 to-gray-500/10'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                
+                {/* Animated number */}
+                <div className="absolute top-4 right-4 text-6xl font-black text-slate-100 dark:text-slate-800 opacity-10 group-hover:opacity-20 transition-opacity duration-300 font-mono">
+                  {feature.number}
+                </div>
+
+                <div className="relative">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className={`relative flex h-14 w-14 items-center justify-center rounded-xl ${feature.iconTone} group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>
+                      <Icon className="h-7 w-7" aria-hidden="true" />
+                      <div className={`absolute inset-0 bg-${feature.status === 'live' ? 'emerald' : 'slate'}-500 rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono text-slate-400 dark:text-slate-500">{feature.number}</span>
+                      <span className={`rounded-full px-3 py-1.5 text-xs font-semibold flex items-center gap-1 ${feature.status === 'live' ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}>
+                        <StatusIcon className="w-3 h-3" />
+                        {feature.status === 'live' ? dict.community.feature_live : dict.community.feature_building}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-slate-400 dark:text-slate-500">{feature.number}</span>
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${feature.status === 'live' ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}>
-                      {feature.status === 'live' ? dict.community.feature_live : dict.community.feature_building}
-                    </span>
+
+                  <div className="mt-8">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 dark:group-hover:from-indigo-400 dark:group-hover:to-purple-400 transition-all duration-300">
+                      {getFeatureTitle(feature.titleKey)}
+                    </h2>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      {getFeatureDescription(feature.descriptionKey)}
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-8">
-                  <h2 className="text-xl font-bold">{dict.community[feature.titleKey]}</h2>
-                  <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    {dict.community[feature.descriptionKey]}
-                  </p>
-                </div>
-
-                <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4 text-sm font-semibold text-slate-800 dark:border-white/10 dark:text-white">
-                  <span>{dict.community.open_feature}</span>
-                  <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                <div className="relative mt-6 flex items-center justify-between border-t border-slate-200 dark:border-white/10 pt-4 text-sm font-semibold text-slate-800 dark:text-white">
+                  <span className="flex items-center gap-2 group-hover:translate-x-1 transition-transform duration-300">
+                    {dict.community.open_feature}
+                  </span>
+                  <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:scale-110" aria-hidden="true" />
                 </div>
               </Link>
             );
           })}
         </section>
       </div>
+
+      <style jsx>{`
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+        }
+      `}</style>
     </main>
   );
 }

@@ -106,6 +106,10 @@
   "community": {
     "title": "Community",
     "description": "Find your place to compete, compare progress, and connect with other cubers.",
+    "hub_count_label": "spaces to connect and compete",
+    "feature_live": "Live",
+    "feature_building": "In the works",
+    "open_feature": "Explore space",
     "leaderboards": "Leaderboards",
     "leaderboards_description": "See how you rank against other cubers in various categories",
     "forums": "Forums",
@@ -156,11 +160,7 @@
     "no_results": "No results were submitted for this challenge.",
     "rank": "Rank",
     "you": "You",
-    "open_feature": "Explore space",
-    "feature_live": "Live",
-    "feature_building": "In the works",
     "back_to_community": "All community spaces",
-    "hub_count_label": "spaces to connect and compete",
     "feature_preview_title": "This space is taking shape",
     "feature_preview_description": "We are building this part of the community now. In the meantime, jump into another space and keep your cubing momentum going.",
     "feature_suggestion": "Try this next"

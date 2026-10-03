@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import CommunityFeaturePage from "@/components/community/CommunityFeaturePage";
-import { COMMUNITY_FEATURES } from "@/components/community/CommunityHub";
+import { COMMUNITY_FEATURES } from "@/components/community/communityFeatures";
 import { getDictionary } from "@/lib/dictionary";
 
 export default async function CommunityFeatureRoute({ params }: { params: Promise<{ locale: string; feature: string }> }) {

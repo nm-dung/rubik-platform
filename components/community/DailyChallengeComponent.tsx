@@ -234,20 +234,28 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 dark:border-indigo-400 mx-auto"></div>
-        <p className="mt-4 text-slate-600 dark:text-slate-400">
-          {isVietnamese ? "Đang tải..." : "Loading..."}
-        </p>
+      <div className="text-center py-12 relative">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-20 h-20 border-4 border-emerald-200 dark:border-emerald-800 rounded-full"></div>
+          <div className="absolute w-20 h-20 border-4 border-emerald-500 dark:border-emerald-400 rounded-full animate-spin border-t-transparent"></div>
+        </div>
+        <div className="relative mt-16">
+          <p className="text-slate-600 dark:text-slate-400 animate-pulse">
+            {isVietnamese ? "Đang tải..." : "Loading..."}
+          </p>
+        </div>
       </div>
     );
   }
 
   if (!challenge) {
     return (
-      <div className="text-center py-12">
-        <Calendar className="w-16 h-16 mx-auto mb-4 text-emerald-600 dark:text-emerald-400" />
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      <div className="text-center py-12 relative">
+        <div className="relative inline-block mb-6">
+          <div className="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+          <Calendar className="w-20 h-20 mx-auto mb-4 text-emerald-600 dark:text-emerald-400 relative" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
           {isVietnamese ? "Thử thách hàng ngày" : "Daily Challenge"}
         </h3>
         <p className="text-gray-600 dark:text-gray-300">
@@ -256,7 +264,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
             : dict?.community?.loading_challenge || (isVietnamese ? "Đang tải thử thách..." : "Loading challenge...")}
         </p>
         {loadError && (
-          <button onClick={() => { setLoading(true); void loadDailyChallenge(); }} className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+          <button onClick={() => { setLoading(true); void loadDailyChallenge(); }} className="mt-6 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all transform hover:scale-105 shadow-lg">
             {isVietnamese ? "Thử lại" : "Retry"}
           </button>
         )}
@@ -266,14 +274,26 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
 
   return (
     <div className="space-y-6">
-      {/* Challenge Header */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 rounded-2xl p-6 text-white">
-        <div className="flex items-center justify-between mb-4">
+      {/* Challenge Header with Enhanced Design */}
+      <div className="relative bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 dark:from-emerald-600 dark:via-teal-600 dark:to-cyan-700 rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '2s' }}></div>
+        </div>
+        
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold mb-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-100 dark:text-emerald-200">
+                {dict?.community?.daily_challenge || (isVietnamese ? "Thử thách hàng ngày" : "Daily Challenge")}
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black mb-2">
               {dict?.community?.daily_challenge || (isVietnamese ? "Thử thách hàng ngày" : "Daily Challenge")}
             </h2>
-            <p className="text-emerald-100 dark:text-emerald-200">
+            <p className="text-emerald-100 dark:text-emerald-200 text-sm sm:text-base">
               {new Date(`${challenge.date}T12:00:00`).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
                 weekday: 'long', 
                 year: 'numeric', 
@@ -283,79 +303,99 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
             </p>
           </div>
           {userStreak && (
-            <div className="flex items-center gap-2 bg-white/20 rounded-lg px-4 py-2">
-              <Flame className="w-5 h-5 text-orange-300" />
+            <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-white/30 hover:bg-white/30 transition-all transform hover:scale-105">
+              <div className="relative">
+                <Flame className="w-6 h-6 text-orange-300 animate-pulse" />
+                <div className="absolute inset-0 bg-orange-500 rounded-full blur-md opacity-50"></div>
+              </div>
               <div>
-                <div className="text-xs text-emerald-100">
+                <div className="text-xs text-emerald-100 dark:text-emerald-200 font-medium">
                   {isVietnamese ? "Chuỗi hiện tại" : "Current Streak"}
                 </div>
-                <div className="text-lg font-bold">{userStreak.current_streak} {dict?.community?.days || (isVietnamese ? "ngày" : "days")}</div>
+                <div className="text-xl font-black">{userStreak.current_streak} {dict?.community?.days || (isVietnamese ? "ngày" : "days")}</div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Scramble Display */}
-        <div className="bg-white/10 backdrop-blur rounded-xl p-4 mb-4">
-          <div className="text-sm text-emerald-100 mb-2">
+        {/* Scramble Display with Enhanced Design */}
+        <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-5 sm:p-6 mb-6 border border-white/20 hover:bg-white/15 transition-all group">
+          <div className="flex items-center gap-2 text-sm text-emerald-100 dark:text-emerald-200 mb-3 font-medium">
+            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
             {dict?.community?.scramble || (isVietnamese ? "Xáo trộn:" : "Scramble:")}
           </div>
-          <div className="text-2xl font-mono font-bold tracking-wider">
+          <div className="text-2xl sm:text-3xl font-mono font-black tracking-wider group-hover:scale-105 transition-transform duration-300">
             {challenge.scramble}
           </div>
         </div>
 
-        {/* Timer */}
-        <div className="flex items-center justify-between">
-          <div className="text-4xl font-mono font-bold">
-            {formatTime(currentTime)}
+        {/* Timer with Enhanced Design */}
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="relative">
+            <div className="text-5xl sm:text-6xl font-mono font-black tracking-tight drop-shadow-lg">
+              {formatTime(currentTime)}
+            </div>
+            {isRunning && (
+              <div className="absolute -inset-2 bg-white/20 rounded-lg blur-xl animate-pulse"></div>
+            )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             {!isRunning ? (
               <button
                 onClick={startTimer}
                 disabled={!!userSubmission}
-                className="px-6 py-3 bg-white text-emerald-600 rounded-lg font-bold hover:bg-emerald-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-4 bg-white text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl"
               >
                 {dict?.community?.start || (isVietnamese ? "Bắt đầu" : "Start")}
               </button>
             ) : (
               <button
                 onClick={stopTimer}
-                className="px-6 py-3 bg-white text-emerald-600 rounded-lg font-bold hover:bg-emerald-50 transition-colors"
+                className="px-8 py-4 bg-white text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl animate-pulse"
               >
                 {dict?.community?.stop || (isVietnamese ? "Dừng" : "Stop")}
               </button>
             )}
             <button
               onClick={resetTimer}
-              className="px-4 py-3 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
+              className="px-5 py-4 bg-white/20 text-white rounded-2xl hover:bg-white/30 transition-all transform hover:scale-105 border border-white/30 backdrop-blur-sm"
             >
-              <RotateCcw className="w-5 h-5" />
+              <RotateCcw className="w-6 h-6" />
             </button>
           </div>
         </div>
       </div>
 
       {!user && (
-        <div className="flex flex-col gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200 sm:flex-row sm:items-center sm:justify-between">
-          <span>{dict?.community?.sign_in_to_submit || (isVietnamese ? "Đăng nhập để gửi kết quả và tham gia bảng xếp hạng." : "Sign in to submit a result and join the leaderboard.")}</span>
-          <Link href={`/${locale}/auth/login`} className="font-semibold underline underline-offset-2">
+        <div className="flex flex-col gap-3 rounded-2xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-5 text-sm text-emerald-900 dark:border-emerald-800 dark:from-emerald-950/30 dark:to-teal-950/30 dark:text-emerald-200 sm:flex-row sm:items-center sm:justify-between animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-500 dark:bg-emerald-600 rounded-full flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-medium">{dict?.community?.sign_in_to_submit || (isVietnamese ? "Đăng nhập để gửi kết quả và tham gia bảng xếp hạng." : "Sign in to submit a result and join the leaderboard.")}</span>
+          </div>
+          <Link href={`/${locale}/auth/login`} className="inline-flex items-center gap-2 font-bold bg-emerald-600 dark:bg-emerald-500 text-white px-5 py-2.5 rounded-xl hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-all transform hover:scale-105 shadow-lg">
             {dict?.auth?.sign_in || (isVietnamese ? "Đăng nhập" : "Sign in")}
+            <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       )}
 
-      {/* Submit Form */}
+      {/* Submit Form with Enhanced Design */}
       {showSubmitForm && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            {dict?.community?.submit_time || (isVietnamese ? "Gửi thời gian" : "Submit Time")}
-          </h3>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border-2 border-gray-200 dark:border-gray-700 shadow-xl animate-fade-in">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+              <Trophy className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {dict?.community?.submit_time || (isVietnamese ? "Gửi thời gian" : "Submit Time")}
+            </h3>
+          </div>
           
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 {dict?.community?.time_seconds || (isVietnamese ? "Thời gian (giây)" : "Time (seconds)")}
               </label>
               <input
@@ -365,33 +405,33 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
                 step="0.01"
                 value={submitTime}
                 onChange={(e) => { setSubmitTime(e.target.value); setSubmissionError(false); }}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg font-mono transition-all"
                 placeholder="12.34"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 {dict?.community?.solution_optional || (isVietnamese ? "Giải pháp (tùy chọn)" : "Solution (optional)")}
               </label>
               <textarea
                 value={solution}
                 onChange={(e) => setSolution(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                rows={2}
+                className="w-full px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono transition-all resize-none"
+                rows={3}
                 placeholder={isVietnamese ? "R U R' U'..." : "R U R' U'..."}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 {dict?.community?.video_url || (isVietnamese ? "URL video (tùy chọn)" : "Video URL (optional)")}
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <select
                   value={videoPlatform}
                   onChange={(e) => setVideoPlatform(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-medium transition-all"
                 >
                   <option value="youtube">{dict?.community?.youtube || "YouTube"}</option>
                   <option value="tiktok">{dict?.community?.tiktok || "TikTok"}</option>
@@ -402,31 +442,31 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
                   type="text"
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="flex-1 px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
                   placeholder="https://..."
                 />
               </div>
             </div>
 
             {submissionError && (
-              <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+              <div role="alert" className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-4 text-sm text-red-600 dark:text-red-400">
                 {submitTime && (!Number.isFinite(Number(submitTime)) || Number(submitTime) <= 0 || Number(submitTime) > 3600)
                   ? dict?.community?.invalid_time || (isVietnamese ? "Nhập thời gian giải hợp lệ, tối đa 3600 giây." : "Enter a valid solve time up to 3600 seconds.")
                   : dict?.community?.submission_failed || (isVietnamese ? "Không thể gửi kết quả. Vui lòng thử lại." : "Your result could not be submitted. Please try again.")}
-              </p>
+              </div>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-2">
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !submitTime || !user}
-                className="flex-1 px-4 py-2 bg-emerald-600 dark:bg-emerald-500 text-white rounded-lg font-medium hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
               >
                 {submitting ? (isVietnamese ? "Đang gửi..." : "Submitting...") : (isVietnamese ? "Gửi" : "Submit")}
               </button>
               <button
                 onClick={() => setShowSubmitForm(false)}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                className="px-6 py-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all transform hover:scale-105"
               >
                 {isVietnamese ? "Hủy" : "Cancel"}
               </button>
@@ -435,35 +475,42 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
         </div>
       )}
 
-      {/* User's Submission */}
+      {/* User's Submission with Enhanced Design */}
       {userSubmission && (
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-6 border border-indigo-200 dark:border-indigo-800">
-          <div className="flex items-center justify-between">
+        <div className="relative bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-3xl p-6 sm:p-8 border-2 border-indigo-200 dark:border-indigo-800 shadow-xl animate-fade-in">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 dark:bg-indigo-600 rounded-full blur-3xl opacity-10"></div>
+          <div className="relative flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-400 mb-1">
-                {isVietnamese ? "Thời gian của bạn" : "Your Time"}
-              </h3>
-              <div className="text-3xl font-mono font-bold text-indigo-600 dark:text-indigo-400">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
+                <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-400">
+                  {isVietnamese ? "Thời gian của bạn" : "Your Time"}
+                </h3>
+              </div>
+              <div className="text-4xl sm:text-5xl font-mono font-black text-indigo-600 dark:text-indigo-400">
                 {formatTime(userSubmission.time_ms)}
               </div>
             </div>
-            <Trophy className="w-12 h-12 text-indigo-500" />
+            <div className="relative">
+              <Trophy className="w-16 h-16 text-indigo-500 animate-bounce" />
+              <div className="absolute inset-0 bg-indigo-500 rounded-full blur-xl opacity-30"></div>
+            </div>
           </div>
           {userSubmission.solution && (
-            <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-medium">{isVietnamese ? "Giải pháp:" : "Solution:"} </span>
-              {userSubmission.solution}
+            <div className="mt-6 p-4 bg-white dark:bg-gray-800 rounded-xl border border-indigo-100 dark:border-indigo-700">
+              <span className="font-bold text-gray-900 dark:text-white">{isVietnamese ? "Giải pháp:" : "Solution:"} </span>
+              <span className="font-mono text-gray-700 dark:text-gray-300">{userSubmission.solution}</span>
             </div>
           )}
           {userSubmission.video_url && (
-            <div className="mt-2">
+            <div className="mt-4">
               <a
                 href={userSubmission.video_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl font-bold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all transform hover:scale-105 shadow-lg"
               >
-                <Video className="w-4 h-4" />
+                <Video className="w-5 h-5" />
                 {isVietnamese ? "Xem video" : "Watch Video"}
               </a>
             </div>
@@ -471,53 +518,90 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
         </div>
       )}
 
-      {/* Leaderboard */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-yellow-500" />
-            {isVietnamese ? "Bảng xếp hạng hôm nay" : "Today's Leaderboard"}
-          </h3>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {submissions.length} {isVietnamese ? "người tham gia" : "participants"}
-          </span>
+      {/* Leaderboard with Enhanced Design */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border-2 border-gray-200 dark:border-gray-700 shadow-xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Trophy className="w-7 h-7 text-yellow-500" />
+              <div className="absolute inset-0 bg-yellow-500 rounded-full blur-md opacity-30"></div>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              {isVietnamese ? "Bảng xếp hạng hôm nay" : "Today's Leaderboard"}
+            </h3>
+          </div>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl px-4 py-2 border border-yellow-200 dark:border-yellow-800">
+            <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-bold text-yellow-700 dark:text-yellow-400">
+              {submissions.length} {isVietnamese ? "người tham gia" : "participants"}
+            </span>
+          </div>
         </div>
 
         {submissions.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            {isVietnamese ? "Chưa có ai tham gia hôm nay" : "No participants yet today"}
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div className="relative inline-block mb-4">
+              <Trophy className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600" />
+            </div>
+            <p className="text-lg">{isVietnamese ? "Chưa có ai tham gia hôm nay" : "No participants yet today"}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {submissions.slice(0, 10).map((submission, index) => (
               <div
                 key={submission.id}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                className={`flex items-center justify-between p-4 rounded-xl transition-all transform hover:scale-102 hover:shadow-lg ${
+                  index === 0 
+                    ? 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border-2 border-yellow-300 dark:border-yellow-700' 
+                    : index === 1 
+                    ? 'bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-slate-800 border-2 border-gray-300 dark:border-gray-600'
+                    : index === 2
+                    ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-amber-300 dark:border-amber-700'
+                    : 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600'
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    {index === 0 && <Trophy className="w-6 h-6 text-yellow-500" />}
-                    {index === 1 && <Trophy className="w-6 h-6 text-gray-400" />}
-                    {index === 2 && <Trophy className="w-6 h-6 text-amber-600" />}
-                    {index > 2 && <span className="text-sm font-bold text-gray-500">#{index + 1}</span>}
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    {index === 0 && (
+                      <div className="relative">
+                        <Trophy className="w-8 h-8 text-yellow-500 animate-bounce" />
+                        <div className="absolute inset-0 bg-yellow-500 rounded-full blur-md opacity-30"></div>
+                      </div>
+                    )}
+                    {index === 1 && (
+                      <div className="relative">
+                        <Trophy className="w-8 h-8 text-gray-400" />
+                        <div className="absolute inset-0 bg-gray-400 rounded-full blur-md opacity-20"></div>
+                      </div>
+                    )}
+                    {index === 2 && (
+                      <div className="relative">
+                        <Trophy className="w-8 h-8 text-amber-600" />
+                        <div className="absolute inset-0 bg-amber-600 rounded-full blur-md opacity-20"></div>
+                      </div>
+                    )}
+                    {index > 2 && <span className="text-sm font-black text-gray-500">#{index + 1}</span>}
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">
+                    <div className="font-bold text-gray-900 dark:text-white text-base">
                       {submission.user_profiles?.username || 'Anonymous'}
                     </div>
                     {submission.solution && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">
                         {submission.solution.substring(0, 20)}...
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-lg font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                <div className="flex items-center gap-4">
+                  <div className="text-xl font-mono font-black text-emerald-600 dark:text-emerald-400">
                     {formatTime(submission.time_ms)}
                   </div>
                   {submission.video_url && (
-                    <Video className="w-4 h-4 text-gray-400" />
+                    <div className="relative">
+                      <Video className="w-5 h-5 text-gray-400" />
+                      <div className="absolute inset-0 bg-gray-400 rounded-full blur-md opacity-20"></div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -526,14 +610,14 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
         )}
       </div>
 
-      {/* Archive Link */}
+      {/* Archive Link with Enhanced Design */}
       <button
         onClick={() => void toggleArchive()}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-700 dark:text-gray-300 rounded-2xl hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 transition-all transform hover:scale-105 shadow-lg border border-gray-300 dark:border-gray-600"
       >
-        <Calendar className="w-5 h-5" />
-        {isVietnamese ? "Xem thử thách trước" : "View Previous Challenges"}
-        <ChevronRight className={`w-5 h-5 transition-transform ${showArchive ? 'rotate-90' : ''}`} />
+        <Calendar className="w-6 h-6" />
+        <span className="font-bold">{isVietnamese ? "Xem thử thách trước" : "View Previous Challenges"}</span>
+        <ChevronRight className={`w-6 h-6 transition-transform ${showArchive ? 'rotate-90' : ''}`} />
       </button>
 
       {/* Archive (when expanded) */}
@@ -610,3 +694,5 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
     </div>
   );
 }
+
+DailyChallengeComponent.displayName = 'DailyChallengeComponent';
