@@ -276,33 +276,33 @@
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes shake {
   0%, 100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-2px);
+    transform: translate3d(-2px, 0, 0);
   }
   20%, 40%, 60%, 80% {
-    transform: translateX(2px);
+    transform: translate3d(2px, 0, 0);
   }
 }
 
@@ -358,7 +358,7 @@
 
 @keyframes particle-float {
   0%, 100% {
-    transform: translateY(0) translateX(0);
+    transform: translate3d(0, 0, 0);
     opacity: 0;
   }
   10% {
@@ -368,7 +368,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(-100vh) translateX(20px);
+    transform: translate3d(20px, -100vh, 0);
     opacity: 0;
   }
 }
@@ -395,31 +395,31 @@
 
 @keyframes bounce-subtle {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translate3d(0, -5px, 0);
   }
 }
 
 @keyframes slide-in-left {
   from {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 }
 
 @keyframes slide-in-right {
   from {
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 }
@@ -517,7 +517,7 @@
   }
 }
 
-/* Particle background effect */
+/* Particle background effect - Optimized */
 .particles {
   position: fixed;
   top: 0;
@@ -527,6 +527,8 @@
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  contain: strict;
+  will-change: transform;
 }
 
 .particle {
@@ -536,6 +538,9 @@
   background: rgba(99, 102, 241, 0.3);
   border-radius: 50%;
   animation: particle-float 15s linear infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
@@ -549,11 +554,13 @@
 .particle:nth-child(9) { left: 90%; animation-delay: 1s; }
 .particle:nth-child(10) { left: 95%; animation-delay: 3s; }
 
-/* Morphing gradient background */
+/* Morphing gradient background - Optimized */
 .morphing-bg {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   animation: gradient-morph 15s ease infinite;
+  will-change: background-position;
+  contain: layout style paint;
 }
 
 @keyframes gradient-morph {
@@ -729,60 +736,128 @@
   background-size: 200% 100%;
 }
 
-/* Confetti effect */
+/* Content visibility optimization for off-screen elements */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 0;
+}
+
+/* Optimize image loading */
+img {
+  content-visibility: auto;
+}
+
+/* Optimize heavy containers */
+.optimize-rendering {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+/* Reduce paint for static backgrounds */
+.static-bg {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Optimize cards and containers */
+.card-optimize {
+  contain: layout style;
+  content-visibility: auto;
+}
+
+/* Confetti effect - Optimized */
 .confetti {
   position: fixed;
   width: 10px;
   height: 10px;
   background-color: #f00;
   animation: confetti-fall 3s linear forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes confetti-fall {
   0% {
-    transform: translateY(-100vh) rotate(0deg);
+    transform: translate3d(0, -100vh, 0) rotate(0deg);
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh) rotate(720deg);
+    transform: translate3d(0, 100vh, 0) rotate(720deg);
     opacity: 0;
   }
 }
 
-/* Blob animation for floating backgrounds */
+/* Blob animation for floating backgrounds - Optimized for GPU */
 @keyframes blob {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   33% {
-    transform: translate(30px, -50px) scale(1.1);
+    transform: translate3d(30px, -50px, 0) scale(1.1);
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.9);
+    transform: translate3d(-20px, 20px, 0) scale(0.9);
   }
 }
 
 .animate-blob {
   animation: blob 7s infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-/* Enhanced fade-in animation */
+/* Enhanced fade-in animation - GPU accelerated */
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
+  will-change: opacity, transform;
 }
 
-/* Scale hover effect */
+/* Scale hover effect - GPU accelerated */
 .hover-scale-102:hover {
   transform: scale(1.02);
+  will-change: transform;
+}
+
+/* Performance optimizations for common animations */
+.animate-float,
+.animate-float-delayed,
+.animate-bounce-subtle {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.animate-fade-in,
+.animate-shake,
+.animate-spin-once,
+.animate-glow,
+.animate-shimmer,
+.animate-wave,
+.animate-slide-in-left,
+.animate-slide-in-right,
+.animate-scale-in,
+.animate-rotate-in {
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimize particle animation */
+.particle {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }

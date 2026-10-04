@@ -40,8 +40,19 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
   const [archiveLoading, setArchiveLoading] = useState(false);
   const [expandedArchiveId, setExpandedArchiveId] = useState<string | null>(null);
   const [archiveSubmissions, setArchiveSubmissions] = useState<ChallengeSubmission[]>([]);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   const isVietnamese = locale === 'vi';
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -240,7 +251,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
           <div className="absolute w-20 h-20 border-4 border-emerald-500 dark:border-emerald-400 rounded-full animate-spin border-t-transparent"></div>
         </div>
         <div className="relative mt-16">
-          <p className="text-slate-600 dark:text-slate-400 animate-pulse">
+          <p className={`text-slate-600 dark:text-slate-400 ${reducedMotion ? '' : 'animate-pulse'}`}>
             {isVietnamese ? "Đang tải..." : "Loading..."}
           </p>
         </div>
@@ -277,9 +288,13 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
       {/* Challenge Header with Enhanced Design */}
       <div className="relative bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 dark:from-emerald-600 dark:via-teal-600 dark:to-cyan-700 rounded-3xl p-6 sm:p-8 text-white overflow-hidden">
         {/* Animated background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '0s' }}></div>
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '2s' }}></div>
+        <div className={`absolute inset-0 opacity-10 ${reducedMotion ? '' : ''}`}>
+          {!reducedMotion && (
+            <>
+              <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '0s' }}></div>
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl animate-blob" style={{ animationDelay: '2s' }}></div>
+            </>
+          )}
         </div>
         
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -305,7 +320,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
           {userStreak && (
             <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-white/30 hover:bg-white/30 transition-all transform hover:scale-105">
               <div className="relative">
-                <Flame className="w-6 h-6 text-orange-300 animate-pulse" />
+                <Flame className={`w-6 h-6 text-orange-300 ${reducedMotion ? '' : 'animate-pulse'}`} />
                 <div className="absolute inset-0 bg-orange-500 rounded-full blur-md opacity-50"></div>
               </div>
               <div>
@@ -321,7 +336,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
         {/* Scramble Display with Enhanced Design */}
         <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-5 sm:p-6 mb-6 border border-white/20 hover:bg-white/15 transition-all group">
           <div className="flex items-center gap-2 text-sm text-emerald-100 dark:text-emerald-200 mb-3 font-medium">
-            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+            <div className={`w-1.5 h-1.5 bg-white rounded-full ${reducedMotion ? '' : 'animate-pulse'}`}></div>
             {dict?.community?.scramble || (isVietnamese ? "Xáo trộn:" : "Scramble:")}
           </div>
           <div className="text-2xl sm:text-3xl font-mono font-black tracking-wider group-hover:scale-105 transition-transform duration-300">
@@ -335,7 +350,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
             <div className="text-5xl sm:text-6xl font-mono font-black tracking-tight drop-shadow-lg">
               {formatTime(currentTime)}
             </div>
-            {isRunning && (
+            {isRunning && !reducedMotion && (
               <div className="absolute -inset-2 bg-white/20 rounded-lg blur-xl animate-pulse"></div>
             )}
           </div>
@@ -351,7 +366,7 @@ export default function DailyChallengeComponent({ locale, dict }: DailyChallenge
             ) : (
               <button
                 onClick={stopTimer}
-                className="px-8 py-4 bg-white text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl animate-pulse"
+                className={`px-8 py-4 bg-white text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl ${reducedMotion ? '' : 'animate-pulse'}`}
               >
                 {dict?.community?.stop || (isVietnamese ? "Dừng" : "Stop")}
               </button>
